@@ -1,0 +1,9 @@
+# Ignore everything
+*
+
+# Unignore all files ending with .xpr 
+!**/*.xpr
+
+# Unignore these directories
+!FDP.srcs/
+!FDP.srcs/**
