@@ -13,11 +13,11 @@
 
 module Top_Student (
     input clk,
-    input SW0,
+    input [15:0] sw,
     input btnC,
     input btnU, btnD, btnL, btnR,
-    output [7:0] JXADC
+    output [7:0] JB
     );
-    
-    TASK_4D task_4d (clk, SW0, btnC, btnU, btnD, btnL, btnR, JXADC);
+    wire PASSWORD = sw[0];
+    TASK_4D task_4d (clk, PASSWORD, btnC, btnU, btnD, btnL, btnR, JB);
 endmodule

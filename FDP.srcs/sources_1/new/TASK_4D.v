@@ -22,10 +22,10 @@
 
 module TASK_4D(
     input MAIN_CLOCK,
-    input SWITCH,
+    input PASSWORD_IS_CORRECT,
     input btnC,
     input btnU, btnD, btnL, btnR,
-    output [7:0] JXADC
+    output [7:0] JB
     );  
     
     //////////////////////////////////////////////////////////////////////////////////
@@ -34,6 +34,7 @@ module TASK_4D(
    
     // Set local parameters
     localparam BLACK = 16'h0000;
+    localparam WHITE = 16'hFFFF;
     localparam GREEN = 16'h07E0;
     localparam RED = 16'hF800;
     
@@ -45,11 +46,12 @@ module TASK_4D(
     wire [15:0] oled_data = oled_data_reg;
     wire red_square_ready;
     wire green_square_ready;
+    wire group_id_ready;
     wire fb;
     wire clk_25M;
     wire clk_6p25M;
     wire clk_g;
-    wire [3:0] pb = SWITCH ? {{btnR}, {btnL}, {btnD}, {btnU}} : {{btnL}, {btnR}, {btnU}, {btnD}};
+    wire [3:0] pb = {{btnL}, {btnR}, {btnU}, {btnD}};
     
     // Generate clock signals
     clk_25MHz clk25 (MAIN_CLOCK, clk_25M); 
@@ -58,9 +60,21 @@ module TASK_4D(
     
     // Instantiate the squares (red and green)
     always @(posedge clk_25M) begin
-        oled_data_reg = red_square_ready ? RED : (green_square_ready ? GREEN : BLACK);
+        if (PASSWORD_IS_CORRECT) begin
+            oled_data_reg = red_square_ready ? RED : (green_square_ready ? GREEN : BLACK);
+        end
+        else begin
+            oled_data_reg = group_id_ready ? WHITE : BLACK;
+        end
     end
     
+    // Generate Group ID
+    group_generator grp_generator(
+        .password_is_correct(PASSWORD_IS_CORRECT),
+        .pixel_index(pixel_index),
+        .ready(group_id_ready));
+        
+    // Generate Squares from Task 4
     square_generator red_square(
         .pixel_index(pixel_index),
         .x_start(66),
@@ -84,13 +98,13 @@ module TASK_4D(
         .sample_pixel(), 
         .pixel_index(pixel_index), 
         .pixel_data(oled_data), 
-        .cs(JXADC[0]), 
-        .sdin(JXADC[1]), 
-        .sclk(JXADC[3]), 
-        .d_cn(JXADC[4]), 
-        .resn(JXADC[5]), 
-        .vccen(JXADC[6]), 
-        .pmoden(JXADC[7]));
+        .cs(JB[0]), 
+        .sdin(JB[1]), 
+        .sclk(JB[3]), 
+        .d_cn(JB[4]), 
+        .resn(JB[5]), 
+        .vccen(JB[6]), 
+        .pmoden(JB[7]));
         
     //////////////////////////////////////////////////////////////////////////////////
     // MAIN CODE LOGIC
