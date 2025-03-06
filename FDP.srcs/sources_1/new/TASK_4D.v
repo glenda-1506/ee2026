@@ -22,6 +22,7 @@
 
 module TASK_4D(
     input MAIN_CLOCK,
+    input SWITCH,
     input btnC,
     input btnU, btnD, btnL, btnR,
     output [7:0] JXADC
@@ -48,7 +49,7 @@ module TASK_4D(
     wire clk_25M;
     wire clk_6p25M;
     wire clk_g;
-    wire [3:0] pb = {{btnL}, {btnR}, {btnU}, {btnD}};
+    wire [3:0] pb = SWITCH ? {{btnR}, {btnL}, {btnD}, {btnU}} : {{btnL}, {btnR}, {btnU}, {btnD}};
     
     // Generate clock signals
     clk_25MHz clk25 (MAIN_CLOCK, clk_25M); 
