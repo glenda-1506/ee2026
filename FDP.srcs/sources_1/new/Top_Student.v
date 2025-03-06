@@ -4,7 +4,7 @@
 //
 //  FILL IN THE FOLLOWING INFORMATION:
 //  STUDENT A NAME: 
-//  STUDENT B NAME:
+//  STUDENT B NAME:  Joe Tien You
 //  STUDENT C NAME: 
 //  STUDENT D NAME:  Si Thu Lin Aung
 //
@@ -14,7 +14,7 @@
 module Top_Student (
     input clk,
     input [15:0] sw,
-    input btnU, btnD, btnL, btnR,
+    input btnU, btnD, btnL, btnR, btnC,
     output [7:0] JB,
     output [15:0] led
     );
@@ -29,7 +29,7 @@ module Top_Student (
     parameter GREEN = 16'h07E0;
     parameter RED = 16'hF800;
     parameter PASSWORD_A = 16'b0000001000000010; // to change
-    parameter PASSWORD_B = 16'b1000000000000010; // to change
+    parameter PASSWORD_B = 16'b1000000100101111; //  8, 1, 5, 2, 3, 0
     parameter PASSWORD_C = 16'b0000000000000010; // to change
     parameter PASSWORD_D = 16'b1000000011000111;
     
@@ -97,7 +97,8 @@ module Top_Student (
     
     // Generate Individual Tasks
     TASK_4D task_4d (clk, pixel_index, (CURRENT_PASSWORD != PASSWORD_D), btnU, btnD, btnL, btnR, JB, oled_data_D);
-    
+    TASK_4B task_4b (clk, btnC, btnU, btnD, JB);
+
     // REMOVE THIS. ONLY HERE FOR SAMPLE a second task that does not reset
     TASK_4D task_4c (clk, pixel_index, 0, btnU, btnD, btnL, btnR, JB, oled_data_C); 
     
