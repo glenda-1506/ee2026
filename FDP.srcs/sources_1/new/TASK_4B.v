@@ -21,10 +21,13 @@
 
 module TASK_4B (
     input clk,
+    input [12:0] pixel_index,
+    input reset,
     input btnC,
     input btnU,
     input btnD,
-    output [7:0] JB
+    output [7:0] JB,
+    output reg [15:0] oled_data_reg = 0
     );
 
     wire clk6p25mhz;
@@ -32,8 +35,6 @@ module TASK_4B (
     wire fb;
     wire [6:0] x;
     wire [5:0] y;
-    wire [12:0] pixel_index;
-    reg [15:0] oled_data;
     wire [15:0] top_square;
     wire [15:0] middle_square;
     wire [15:0] bottom_square;
@@ -47,24 +48,6 @@ module TASK_4B (
     
     assign x = pixel_index % 96;
     assign y = pixel_index / 96;
-    
-    //Configured settings
-    Oled_Display oled(
-        .clk(clk6p25mhz), 
-        .reset(0), 
-        .frame_begin(fb), 
-        .sending_pixels(), 
-        .sample_pixel(), 
-        .pixel_index(pixel_index), 
-        .pixel_data(oled_data), 
-        .cs(JB[0]), 
-        .sdin(JB[1]), 
-        .sclk(JB[3]), 
-        .d_cn(JB[4]), 
-        .resn(JB[5]), 
-        .vccen(JB[6]), 
-        .pmoden(JB[7])
-    );
     
     //Generate all the clocks needed
     clock_generator my_6p25mhz_clk (
@@ -131,12 +114,13 @@ module TASK_4B (
         .top_counter(top_button_state),
         .middle_counter(middle_button_state),
         .bottom_counter(bottom_button_state),
+        .reset(reset),
         .oled_display(oled_display)
     );
 
     //Feed data back to oled_data
     always @(posedge clk_25mhz) begin
-        oled_data <= oled_display;  
+        oled_data_reg <= oled_display;  
     end
     
 endmodule

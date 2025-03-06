@@ -29,6 +29,7 @@ module main (
     input [2:0] top_counter,
     input [2:0] middle_counter,
     input [2:0] bottom_counter,
+    input reset, 
     output reg [15:0] oled_display
 );
 
@@ -53,12 +54,16 @@ module main (
         .oled_out(circle_output)
     );
 
-    always @(posedge clk) begin
-    if (square_output != 16'b0) begin
-        oled_display <= square_output;
-    end else begin
-        oled_display <= circle_output;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            oled_display <= 16'b0; 
+        end else begin
+            if (square_output != 16'b0) begin
+                oled_display <= square_output;
+            end else begin
+                oled_display <= circle_output;
+            end
+        end
     end
-end
 
 endmodule
