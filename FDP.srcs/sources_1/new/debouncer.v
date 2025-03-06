@@ -5,7 +5,7 @@
 // 
 // Create Date: 06.03.2025 19:16:17
 // Design Name: 
-// Module Name: debounce
+// Module Name: debouncer
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 

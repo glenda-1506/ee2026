@@ -5,7 +5,7 @@
 // 
 // Create Date: 06.03.2025 18:07:18
 // Design Name: 
-// Module Name: TASK_4A
+// Module Name: square_design
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
