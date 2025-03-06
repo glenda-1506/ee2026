@@ -21,14 +21,14 @@
 
 
 module group_generator(
-    input password_is_correct,
+    input IDLE_STATE,
     input [12:0] pixel_index,
     output ready
     );
     
     wire [3:0] zero_ready;
     wire [4:0] two_ready;
-    assign ready = password_is_correct ? 0 : (zero_ready || two_ready);
+    assign ready = IDLE_STATE ? (zero_ready || two_ready) : 0;
     
     // Produce a '0'
     rectangle_generator zero_left (

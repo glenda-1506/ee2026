@@ -32,16 +32,16 @@ module control(
     // Instantiate parameter and modules
     //////////////////////////////////////////////////////////////////////////////////
     // Set initial position of green square
-    localparam GREEN_SIZE = 10;
-    localparam INIT_X = 0;
-    localparam INIT_Y = 54;
+    parameter GREEN_SIZE = 10;
+    parameter INIT_X = 0;
+    parameter INIT_Y = 54;
     
     // Set direction parameters
-    localparam DIR_NONE = 3'd0;
-    localparam DIR_LEFT = 3'd1;
-    localparam DIR_RIGHT = 3'd2;
-    localparam DIR_UP = 3'd3;
-    localparam DIR_DOWN = 3'd4;
+    parameter DIR_NONE = 3'd0;
+    parameter DIR_LEFT = 3'd1;
+    parameter DIR_RIGHT = 3'd2;
+    parameter DIR_UP = 3'd3;
+    parameter DIR_DOWN = 3'd4;
     reg [2:0] dir = DIR_NONE;
     
     // Define boundary function
