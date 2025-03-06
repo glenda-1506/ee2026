@@ -22,7 +22,7 @@
 module TASK_4B (
     input clk,
     input [12:0] pixel_index,
-    input reset,
+    input reset, 
     input btnC,
     input btnU,
     input btnD,
@@ -85,6 +85,7 @@ module TASK_4B (
     button_count top_button_count (
         .clk(clk), 
         .pb(btnU_debounced), 
+        .reset(reset),
         .display_data(top_square), 
         .state_output(top_button_state)
     );
@@ -92,6 +93,7 @@ module TASK_4B (
     button_count middle_button_count (
         .clk(clk), 
         .pb(btnC_debounced), 
+        .reset(reset), 
         .display_data(middle_square), 
         .state_output(middle_button_state)
     );
@@ -99,6 +101,7 @@ module TASK_4B (
     button_count bottom_button_count (
         .clk(clk),
         .pb(btnD_debounced), 
+        .reset(reset),
         .display_data(bottom_square), 
         .state_output(bottom_button_state)
     );
@@ -114,7 +117,6 @@ module TASK_4B (
         .top_counter(top_button_state),
         .middle_counter(middle_button_state),
         .bottom_counter(bottom_button_state),
-        .reset(reset),
         .oled_display(oled_display)
     );
 
@@ -124,3 +126,4 @@ module TASK_4B (
     end
     
 endmodule
+

@@ -50,6 +50,6 @@ module circle_design (
             oled_out = BLACK;
         end
     end
-endmodule
 
+endmodule
 
