@@ -26,7 +26,6 @@ module TASK_4B (
     input btnC,
     input btnU,
     input btnD,
-    output [7:0] JB,
     output reg [15:0] oled_data_reg = 0
     );
 

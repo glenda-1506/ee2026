@@ -25,7 +25,6 @@ module TASK_4D(
     input [12:0] pixel_index,
     input reset,
     input btnU, btnD, btnL, btnR,
-    output [7:0] JB,
     output reg [15:0] oled_data_reg = 0
     );  
     
