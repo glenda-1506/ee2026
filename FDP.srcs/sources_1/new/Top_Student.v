@@ -29,7 +29,7 @@ module Top_Student (
     parameter GREEN = 16'h07E0;
     parameter RED = 16'hF800;
     parameter PASSWORD_A = 16'b0000001000000010; // to change
-    parameter PASSWORD_B = 16'b1000000100101111; //  8, 1, 5, 2, 3, 0, 15
+    parameter PASSWORD_B = 16'b0010000100101111; //  8, 1, 5, 2, 3, 0, 13
     parameter PASSWORD_C = 16'b0000000000000010; // to change
     parameter PASSWORD_D = 16'b1000000011000111; // 0,2,7,1,6,15
     
@@ -96,8 +96,8 @@ module Top_Student (
     end
     
     // Generate Individual Tasks
-    TASK_4D task_4d (clk, pixel_index, (CURRENT_PASSWORD != PASSWORD_D), btnU, btnD, btnL, btnR, JB, oled_data_D);
     TASK_4B task_4b (clk, pixel_index, (CURRENT_PASSWORD != PASSWORD_B), btnC, btnU, btnD, JB, oled_data_B);
+    TASK_4D task_4d (clk, pixel_index, (CURRENT_PASSWORD != PASSWORD_D), btnU, btnD, btnL, btnR, JB, oled_data_D);
     // REMOVE THIS. ONLY HERE FOR SAMPLE a second task that does not reset
     TASK_4D task_4c (clk, pixel_index, 0, btnU, btnD, btnL, btnR, JB, oled_data_C); 
     
