@@ -4,7 +4,7 @@
 //
 //
 //  FILL IN THE FOLLOWING INFORMATION:
-//  STUDENT A NAME: 
+//  STUDENT A NAME:  Liang Xuanyin Glenda
 //  STUDENT B NAME:  Joe Tien You
 //  STUDENT C NAME: 
 //  STUDENT D NAME:  Si Thu Lin Aung
@@ -31,7 +31,7 @@ module Top_Student (
     parameter WHITE = 16'hFFFF;
     parameter GREEN = 16'h07E0;
     parameter RED = 16'hF800;
-    parameter PASSWORD_A = 16'b0000001000000010; // to change
+    parameter PASSWORD_A = 16'b0001001100100111; //  [0, 1, 2, 5, 8, 9, 12]
     parameter PASSWORD_B = 16'b0010000100101111; //  [8, 1, 5, 2, 3, 0, 13]
     parameter PASSWORD_C = 16'b0000000000000010; // to change
     parameter PASSWORD_D = 16'b1000000011000111; // [0, 1, 2, 6, 7, 15]
@@ -99,6 +99,7 @@ module Top_Student (
     end
     
     // Generate Individual Tasks
+    TASK_4A task_4a (clk, pixel_index, (CURRENT_PASSWORD != PASSWORD_A), btnC, btnU, btnD, oled_data_A);
     TASK_4B task_4b (clk, pixel_index, (CURRENT_PASSWORD != PASSWORD_B), btnC, btnU, btnD, oled_data_B);
     TASK_4D task_4d (clk, pixel_index, (CURRENT_PASSWORD != PASSWORD_D), btnU, btnD, btnL, btnR, oled_data_D);
     
