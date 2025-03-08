@@ -2,6 +2,7 @@
 
 //////////////////////////////////////////////////////////////////////////////////
 //
+//
 //  FILL IN THE FOLLOWING INFORMATION:
 //  STUDENT A NAME:  Liang Xuanyin Glenda
 //  STUDENT B NAME:  Joe Tien You
@@ -16,7 +17,9 @@ module Top_Student (
     input [15:0] sw,
     input btnU, btnD, btnL, btnR, btnC,
     output [7:0] JB,
-    output [15:0] led
+    output [15:0] led,
+    output [7:0] seg,     
+    output [3:0] an       
     );
     
     //////////////////////////////////////////////////////////////////////////////////
@@ -74,7 +77,7 @@ module Top_Student (
         .resn(JB[5]), 
         .vccen(JB[6]), 
         .pmoden(JB[7]));
-        
+    
     //////////////////////////////////////////////////////////////////////////////////
     // MAIN CODE LOGIC
     ////////////////////////////////////////////////////////////////////////////////// 
@@ -105,5 +108,12 @@ module Top_Student (
         .IDLE_STATE(is_idle),
         .pixel_index(pixel_index),
         .ready(group_id_ready));
+    
+    // Generate 7-segment display on all anode
+    seg7_control seg7_inst (
+        .clk(clk),  
+        .seg(seg),          
+        .an(an)             
+    );
     
 endmodule
