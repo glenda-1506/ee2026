@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="38" Path="C:/Users/sithu/OneDrive/Desktop/ee2026/Final Project/MAIN/ee2026/FDP.xpr">
+<Project Version="7" Minor="38" Path="C:/Users/User/Desktop/ee2026/FDP.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="2b7ce3b3549b4276b6df49e0b3ab0e59"/>
@@ -160,6 +160,13 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/rectangle_generator.v">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/new/segment_anode_control.v">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>

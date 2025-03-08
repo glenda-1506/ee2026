@@ -33,7 +33,7 @@ module square_design (
     output reg [15:0] oled_out
 );
     
-    parameter X_START = 43, X_END = 54; 
+    parameter X_START = 43, X_END = 55; 
     parameter TOP_Y_START = 2, TOP_Y_END = 14;
     parameter MIDDLE_Y_START = 18, MIDDLE_Y_END = 30;
     parameter BOTTOM_Y_START = 34, BOTTOM_Y_END = 46;
