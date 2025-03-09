@@ -19,7 +19,7 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 // Additional Comments:
-// Frequency of Clock = (main_clock = 100mHz) / [2 * (OVERFLOW_COUNT + 1)]
+// Frequency of Clock = (main_clock = 100MHz) / [2 * (OVERFLOW_COUNT + 1)]
 // Limitation: This code makes it such that the clock has a freq cap of 50mHz 
 //////////////////////////////////////////////////////////////////////////////////
 
