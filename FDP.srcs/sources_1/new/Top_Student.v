@@ -32,7 +32,7 @@ module Top_Student (
     parameter GREEN = 16'h07E0;
     parameter RED = 16'hF800;
     parameter PASSWORD_A = 16'b0001001100100111; //  [0, 1, 2, 5, 8, 9, 12]
-    parameter PASSWORD_B = 16'b0010000100101111; //  [8, 1, 5, 2, 3, 0, 13]
+    parameter PASSWORD_B = 16'b0010000100101111; //  [0, 1, 2, 3, 5, 8, 13]
     parameter PASSWORD_C = 16'b0100000010110111; //  [0, 1, 2, 4, 5, 7, 14]
     parameter PASSWORD_D = 16'b1000000011000111; //  [0, 1, 2, 6, 7, 15]
     
