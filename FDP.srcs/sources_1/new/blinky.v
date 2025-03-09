@@ -45,10 +45,11 @@ module blinky(
     wire D_clock;
     
     // Generate Clocks
-    clock clock_A (CLOCK, 6, A_clock);
-    clock clock_B (CLOCK, 4, B_clock);
-    clock clock_C (CLOCK, 5, C_clock);
-    clock clock_D (CLOCK, 7, D_clock);
+    // To blink at x Hz, i need the clocks to be of 2x Hz since i need it to on and off
+    clock clock_A (CLOCK, 12, A_clock);
+    clock clock_B (CLOCK, 8, B_clock);
+    clock clock_C (CLOCK, 10, C_clock);
+    clock clock_D (CLOCK, 14, D_clock);
     
     // Main code
     assign ready = control_A || control_B || control_C || control_D;
