@@ -32,9 +32,9 @@ module Top_Student (
     parameter GREEN = 16'h07E0;
     parameter RED = 16'hF800;
     parameter PASSWORD_A = 16'b0001001100100111; //  [0, 1, 2, 5, 8, 9, 12]
-    parameter PASSWORD_B = 16'b0010000100101111; //  [8, 1, 5, 2, 3, 0, 13]
-    parameter PASSWORD_C = 16'b0000000000000010; // to change
-    parameter PASSWORD_D = 16'b1000000011000111; // [0, 1, 2, 6, 7, 15]
+    parameter PASSWORD_B = 16'b0010000100101111; //  [0, 1, 2, 3, 5, 8, 13]
+    parameter PASSWORD_C = 16'b0100000010110111; //  [0, 1, 2, 4, 5, 7, 14]
+    parameter PASSWORD_D = 16'b1000000011000111; //  [0, 1, 2, 6, 7, 15]
     
     // Generate required wires and regs
     reg [15:0] oled_data_reg = BLACK; 
@@ -52,10 +52,14 @@ module Top_Student (
     wire [15:0] oled_data_C;
     wire [15:0] oled_data_D;
     wire [15:0] oled_data = oled_data_reg;
+    wire [11:0] blinking_leds; 
     wire group_id_ready;
+    wire blinking_control;
     
-    // Task 4.E1
-    assign led = sw;
+    // Task 4.E1 & E5
+    blinky task_4E5 (clk, CURRENT_PASSWORD, blinking_control);
+    assign blinking_leds = blinking_control ? {sw[11:0]} : 0;
+    assign led = is_idle ? sw : {{sw[15:12]} , {blinking_leds}};
     
     // Generate clock signals
     clk_6p25MHz clk6p25 (clk, clk_6p25M);
