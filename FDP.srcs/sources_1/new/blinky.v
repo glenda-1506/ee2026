@@ -33,10 +33,10 @@ module blinky(
     parameter PASSWORD_D = 16'b1000000011000111; //  [0, 1, 2, 6, 7, 15]
     
     // Generate Regs
-    reg control_A;
-    reg control_B;
-    reg control_C;
-    reg control_D;
+    reg control_A = 0;
+    reg control_B = 0;
+    reg control_C = 0;
+    reg control_D = 0;
     
     // Generate wires
     wire A_clock;
@@ -46,10 +46,10 @@ module blinky(
     
     // Generate Clocks
     // To blink at x Hz, i need the clocks to be of 2x Hz since i need it to on and off
-    clock clock_A (CLOCK, 12, A_clock);
-    clock clock_B (CLOCK, 8, B_clock);
-    clock clock_C (CLOCK, 10, C_clock);
-    clock clock_D (CLOCK, 14, D_clock);
+    base_clock clock_A (CLOCK, 4_166_665, A_clock); // 12Hz
+    base_clock clock_B (CLOCK, 6_249_999, B_clock); // 8Hz
+    base_clock clock_C (CLOCK, 4_999_999, C_clock); // 10Hz
+    base_clock clock_D (CLOCK, 3_571_427, D_clock); // 14Hz
     
     // Main code
     assign ready = control_A || control_B || control_C || control_D;
