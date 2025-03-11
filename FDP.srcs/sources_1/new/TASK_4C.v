@@ -120,31 +120,25 @@ module TASK_4C(
     end
     
     always @(posedge clk_45) begin
-        if (reset) begin
-            r0_size <= 11;
-        end 
-        
-        if (start) begin
-            r0_size <= (r0_size == 64) ? r0_size : r0_size + 1; 
-        end
+        r0_size <= start ? ((r0_size == 64) ? r0_size : r0_size + 1) : 11; 
     end
     
     always @ (posedge clk_15) begin
-        if (reset) begin
+        if (start) begin 
+            switch_speed <= (r0_size == 64);
+            r1_size <= (switch_speed) ? ((r1_size == 44) ? r1_size : r1_size + 1) : r1_size; 
+            r2_size <= (r1_size == 44) ? ((r2_size == 24) ? r2_size : r2_size + 1) : r2_size; 
+            r3_size <= (r2_size == 24) ? ((r3_size == 20) ? r3_size : r3_size + 1) : r3_size;
+            r4_size <= (r3_size == 20) ? ((r4_size == 30) ? r4_size : r4_size + 1) : r4_size; 
+            r5_size <= (r4_size == 30) ? ((r5_size == 13) ? r5_size : r5_size + 1) : r5_size; 
+        end
+        else begin 
+            switch_speed <= 0;
             r1_size <= 0;
             r2_size <= 0;
             r3_size <= 0;
             r4_size <= 0;
             r5_size <= 0;
         end
-        
-        switch_speed <= (r0_size == 64);
-        r1_size <= (switch_speed) ? ((r1_size == 44) ? r1_size : r1_size + 1) : r1_size; 
-        r2_size <= (r1_size == 44) ? ((r2_size == 24) ? r2_size : r2_size + 1) : r2_size; 
-        r3_size <= (r2_size == 24) ? ((r3_size == 20) ? r3_size : r3_size + 1) : r3_size;
-        r4_size <= (r3_size == 20) ? ((r4_size == 30) ? r4_size : r4_size + 1) : r4_size; 
-        r5_size <= (r4_size == 30) ? ((r5_size == 13) ? r5_size : r5_size + 1) : r5_size; 
     end
-    
-    
 endmodule
