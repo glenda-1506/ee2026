@@ -105,6 +105,7 @@ module Top_Student (
     // Generate Individual Tasks
     TASK_4A task_4a (clk, pixel_index, (CURRENT_PASSWORD != PASSWORD_A), btnC, btnU, btnD, oled_data_A);
     TASK_4B task_4b (clk, pixel_index, (CURRENT_PASSWORD != PASSWORD_B), btnC, btnU, btnD, oled_data_B);
+    TASK_4C task_4c (clk, pixel_index, (CURRENT_PASSWORD != PASSWORD_C), btnC, oled_data_C);
     TASK_4D task_4d (clk, pixel_index, (CURRENT_PASSWORD != PASSWORD_D), btnU, btnD, btnL, btnR, oled_data_D);
     
     // Generate Group ID

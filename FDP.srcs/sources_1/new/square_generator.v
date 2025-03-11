@@ -28,7 +28,7 @@ module square_generator(
     input [12:0] pixel_index,
     input [6:0] x_start, // top left
     input [5:0] y_start, // top left
-    input [5:0] size,
+    input [6:0] size,
     output ready
     );
     
@@ -37,6 +37,6 @@ module square_generator(
     wire[5:0] y = pixel_index / 96;
     
     assign ready = (x >= x_start) && (x <= (x_start + (size - 1))) &&
-                   (y >= y_start) && (y <= (y_start + (size - 1)));
+                   (y >= y_start) && (y <= (y_start + (size - 1))) && (size != 0);
     
 endmodule
