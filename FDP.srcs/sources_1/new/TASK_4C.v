@@ -45,11 +45,13 @@ module TASK_4C(
     reg [6:0] r5_size = 0;
     reg start = 0;
     reg switch_speed = 0;
+    reg animation_done = 0;
+    reg [31:0] count = 0;
     wire [5:0] ready;
     wire clk_25M;
     wire clk_45;
     wire clk_15;
-    
+    wire btnC_debounced;
     // Generate clock signals
     clk_25MHz clk25 (MAIN_CLOCK, clk_25M);
     base_clock clk45 (MAIN_CLOCK, 1_111_110 , clk_45);
@@ -103,16 +105,22 @@ module TASK_4C(
         .x_size(r5_size),
         .y_size(11),
         .ready(ready[5])); 
+        
+    debouncer middle_button_debouncer (
+                .clk(MAIN_CLOCK), 
+                .pb(btnC), 
+                .debounced_pb(btnC_debounced)
+            );
            
     //////////////////////////////////////////////////////////////////////////////////
     // MAIN CODE LOGIC
     //////////////////////////////////////////////////////////////////////////////////    
     always @(posedge clk_25M) begin
-        if (reset) begin 
+        if (btnC_debounced && (r5_size == 13)) begin 
             start <= 0;
         end
         
-        if (btnC && (r0_size == 11)) begin
+        if (btnC_debounced && (r0_size == 11)) begin
             start <= 1;
         end 
         
@@ -120,21 +128,26 @@ module TASK_4C(
     end
     
     always @(posedge clk_45) begin
-        r0_size <= start ? ((r0_size == 64) ? r0_size : r0_size + 1) : 11; 
+        if (start) begin
+            r0_size <= start ? ((r0_size == 64) ? r0_size : r0_size + 1) : 11;
+            r1_size <= (r0_size == 64) ? ((r1_size == 44) ? r1_size : r1_size + 1) : r1_size; 
+        end
+        else begin
+            r0_size <= 11;
+            r1_size <= 0;
+        end
     end
     
     always @ (posedge clk_15) begin
         if (start) begin 
-            switch_speed <= (r0_size == 64);
-            r1_size <= (switch_speed) ? ((r1_size == 44) ? r1_size : r1_size + 1) : r1_size; 
-            r2_size <= (r1_size == 44) ? ((r2_size == 24) ? r2_size : r2_size + 1) : r2_size; 
+            switch_speed <= (r1_size == 44);
+            r2_size <= (switch_speed) ? ((r2_size == 24) ? r2_size : r2_size + 1) : r2_size; 
             r3_size <= (r2_size == 24) ? ((r3_size == 20) ? r3_size : r3_size + 1) : r3_size;
             r4_size <= (r3_size == 20) ? ((r4_size == 30) ? r4_size : r4_size + 1) : r4_size; 
-            r5_size <= (r4_size == 30) ? ((r5_size == 13) ? r5_size : r5_size + 1) : r5_size; 
+            r5_size <= (r4_size == 30) ? ((r5_size == 13) ? r5_size : r5_size + 1) : r5_size;
         end
-        else begin 
+        else begin
             switch_speed <= 0;
-            r1_size <= 0;
             r2_size <= 0;
             r3_size <= 0;
             r4_size <= 0;
