@@ -25,7 +25,7 @@ module rectangle_generator(
     input [6:0] x_start, // top left
     input [5:0] y_start, // top left
     input [6:0] x_size,
-    input [5:0] y_size,
+    input [6:0] y_size,
     output ready
     );
     
@@ -34,6 +34,6 @@ module rectangle_generator(
     wire[5:0] y = pixel_index / 96;
     
     assign ready = (x >= x_start) && (x <= (x_start + (x_size - 1))) &&
-                   (y >= y_start) && (y <= (y_start + (y_size - 1)));
+                   (y >= y_start) && (y <= (y_start + (y_size - 1))) && (x_size != 0) && (y_size != 0);
     
 endmodule
