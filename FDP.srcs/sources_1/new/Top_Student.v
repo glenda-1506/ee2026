@@ -6,7 +6,7 @@
 //  FILL IN THE FOLLOWING INFORMATION:
 //  STUDENT A NAME:  Liang Xuanyin Glenda
 //  STUDENT B NAME:  Joe Tien You
-//  STUDENT C NAME: 
+//  STUDENT C NAME:  Goh Aik Haw
 //  STUDENT D NAME:  Si Thu Lin Aung
 //
 //////////////////////////////////////////////////////////////////////////////////
