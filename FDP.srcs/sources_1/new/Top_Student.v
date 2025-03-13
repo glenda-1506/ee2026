@@ -4,11 +4,11 @@
 //
 //
 //  FILL IN THE FOLLOWING INFORMATION:
-//  STUDENT A NAME:  Liang Xuanyin Glenda
-//  STUDENT B NAME:  Joe Tien You
-//  STUDENT C NAME:  Goh Aik Haw
-//  STUDENT D NAME:  Si Thu Lin Aung
 //
+//  STUDENT A NAME:  Si Thu Lin Aung
+//  STUDENT B NAME:  Joe Tien You
+//  STUDENT C NAME:  Liang Xuanyin Glenda
+//  STUDENT D NAME:  Goh Aik Haw
 //////////////////////////////////////////////////////////////////////////////////
 
 
@@ -16,64 +16,49 @@ module Top_Student (
     input clk,
     input [15:0] sw,
     input btnU, btnD, btnL, btnR, btnC,
-    output [7:0] JB,
+    output [7:0] JA, JB,
     output [15:0] led,
     output [7:0] seg,     
-    output [3:0] an       
+    output [3:0] an
     );
     
     //////////////////////////////////////////////////////////////////////////////////
     // Instantiate parameter and modules
     //////////////////////////////////////////////////////////////////////////////////
-    
+            
     // Set parameters
     parameter BLACK = 16'h0000;
     parameter WHITE = 16'hFFFF;
-    parameter GREEN = 16'h07E0;
-    parameter RED = 16'hF800;
-    parameter PASSWORD_A = 16'b0001001100100111; //  [0, 1, 2, 5, 8, 9, 12]
-    parameter PASSWORD_B = 16'b0010000100101111; //  [0, 1, 2, 3, 5, 8, 13]
-    parameter PASSWORD_C = 16'b0100000010110111; //  [0, 1, 2, 4, 5, 7, 14]
-    parameter PASSWORD_D = 16'b1000000011000111; //  [0, 1, 2, 6, 7, 15]
     
     // Generate required wires and regs
-    reg [15:0] oled_data_reg = BLACK; 
-    wire [15:0] CURRENT_PASSWORD = sw;
-    wire is_idle = (CURRENT_PASSWORD != PASSWORD_A) && 
-                   (CURRENT_PASSWORD != PASSWORD_B) &&
-                   (CURRENT_PASSWORD != PASSWORD_C) &&
-                   (CURRENT_PASSWORD != PASSWORD_D);
-    wire fb;
-    wire [12:0] pixel_index;
-    wire clk_6p25M;
-    wire clk_25M;
+    reg [15:0] oled_data_right_reg = BLACK; 
+    reg [15:0] oled_data_left_reg = BLACK; 
+    wire [15:0] oled_data_right = oled_data_right_reg;
+    wire [15:0] oled_data_left = oled_data_left_reg;
+    wire [1:0] fb;
+    wire [12:0] pixel_index_right;
+    wire [12:0] pixel_index_left;
     wire [15:0] oled_data_A;
     wire [15:0] oled_data_B;
     wire [15:0] oled_data_C;
     wire [15:0] oled_data_D;
-    wire [15:0] oled_data = oled_data_reg;
-    wire [11:0] blinking_leds; 
-    wire group_id_ready;
-    wire blinking_control;
-    
-    // Task 4.E1 & E5
-    blinky task_4E5 (clk, CURRENT_PASSWORD, blinking_control);
-    assign blinking_leds = blinking_control ? {sw[11:0]} : 0;
-    assign led = is_idle ? sw : {{sw[15:12]} , {blinking_leds}};
+    wire clk_6p25M;
+    wire clk_25M;
+    wire [1:0] CURRENT_SCREEN = sw[1:0];
     
     // Generate clock signals
-    clk_6p25MHz clk6p25 (clk, clk_6p25M);
-    clk_25MHz clk25 (clk, clk_25M); 
+    clock clk6p25 (clk, 7 , clk_6p25M);
+    clock clk25 (clk, 1 , clk_25M);
     
-   // Instantiate OLED
-    Oled_Display oled (
+    // Instantiate OLED
+    Oled_Display oled_right (
         .clk(clk_6p25M), 
         .reset(0), 
-        .frame_begin(fb), 
+        .frame_begin(fb[0]), 
         .sending_pixels(), 
         .sample_pixel(), 
-        .pixel_index(pixel_index), 
-        .pixel_data(oled_data), 
+        .pixel_index(pixel_index_right), 
+        .pixel_data(oled_data_right), 
         .cs(JB[0]), 
         .sdin(JB[1]), 
         .sclk(JB[3]), 
@@ -82,43 +67,40 @@ module Top_Student (
         .vccen(JB[6]), 
         .pmoden(JB[7]));
     
+    Oled_Display oled_left (
+        .clk(clk_6p25M), 
+        .reset(0), 
+        .frame_begin(fb[1]), 
+        .sending_pixels(), 
+        .sample_pixel(), 
+        .pixel_index(pixel_index_left), 
+        .pixel_data(oled_data_left), 
+        .cs(JA[0]), 
+        .sdin(JA[1]), 
+        .sclk(JA[3]), 
+        .d_cn(JA[4]), 
+        .resn(JA[5]), 
+        .vccen(JA[6]), 
+        .pmoden(JA[7]));
+    
     //////////////////////////////////////////////////////////////////////////////////
     // MAIN CODE LOGIC
     ////////////////////////////////////////////////////////////////////////////////// 
     always @(posedge clk_25M) begin
-        // Task 4.E2
-        if (is_idle) begin
-            oled_data_reg <= group_id_ready ? WHITE : BLACK;
-        end
-        
-        // Individual Tasks
-        else begin
-            case (CURRENT_PASSWORD)
-                PASSWORD_A: oled_data_reg <= oled_data_A;
-                PASSWORD_B: oled_data_reg <= oled_data_B;
-                PASSWORD_C: oled_data_reg <= oled_data_C;
-                PASSWORD_D: oled_data_reg <= oled_data_D;
-            endcase
-        end
+        case (CURRENT_SCREEN)
+            2'b01: begin
+                oled_data_right_reg <= oled_data_A; // c2
+                oled_data_left_reg <= oled_data_D; // Aik Haw
+            end
+            2'b10: begin
+                oled_data_right_reg <= oled_data_C; // Glenda
+                oled_data_left_reg <= oled_data_B; // Louis
+            end
+        endcase
     end
     
     // Generate Individual Tasks
-    TASK_4A task_4a (clk, pixel_index, (CURRENT_PASSWORD != PASSWORD_A), btnC, btnU, btnD, oled_data_A);
-    TASK_4B task_4b (clk, pixel_index, (CURRENT_PASSWORD != PASSWORD_B), btnC, btnU, btnD, oled_data_B);
-    TASK_4C task_4c (clk, pixel_index, (CURRENT_PASSWORD != PASSWORD_C), btnC, oled_data_C);
-    TASK_4D task_4d (clk, pixel_index, (CURRENT_PASSWORD != PASSWORD_D), btnU, btnD, btnL, btnR, oled_data_D);
+    TASK_A task_a (clk, pixel_index_right, sw, !CURRENT_SCREEN[1], btnU, btnD, btnL, btnR, oled_data_A);
     
-    // Generate Group ID
-    group_generator grp_generator(
-        .IDLE_STATE(is_idle),
-        .pixel_index(pixel_index),
-        .ready(group_id_ready));
-    
-    // Generate 7-segment display on all anode
-    seg7_control seg7_inst (
-        .clk(clk),  
-        .seg(seg),          
-        .an(an)             
-    );
-    
+
 endmodule

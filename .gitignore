@@ -7,3 +7,5 @@
 # Unignore these directories
 !FDP.srcs/
 !FDP.srcs/**
+!archive/
+!archive/**
