@@ -22,18 +22,24 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module variable_circuit_segment(
-    input [12:0] pixel_index, 
-    input [6:0]  x,  // Left corner of any letter                   
-    input [5:0]  y,  // Left corner of any letter
-    input [2:0] letter_info,
+module variable_circuit_segment#(
+    parameter DISPLAY_WIDTH    = 96,
+    parameter DISPLAY_HEIGHT   = 64,
+    parameter X_BIT            = $clog2(DISPLAY_WIDTH) - 1,
+    parameter Y_BIT            = $clog2(DISPLAY_HEIGHT) - 1,
+    parameter PIXEL_INDEX_BIT  = $clog2(DISPLAY_WIDTH * DISPLAY_HEIGHT) - 1,
+    parameter [3:0] line_thickness = 1,
+    parameter VAR_BIT = 2
+    )(
+    input [PIXEL_INDEX_BIT:0] pixel_index, 
+    input [X_BIT:0]  x,  // Left corner of any letter                   
+    input [Y_BIT:0]  y,  // Left corner of any letter
+    input [VAR_BIT:0] letter_info,
     input not_gate_visability,
     input segment_visability,
     output draw
     );
-    
-    parameter [3:0] line_thickness = 1;
-    
+
     // Generate required wires and regs
     wire [2:0] letter_ready;
     wire not_gate_ready;

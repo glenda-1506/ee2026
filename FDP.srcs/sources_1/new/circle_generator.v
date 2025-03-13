@@ -20,25 +20,34 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module circle_generator(
-    input [12:0] pixel_index, 
-    input [6:0]  center_x,      
-    input [5:0]  center_y,          
-    input [6:0]  radius,    
-    input [6:0]  max_diff, // adjust according to the radius
+module circle_generator#(
+    parameter DISPLAY_WIDTH = 96,
+    parameter DISPLAY_HEIGHT = 64,
+    parameter X_BIT = $clog2(DISPLAY_WIDTH) - 1,
+    parameter Y_BIT = $clog2(DISPLAY_HEIGHT) - 1,
+    parameter PIXEL_INDEX_BIT = $clog2(DISPLAY_WIDTH * DISPLAY_HEIGHT) - 1,
+    parameter MAX_SQUARE_DISTANCE = ((DISPLAY_WIDTH-1) * (DISPLAY_WIDTH-1)) + 
+                                    ((DISPLAY_HEIGHT-1) * (DISPLAY_HEIGHT-1)),
+    parameter DIST_BIT = $clog2(MAX_SQUARE_DISTANCE + 1) - 1
+    )(
+    input [PIXEL_INDEX_BIT:0] pixel_index, 
+    input [X_BIT:0]  center_x,      
+    input [Y_BIT:0]  center_y,          
+    input [X_BIT:0]  radius,    
+    input [X_BIT:0]  max_diff, // adjust according to the radius
     output draw
     );
     
-    wire [6:0] x = pixel_index % 96;
-    wire [5:0] y = pixel_index / 96;
+    wire [X_BIT:0] x = pixel_index % 96;
+    wire [Y_BIT:0] y = pixel_index / 96;
     
     // Difference of current pixel from center
-    wire [6:0] dx = (x >= center_x) ? (x - center_x) : (center_x - x);
-    wire [5:0] dy = (y >= center_y) ? (y - center_y) : (center_y - y);
+    wire [X_BIT:0] dx = (x >= center_x) ? (x - center_x) : (center_x - x);
+    wire [Y_BIT:0] dy = (y >= center_y) ? (y - center_y) : (center_y - y);
     
     // Squared differene is exactly my r^2 value (based on current pixel pos)
-    wire [14:0] dist_sq = dx * dx + dy*dy;
-    wire [13:0] radius_sq = radius * radius;
-    wire [14:0] diff = (dist_sq >= radius_sq) ? (dist_sq - radius_sq) : (radius_sq - dist_sq);
+    wire [DIST_BIT:0] dist_sq = dx * dx + dy*dy;
+    wire [DIST_BIT:0] radius_sq = radius * radius;
+    wire [DIST_BIT:0] diff = (dist_sq >= radius_sq) ? (dist_sq - radius_sq) : (radius_sq - dist_sq);
     assign draw = diff <= max_diff;
 endmodule

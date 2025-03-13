@@ -20,14 +20,20 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module OR_gate(
-    input [12:0] pixel_index, 
-    input [6:0]  x,                     
-    input [5:0]  y,  
+module OR_gate #(
+    parameter DISPLAY_WIDTH   = 96,
+    parameter DISPLAY_HEIGHT  = 64,
+    parameter X_BIT           = $clog2(DISPLAY_WIDTH) - 1,
+    parameter Y_BIT           = $clog2(DISPLAY_HEIGHT) - 1,
+    parameter PIXEL_INDEX_BIT = $clog2(DISPLAY_WIDTH * DISPLAY_HEIGHT) - 1,
+    parameter [3:0] line_thickness = 2
+    )(
+    input [PIXEL_INDEX_BIT:0] pixel_index, 
+    input [X_BIT:0]  x,                     
+    input [Y_BIT:0]  y,  
     output draw
     );
      
-    parameter [3:0] line_thickness = 2;
     wire [9:0] ready;
     assign draw = |ready;
     
