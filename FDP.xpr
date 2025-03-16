@@ -348,7 +348,6 @@
           <Attr Name="ImportTime" Val="1709183388"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../FDP.xpr/FDP/archive_project_summary.txt"/>
       <File Path="$PSRCDIR/sources_1/new/virtual_oled_generator.v">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
