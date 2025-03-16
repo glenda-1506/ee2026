@@ -101,6 +101,6 @@ module Top_Student (
     
     // Generate Individual Tasks
     TASK_A task_a (clk, pixel_index_right, sw, !CURRENT_SCREEN[1], btnU, btnD, btnL, btnR, oled_data_A);
-    
+    TASK_B task_b (clk, pixel_index_left, sw, !CURRENT_SCREEN[0], oled_data_B);    
 
 endmodule
