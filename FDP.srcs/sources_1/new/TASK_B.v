@@ -8,50 +8,46 @@ module TASK_B(
     output reg [15:0] oled_data_reg = 0
 );
 
-// Define color constants
-parameter BLACK = 16'h0000;
-parameter WHITE = 16'hFFFF;
+// Define clock parameters
+parameter basys3_clk_freq = 100_000_000;
+parameter frame_rate = 12;
 
 // Generate required wires and regs
-wire clk_25M;
+wire clk_25M, clk_frameRate;
+wire [15:0] main_screen_out, A , B, C, dot, plus, tilde;
+wire [31:0] clk_param;
 wire [5:0] letter_ready; // Signals for each letter
 reg [3:0] active_count;  // Count of active letters
 reg [7:0] start_x;       // Dynamic starting x-position
 
-// Generate 25MHz clock signal
+// Generate clock signals
 clock clk25 (MAIN_CLOCK, 1, clk_25M);
+clock clkframeRate (MAIN_CLOCK, clk_param, clk_frameRate);
 
-// Count how many letters are active
-always @(*) begin
-    active_count = sw[15] + sw[14] + sw[13] + sw[12] + sw[11] + sw[10];
-end
-
-// Compute dynamic starting x-position based on active letters
-always @(*) begin
-    if (active_count == 0)
-        start_x = 48; // Center position if no letters are active (X = 48)
-    else
-        start_x = 48 + ((active_count * 10) / 2); // Center the letters symmetrically around X = 48
-end
+assign clk_param = (basys3_clk_freq / (frame_rate)) - 1;
 
 // Instantiate flipped letter circuits with dynamic X positions
-flipped_circuit_letter_A letter_a (pixel_index, start_x, 31, letter_ready[0]);  
-flipped_circuit_letter_B letter_b (pixel_index, start_x - 10, 31, letter_ready[1]);    
-flipped_circuit_letter_C letter_c (pixel_index, start_x - 20, 31, letter_ready[2]);
-flipped_circuit_letter_plus letter_plus (pixel_index, start_x - 30, 31, letter_ready[3]); 
-flipped_circuit_letter_dot letter_dot (pixel_index, start_x - 40, 31, letter_ready[4]); 
-flipped_circuit_letter_tilde letter_tilde (pixel_index, start_x - 50, 31, letter_ready[5]); 
+flipped_circuit_letter_A letter_a (clk_frameRate, pixel_index, A);  
+flipped_circuit_letter_B letter_b (clk_frameRate, pixel_index, B);   
+flipped_circuit_letter_C letter_c (clk_frameRate, pixel_index, C);
+flipped_circuit_letter_plus letter_plus (clk_frameRate, pixel_index, plus);
+flipped_circuit_letter_dot letter_dot (clk_frameRate, pixel_index, dot);
+flipped_circuit_letter_tilde letter_tilde (clk_frameRate, pixel_index, tilde);
+
+// Main starting screen
+main_starting_screen main_menu (clk_frameRate, pixel_index, main_screen_out);
 
 // Display logic based on switch inputs and letter readiness
 always @(posedge clk_25M) begin
-    oled_data_reg <= BLACK; // Default to black background
+    oled_data_reg <= main_screen_out; // Default to main screen output
 
-    if (sw[15] == 1 && letter_ready[0]) oled_data_reg <= WHITE; // Display 'A'
-    if (sw[14] == 1 && letter_ready[1]) oled_data_reg <= WHITE; // Display 'B'
-    if (sw[13] == 1 && letter_ready[2]) oled_data_reg <= WHITE; // Display 'C'
-    if (sw[12] == 1 && letter_ready[3]) oled_data_reg <= WHITE; // Display '+'
-    if (sw[11] == 1 && letter_ready[4]) oled_data_reg <= WHITE; // Display '.'
-    if (sw[10] == 1 && letter_ready[5]) oled_data_reg <= WHITE; // Display '~'
+    // Only show letter when corresponding switch is active and the letter is ready
+    if (sw[15] == 1) oled_data_reg <= A; // Display 'A'
+    if (sw[14] == 1) oled_data_reg <= B; // Display 'B'
+    if (sw[13] == 1) oled_data_reg <= C; // Display 'C'
+    if (sw[12] == 1) oled_data_reg <= plus; // Display '+'
+    if (sw[11] == 1) oled_data_reg <= dot; // Display '.'
+    if (sw[10] == 1) oled_data_reg <= tilde; // Display '~'
 end
 
 endmodule
