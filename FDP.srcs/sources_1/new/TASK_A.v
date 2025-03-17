@@ -39,14 +39,28 @@ module TASK_A(
     
     // Generate required wires and regs
     wire clk_25M;
+    wire clk_6p25M;
     wire [2:0] var_ready;
+    wire bU, bD, bL,bR;
+    wire [3:0] pb = {bU, bD, bL,bR};
+    wire [14:0] virtual_index;
+    
+    // Generate single pulse buttons
+    delay s1(MAIN_CLOCK, btnU, 250_000, bU);
+    delay s2(MAIN_CLOCK, btnD, 250_000, bD);
+    delay s3(MAIN_CLOCK, btnL, 250_000, bL);
+    delay s4(MAIN_CLOCK, btnR, 250_000, bR);
     
     // Generate clock signals
+    clock clk6p25 (MAIN_CLOCK, 7 , clk_6p25M);
     clock clk25 (MAIN_CLOCK, 1, clk_25M);
     
+    // Generate virtual oled
+    virtual_oled_generator v_oled (clk_6p25M, reset, pb, pixel_index, virtual_index);
+
     // Generate variable components
     variable_circuit_segment A (
-        .pixel_index(pixel_index),
+        .pixel_index(virtual_index),
         .x(2),
         .y(2),
         .letter_info(0),
@@ -55,7 +69,7 @@ module TASK_A(
         .draw(var_ready[0]));
         
     variable_circuit_segment B (
-        .pixel_index(pixel_index),
+        .pixel_index(virtual_index),
         .x(23),
         .y(2),
         .letter_info(1),
@@ -64,7 +78,7 @@ module TASK_A(
         .draw(var_ready[1]));
         
     variable_circuit_segment C (
-        .pixel_index(pixel_index),
+        .pixel_index(virtual_index),
         .x(44),
         .y(2),
         .letter_info(2),
@@ -72,14 +86,13 @@ module TASK_A(
         .segment_visability(sw[11]),
         .draw(var_ready[2]));
      
-    
     //////////////////////////////////////////////////////////////////////////////////
     // MAIN CODE LOGIC
     //////////////////////////////////////////////////////////////////////////////////    
     
     // Instantiate the squares (red and green)
     always @(posedge clk_25M) begin
-        oled_data_reg <= var_ready ? WHITE : BLACK;
+        oled_data_reg <= |var_ready ? WHITE : BLACK;
     end
     
 endmodule

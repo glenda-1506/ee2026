@@ -21,8 +21,8 @@
 
 
 module circle_generator#(
-    parameter DISPLAY_WIDTH = 96,
-    parameter DISPLAY_HEIGHT = 64,
+    parameter DISPLAY_WIDTH = 192,
+    parameter DISPLAY_HEIGHT = 128,
     parameter X_BIT = $clog2(DISPLAY_WIDTH) - 1,
     parameter Y_BIT = $clog2(DISPLAY_HEIGHT) - 1,
     parameter PIXEL_INDEX_BIT = $clog2(DISPLAY_WIDTH * DISPLAY_HEIGHT) - 1,
@@ -38,8 +38,8 @@ module circle_generator#(
     output draw
     );
     
-    wire [X_BIT:0] x = pixel_index % 96;
-    wire [Y_BIT:0] y = pixel_index / 96;
+    wire [X_BIT:0] x = pixel_index % DISPLAY_WIDTH;
+    wire [Y_BIT:0] y = pixel_index / DISPLAY_WIDTH;
     
     // Difference of current pixel from center
     wire [X_BIT:0] dx = (x >= center_x) ? (x - center_x) : (center_x - x);
