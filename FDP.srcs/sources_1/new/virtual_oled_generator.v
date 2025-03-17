@@ -22,51 +22,46 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module virtual_oled_generator #(
-    parameter OLED_WIDTH        = 96,
-    parameter OLED_HEIGHT       = 64,
-    parameter VIRTUAL_WIDTH     = 150, 
-    parameter VIRTUAL_HEIGHT    = 128,
-    parameter OLED_X_BIT = $clog2(OLED_WIDTH) - 1,
-    parameter OLED_Y_BIT = $clog2(OLED_HEIGHT) - 1,
+    parameter OLED_WIDTH = 96,
+    parameter OLED_HEIGHT = 64,
+    parameter VIRTUAL_WIDTH = 192,
+    parameter VIRTUAL_HEIGHT = 128,
     parameter PIXEL_INDEX_BIT = $clog2(OLED_WIDTH * OLED_HEIGHT) - 1,
-    parameter OFFSET_BIT      = $clog2(VIRTUAL_WIDTH) - 1,
-    parameter VIRTUAL_ADDR_BIT = $clog2(VIRTUAL_WIDTH * VIRTUAL_HEIGHT) - 1
+    parameter VIRTUAL_ADDR_BIT = $clog2(VIRTUAL_WIDTH * VIRTUAL_HEIGHT) - 1,
+    parameter MAX_X_OFFSET = VIRTUAL_WIDTH - OLED_WIDTH,
+    parameter MAX_Y_OFFSET = VIRTUAL_HEIGHT - OLED_HEIGHT
     )(
     input clk,
     input reset,
-    input btnU, btnD, btnL, btnR,
+    input [3:0] pb, // btnU, btnD, btnL, btnR
     input [PIXEL_INDEX_BIT:0] pixel_index,
-    output [15:0] pixel_data
+    output [VIRTUAL_ADDR_BIT:0] virtual_index
     );
-    
-    // Generate regs and wires
-    reg [OFFSET_BIT:0] x_offset;
-    reg [OFFSET_BIT:0] y_offset;
-    
-    // Generate a map of pixel data for each pixel in the virtual oled
-    // Each index on the map is a 16 bit data
-    reg [15:0] virtual_oled_map [0: (VIRTUAL_WIDTH * VIRTUAL_HEIGHT) - 1];
-    wire [OLED_X_BIT:0] physical_x = pixel_index % OLED_WIDTH;  
-    wire [OLED_Y_BIT:0] physical_y = pixel_index / OLED_WIDTH; 
-    wire [OFFSET_BIT:0] virtual_x = physical_x + x_offset;
-    wire [OFFSET_BIT:0] virtual_y = physical_y + y_offset; 
-    wire [VIRTUAL_ADDR_BIT:0] virtual_map_index = virtual_x + (virtual_y * VIRTUAL_WIDTH);
-    
-    // Assign the pixel data from virtual OLED to physical
-    assign pixel_data = virtual_oled_map[virtual_map_index];
+    //////////////////////////////////////////////////////////////////////////////////
+    // Generate required wires and regs
+    //////////////////////////////////////////////////////////////////////////////////
+    reg [VIRTUAL_ADDR_BIT:0] x_offset = 0;
+    reg [VIRTUAL_ADDR_BIT:0] y_offset = 0;
+    wire [VIRTUAL_ADDR_BIT:0] physical_x = pixel_index % OLED_WIDTH;
+    wire [VIRTUAL_ADDR_BIT:0] physical_y = pixel_index / OLED_WIDTH;
+    wire [VIRTUAL_ADDR_BIT:0] adjusted_x = (physical_x + x_offset) % VIRTUAL_WIDTH;
+    wire [VIRTUAL_ADDR_BIT:0] adjusted_y = (physical_y + y_offset) % VIRTUAL_HEIGHT;
+    assign virtual_index = adjusted_x + (adjusted_y * VIRTUAL_WIDTH);
     
     //////////////////////////////////////////////////////////////////////////////////
     // MAIN CODE LOGIC
     //////////////////////////////////////////////////////////////////////////////////  
+    
     always @(posedge clk or posedge reset) begin
         if (reset) begin
-          x_offset <= 0;
-          y_offset <= 0;
+            x_offset <= 0;
+            y_offset <= 0;
         end else begin
-          if (btnL && (x_offset > 0)) x_offset <= x_offset - 1;
-          if (btnR && (x_offset < VIRTUAL_WIDTH - OLED_WIDTH)) x_offset <= x_offset + 1;
-          if (btnU && (y_offset > 0)) y_offset <= y_offset - 1;
-          if (btnD && (y_offset < VIRTUAL_HEIGHT - OLED_HEIGHT)) y_offset <= y_offset + 1;
+            if (pb[0] && x_offset < MAX_X_OFFSET) x_offset <= x_offset + 1;
+            if (pb[1] && x_offset > 0) x_offset <= x_offset - 1;
+            if (pb[2] && y_offset < MAX_Y_OFFSET) y_offset <= y_offset + 1;
+            if (pb[3] && y_offset > 0) y_offset <= y_offset - 1;
         end
-      end
+    end
+
 endmodule
