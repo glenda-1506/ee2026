@@ -19,7 +19,6 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-
 module line_generator #(
     parameter DISPLAY_WIDTH  = 96,
     parameter DISPLAY_HEIGHT = 64, 
@@ -30,11 +29,11 @@ module line_generator #(
     )(
     input [X_BIT:0] x_addr, 
     input [Y_BIT:0] y_addr,
-    input [X_BIT:0]  x1,      
-    input [Y_BIT:0]  y1,         
-    input [X_BIT:0]  x2,       
-    input [Y_BIT:0]  y2, 
-    input [X_BIT:0]  thickness,         
+    input [X_BIT:0] x1,      
+    input [Y_BIT:0] y1,         
+    input [X_BIT:0] x2,       
+    input [Y_BIT:0] y2, 
+    input [X_BIT:0] thickness,         
     output draw
     );
 
@@ -53,5 +52,6 @@ module line_generator #(
                   (y_addr >= (y1 <= y2 ? y1 : y2)) && (y_addr <= (y1 <= y2 ? y2 : y1));
     assign draw = in_box && (abs_cross <= thickness);
 endmodule
+
 
 

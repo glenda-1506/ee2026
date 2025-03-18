@@ -30,56 +30,68 @@ module keyboard_display(
 
     wire [1:0] current_row;
     wire [1:0] current_col;
+    wire [6:0] x_addr = pixel_index % 96;
+    wire [5:0] y_addr = pixel_index / 96;
     
     wire draw_A, draw_B, draw_C, draw_NOT, draw_OR, draw_AND, draw_LBRAC, draw_RBRAC, draw_DELETE, draw_ENTER;
 
     keyboard_A A_display (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .draw(draw_A)
     );
     
     keyboard_B B_display (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .draw(draw_B)
     );
     
     keyboard_C C_display (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .draw(draw_C)
     );
     
     keyboard_NOT NOT_display (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .draw(draw_NOT)
     );
     
     keyboard_OR OR_display (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .draw(draw_OR)
     );
     
     keyboard_AND AND_display(
-        .pixel_index(pixel_index),
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .draw(draw_AND)
     );
     
     keyboard_LBRAC LBRAC_display (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .draw(draw_LBRAC)
     );
     
     keyboard_RBRAC RBRAC_display (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .draw(draw_RBRAC)
     );
     
     keyboard_DELETE DELETE_display (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .draw(draw_DELETE)
     );
     
     keyboard_ENTER ENTER_display (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .draw(draw_ENTER)
     );
     

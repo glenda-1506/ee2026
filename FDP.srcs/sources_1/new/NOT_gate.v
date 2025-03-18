@@ -25,7 +25,7 @@ module NOT_gate #(
     parameter DISPLAY_HEIGHT = 64, 
     parameter X_BIT = $clog2(DISPLAY_WIDTH) - 1,
     parameter Y_BIT = $clog2(DISPLAY_HEIGHT) - 1,
-    parameter SIZE = 4 // half the length of vertical line
+    parameter SIZE = 4
     )(
     input [X_BIT:0] x_addr, 
     input [Y_BIT:0] y_addr, 

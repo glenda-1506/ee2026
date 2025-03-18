@@ -44,7 +44,7 @@ module circle_generator#(
     wire [Y_BIT:0] dy = (y_addr >= center_y) ? (y_addr - center_y) : (center_y - y_addr);
     
     // Squared differene is exactly my r^2 value (based on current pixel pos)
-    wire [DIST_BIT:0] dist_sq = dx * dx + dy*dy;
+    wire [DIST_BIT:0] dist_sq = dx * dx + dy * dy;
     wire [DIST_BIT:0] radius_sq = radius * radius;
     wire [DIST_BIT:0] diff = (dist_sq >= radius_sq) ? (dist_sq - radius_sq) : (radius_sq - dist_sq);
     assign draw = diff <= max_diff;

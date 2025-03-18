@@ -21,21 +21,24 @@
 
 
 module keyboard_B(
-    input [12:0] pixel_index,
+    input [6:0] x_addr,
+    input [5:0] y_addr,
     output draw
     );
     
     wire draw_variable, draw_grid;
     
     keyboard_letter_B letter_b (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .x(35), 
         .y(6), 
         .draw(draw_variable)
     );
     
     keyboard_unit_grid grid_B (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .x(31), 
         .y(1), 
         .draw(draw_grid)

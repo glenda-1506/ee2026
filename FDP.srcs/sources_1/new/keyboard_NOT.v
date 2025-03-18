@@ -21,21 +21,24 @@
 
 
 module keyboard_NOT(
-    input [12:0] pixel_index,
+    input [6:0] x_addr,
+    input [5:0] y_addr,
     output draw
     );
     
     wire draw_variable, draw_grid;
     
     keyboard_operation_NOT operation_NOT (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .x(18), 
         .y(31), 
         .draw(draw_variable)
     );
     
     keyboard_unit_grid grid_NOT (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .x(14), 
         .y(22), 
         .draw(draw_grid)
