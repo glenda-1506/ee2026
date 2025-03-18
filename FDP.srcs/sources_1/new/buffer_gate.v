@@ -24,10 +24,10 @@ module buffer_gate #(
     parameter DISPLAY_HEIGHT  = 64,
     parameter X_BIT           = $clog2(DISPLAY_WIDTH) - 1,
     parameter Y_BIT           = $clog2(DISPLAY_HEIGHT) - 1,
-    parameter PIXEL_INDEX_BIT = $clog2(DISPLAY_WIDTH*DISPLAY_HEIGHT) - 1,
     parameter LINE_THICKNESS = 5
     )(
-    input [PIXEL_INDEX_BIT:0] pixel_index, 
+    input [X_BIT:0] x_addr, 
+    input [Y_BIT:0] y_addr,
     input [X_BIT:0]  x,                     
     input [Y_BIT:0]  y,  
     input [X_BIT:0] size,   // half the length of vertical line    
@@ -38,7 +38,7 @@ module buffer_gate #(
     assign draw = ready[0] || ready[1] || ready[2];
     
     // Generate 3 lines (triangle)
-    line_generator #(192, 128) vertical (pixel_index, x, y, x, (y + size * 2), LINE_THICKNESS, ready[0]);
-    line_generator #(192, 128) slant_down (pixel_index, x, y, (x + size * 2), (y + size), LINE_THICKNESS, ready[1]);
-    line_generator #(192, 128) slant_up (pixel_index, x, (y + size * 2), (x + size * 2), (y + size), LINE_THICKNESS, ready[2]);
+    line_generator #(192, 128) vertical (x_addr, y_addr, x, y, x, (y + size * 2), LINE_THICKNESS, ready[0]);
+    line_generator #(192, 128) slant_down (x_addr, y_addr, x, y, (x + size * 2), (y + size), LINE_THICKNESS, ready[1]);
+    line_generator #(192, 128) slant_up (x_addr, y_addr, x, (y + size * 2), (x + size * 2), (y + size), LINE_THICKNESS, ready[2]);
 endmodule

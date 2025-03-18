@@ -113,8 +113,8 @@ module Top_Student (
     
     // Generate Individual Tasks
     TASK_A task_a (clk, pixel_index_right, sw, !CURRENT_SCREEN[0], btnU, btnD, btnL, btnR, oled_data_A);
-    TASK_B task_b (clk, pixel_index_left, sw, !CURRENT_SCREEN[1], oled_data_B);    
-    TASK_C task_c (clk, pixel_index_right, !CURRENT_SCREEN[0], btnU, btnD, btnL, btnR, btnC, oled_data_C, selected_key, key_pressed);
+    //TASK_B task_b (clk, pixel_index_left, sw, !CURRENT_SCREEN[1], oled_data_B);    
+    //TASK_C task_c (clk, pixel_index_right, !CURRENT_SCREEN[0], btnU, btnD, btnL, btnR, btnC, oled_data_C, selected_key, key_pressed);
         
     assign led [3:0] = selected_key;
 endmodule

@@ -25,10 +25,10 @@ module circuit_letter_A #(
     parameter DISPLAY_HEIGHT  = 64,
     parameter X_BIT           = $clog2(DISPLAY_WIDTH) - 1,
     parameter Y_BIT           = $clog2(DISPLAY_HEIGHT) - 1,
-    parameter PIXEL_INDEX_BIT = $clog2(DISPLAY_WIDTH * DISPLAY_HEIGHT) - 1,
     parameter [3:0] line_thickness = 1
     )(
-    input [PIXEL_INDEX_BIT:0] pixel_index, 
+    input [X_BIT:0] x_addr, 
+    input [Y_BIT:0] y_addr,
     input [X_BIT:0]  x,                     
     input [Y_BIT:0]  y,  
     output draw
@@ -38,7 +38,8 @@ module circuit_letter_A #(
     assign draw = |ready;
     // Vertical left line of "A"
     line_generator #(192, 128) L0 (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .x1(x), 
         .y1(y), 
         .x2(x), 
@@ -49,7 +50,8 @@ module circuit_letter_A #(
  
     // Horizontal top line of "A"
     line_generator #(192, 128) L1 (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .x1(x), 
         .y1(y), 
         .x2(x + 4), 
@@ -60,7 +62,8 @@ module circuit_letter_A #(
   
     // Crossbar of "A"
     line_generator #(192, 128) L2 (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr), 
         .x1(x), 
         .y1(y + 2), 
         .x2(x + 4), 
@@ -71,7 +74,8 @@ module circuit_letter_A #(
  
     // Vertical right line of "A"
     line_generator #(192, 128) L3 (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr), 
         .x1(x + 4), 
         .y1(y), 
         .x2(x + 4), 

@@ -30,7 +30,8 @@ module circle_generator#(
                                     ((DISPLAY_HEIGHT-1) * (DISPLAY_HEIGHT-1)),
     parameter DIST_BIT = $clog2(MAX_SQUARE_DISTANCE + 1) - 1
     )(
-    input [PIXEL_INDEX_BIT:0] pixel_index, 
+    input [X_BIT:0] x_addr, 
+    input [Y_BIT:0] y_addr,
     input [X_BIT:0]  center_x,      
     input [Y_BIT:0]  center_y,          
     input [X_BIT:0]  radius,    
@@ -38,12 +39,9 @@ module circle_generator#(
     output draw
     );
     
-    wire [X_BIT:0] x = pixel_index % DISPLAY_WIDTH;
-    wire [Y_BIT:0] y = pixel_index / DISPLAY_WIDTH;
-    
     // Difference of current pixel from center
-    wire [X_BIT:0] dx = (x >= center_x) ? (x - center_x) : (center_x - x);
-    wire [Y_BIT:0] dy = (y >= center_y) ? (y - center_y) : (center_y - y);
+    wire [X_BIT:0] dx = (x_addr >= center_x) ? (x_addr - center_x) : (center_x - x_addr);
+    wire [Y_BIT:0] dy = (y_addr >= center_y) ? (y_addr - center_y) : (center_y - y_addr);
     
     // Squared differene is exactly my r^2 value (based on current pixel pos)
     wire [DIST_BIT:0] dist_sq = dx * dx + dy*dy;

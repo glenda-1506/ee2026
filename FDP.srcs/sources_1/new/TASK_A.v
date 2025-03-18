@@ -43,6 +43,8 @@ module TASK_A(
     wire bU, bD, bL,bR;
     wire [3:0] pb = {bU, bD, bL,bR};
     wire [14:0] virtual_index;
+    wire [8:0] x_index = virtual_index % 192;
+    wire [8:0] y_index = virtual_index / 192;
     
     // Generate the ready flags for items to draw
     wire [2:0] var_ready;
@@ -75,7 +77,8 @@ module TASK_A(
     
     // Generate variable components
     variable_circuit_segment #(192, 128) A (
-        .pixel_index(virtual_index),
+        .x_addr(x_index),
+        .y_addr(y_index),
         .x(2),
         .y(2),
         .letter_info(0),
@@ -84,7 +87,8 @@ module TASK_A(
         .draw(var_ready[0]));
         
     variable_circuit_segment #(192, 128) B (
-        .pixel_index(virtual_index),
+        .x_addr(x_index),
+        .y_addr(y_index),
         .x(23),
         .y(2),
         .letter_info(1),
@@ -93,7 +97,8 @@ module TASK_A(
         .draw(var_ready[1]));
         
     variable_circuit_segment #(192, 128) C (
-        .pixel_index(virtual_index),
+        .x_addr(x_index),
+        .y_addr(y_index),
         .x(44),
         .y(2),
         .letter_info(2),
@@ -103,13 +108,15 @@ module TASK_A(
     
     // Generate the gates
     OR_gate #(192, 128) o1 (
-        .pixel_index(virtual_index),
+        .x_addr(x_index),
+        .y_addr(y_index),
         .x (75),
         .y (32),
         .draw (gate_ready[0]));
     
     AND_gate #(192, 128) a1 (
-        .pixel_index(virtual_index),
+        .x_addr(x_index),
+        .y_addr(y_index),
         .x (75),
         .y (52),
         .draw (gate_ready[1]));
