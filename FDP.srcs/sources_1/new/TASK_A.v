@@ -30,7 +30,7 @@ module TASK_A(
     );
     
     //////////////////////////////////////////////////////////////////////////////////
-    // Instantiate parameter and modules
+    // Instantiate parameters, wires and regs
     //////////////////////////////////////////////////////////////////////////////////
        
     // Set local parameters
@@ -40,10 +40,13 @@ module TASK_A(
     // Generate required wires and regs
     wire clk_25M;
     wire clk_6p25M;
-    wire [2:0] var_ready;
     wire bU, bD, bL,bR;
     wire [3:0] pb = {bU, bD, bL,bR};
     wire [14:0] virtual_index;
+    
+    // Generate the ready flags for items to draw
+    wire [2:0] var_ready;
+    wire [1:0] gate_ready;
     
     // Generate single pulse buttons
     delay s1(MAIN_CLOCK, btnU, 250_000, bU);
@@ -57,9 +60,21 @@ module TASK_A(
     
     // Generate virtual oled
     virtual_oled_generator v_oled (clk_6p25M, reset, pb, pixel_index, virtual_index);
-
+    
+    //////////////////////////////////////////////////////////////////////////////////
+    // MAIN CODE LOGIC
+    //////////////////////////////////////////////////////////////////////////////////    
+    always @(posedge clk_25M) begin
+        oled_data_reg <= (|var_ready || |gate_ready)
+                          ? WHITE : BLACK;
+    end
+            
+    //////////////////////////////////////////////////////////////////////////////////
+    // Modules to draw
+    //////////////////////////////////////////////////////////////////////////////////       
+    
     // Generate variable components
-    variable_circuit_segment A (
+    variable_circuit_segment #(192, 128) A (
         .pixel_index(virtual_index),
         .x(2),
         .y(2),
@@ -68,7 +83,7 @@ module TASK_A(
         .segment_visability(sw[15]),
         .draw(var_ready[0]));
         
-    variable_circuit_segment B (
+    variable_circuit_segment #(192, 128) B (
         .pixel_index(virtual_index),
         .x(23),
         .y(2),
@@ -77,7 +92,7 @@ module TASK_A(
         .segment_visability(sw[13]),
         .draw(var_ready[1]));
         
-    variable_circuit_segment C (
+    variable_circuit_segment #(192, 128) C (
         .pixel_index(virtual_index),
         .x(44),
         .y(2),
@@ -85,14 +100,18 @@ module TASK_A(
         .not_gate_visability(sw[10]),
         .segment_visability(sw[11]),
         .draw(var_ready[2]));
-     
-    //////////////////////////////////////////////////////////////////////////////////
-    // MAIN CODE LOGIC
-    //////////////////////////////////////////////////////////////////////////////////    
     
-    // Instantiate the squares (red and green)
-    always @(posedge clk_25M) begin
-        oled_data_reg <= |var_ready ? WHITE : BLACK;
-    end
+    // Generate the gates
+    OR_gate #(192, 128) o1 (
+        .pixel_index(virtual_index),
+        .x (75),
+        .y (32),
+        .draw (gate_ready[0]));
+    
+    AND_gate #(192, 128) a1 (
+        .pixel_index(virtual_index),
+        .x (75),
+        .y (52),
+        .draw (gate_ready[1]));
     
 endmodule

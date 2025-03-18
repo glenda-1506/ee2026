@@ -47,8 +47,8 @@ module Top_Student (
     wire [1:0] CURRENT_SCREEN = sw[1:0];
     
     // Generate clock signals
-    clock clk6p25 (clk, 7 , clk_6p25M);
-    clock clk25 (clk, 1 , clk_25M);
+    clock clk6p25 (clk, 7, clk_6p25M);
+    clock clk25 (clk, 1, clk_25M);
     
     // Instantiate OLED
     Oled_Display oled_right (

@@ -21,8 +21,8 @@
 
 
 module AND_gate #(
-    parameter DISPLAY_WIDTH   = 192,
-    parameter DISPLAY_HEIGHT  = 128,
+    parameter DISPLAY_WIDTH   = 96,
+    parameter DISPLAY_HEIGHT  = 64,
     parameter X_BIT           = $clog2(DISPLAY_WIDTH) - 1,
     parameter Y_BIT           = $clog2(DISPLAY_HEIGHT) - 1,
     parameter PIXEL_INDEX_BIT = $clog2(DISPLAY_WIDTH * DISPLAY_HEIGHT) - 1,
@@ -37,11 +37,11 @@ module AND_gate #(
     
     wire [5:0] ready;
     assign draw = |ready;
-    line_generator v1 (pixel_index, x, y, x, (y + size * 2), line_thickness, ready[0]);
-    line_generator r1 (pixel_index, x, y, (x + size + 1), y, line_thickness, ready[1]);
-    line_generator d1 (pixel_index, (x + size + 1), y, (x + size * 2 - 1), (y + size - 2), line_thickness, ready[2]);
-    line_generator v2 (pixel_index, (x + size * 2 - 1), (y + size - 2), (x + size * 2 - 1), (y + size + 1), line_thickness, ready[3]);
-    line_generator d2 (pixel_index, (x + size * 2 - 1), (y + size + 1), (x + size + 1), (y + size * 2 - 1), line_thickness, ready[4]);
-    line_generator r2 (pixel_index, (x + size), (y + size * 2), x, (y + size * 2), line_thickness, ready[5]);
+    line_generator #(192, 128) v1 (pixel_index, x, y, x, (y + size * 2), line_thickness, ready[0]);
+    line_generator #(192, 128) r1 (pixel_index, x, y, (x + size + 1), y, line_thickness, ready[1]);
+    line_generator #(192, 128) d1 (pixel_index, (x + size + 1), y, (x + size * 2 - 1), (y + size - 2), line_thickness, ready[2]);
+    line_generator #(192, 128) v2 (pixel_index, (x + size * 2 - 1), (y + size - 2), (x + size * 2 - 1), (y + size + 1), line_thickness, ready[3]);
+    line_generator #(192, 128) d2 (pixel_index, (x + size * 2 - 1), (y + size + 1), (x + size + 1), (y + size * 2 - 1), line_thickness, ready[4]);
+    line_generator #(192, 128) r2 (pixel_index, (x + size), (y + size * 2), x, (y + size * 2), line_thickness, ready[5]);
     
 endmodule

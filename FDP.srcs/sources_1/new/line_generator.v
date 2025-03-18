@@ -21,8 +21,8 @@
 
 
 module line_generator #(
-    parameter DISPLAY_WIDTH  = 192,
-    parameter DISPLAY_HEIGHT = 128, 
+    parameter DISPLAY_WIDTH  = 96,
+    parameter DISPLAY_HEIGHT = 64, 
     parameter X_BIT = $clog2(DISPLAY_WIDTH) - 1,
     parameter Y_BIT = $clog2(DISPLAY_HEIGHT) - 1,
     parameter PROD_XY_BIT = X_BIT + Y_BIT + 2,
