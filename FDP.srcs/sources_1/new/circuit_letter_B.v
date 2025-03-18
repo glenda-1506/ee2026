@@ -21,8 +21,8 @@
 
 
 module circuit_letter_B #(
-    parameter DISPLAY_WIDTH   = 192,
-    parameter DISPLAY_HEIGHT  = 128,
+    parameter DISPLAY_WIDTH   = 96,
+    parameter DISPLAY_HEIGHT  = 64,
     parameter X_BIT           = $clog2(DISPLAY_WIDTH) - 1,
     parameter Y_BIT           = $clog2(DISPLAY_HEIGHT) - 1,
     parameter PIXEL_INDEX_BIT = $clog2(DISPLAY_WIDTH * DISPLAY_HEIGHT) - 1,
@@ -38,7 +38,7 @@ module circuit_letter_B #(
     assign draw = |ready;
 
     // Left vertical line of "B"
-    line_generator L0 (
+    line_generator #(192, 128) L0 (
         .pixel_index(pixel_index),
         .x1(x),
         .y1(y),
@@ -48,7 +48,7 @@ module circuit_letter_B #(
         .draw(ready[0]));
    
     // Top horizontal line of "B"
-    line_generator L1 (
+    line_generator #(192, 128) L1 (
         .pixel_index(pixel_index),
         .x1(x),
         .y1(y),
@@ -58,7 +58,7 @@ module circuit_letter_B #(
         .draw(ready[1]));
     
     // Middle horizontal line of "B"
-    line_generator L2 (
+    line_generator #(192, 128) L2 (
         .pixel_index(pixel_index),
         .x1(x),
         .y1(y + 2),
@@ -68,7 +68,7 @@ module circuit_letter_B #(
         .draw(ready[2]));
     
     // Right vertical line of "B"
-    line_generator L3 (
+    line_generator #(192, 128) L3 (
         .pixel_index(pixel_index),
         .x1(x + 4),
         .y1(y),
@@ -78,7 +78,7 @@ module circuit_letter_B #(
         .draw(ready[3]));
     
     // Bottom horizontal line of "B"
-    line_generator L4 (
+    line_generator #(192, 128) L4 (
         .pixel_index(pixel_index),
         .x1(x),
         .y1(y + 4),

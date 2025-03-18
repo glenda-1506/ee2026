@@ -23,8 +23,8 @@
 
 
 module variable_circuit_segment#(
-    parameter DISPLAY_WIDTH    = 192,
-    parameter DISPLAY_HEIGHT   = 128,
+    parameter DISPLAY_WIDTH    = 96,
+    parameter DISPLAY_HEIGHT   = 64,
     parameter X_BIT            = $clog2(DISPLAY_WIDTH) - 1,
     parameter Y_BIT            = $clog2(DISPLAY_HEIGHT) - 1,
     parameter PIXEL_INDEX_BIT  = $clog2(DISPLAY_WIDTH * DISPLAY_HEIGHT) - 1,
@@ -48,15 +48,15 @@ module variable_circuit_segment#(
     assign draw = segment_visability ? |{letter_ready[letter_info], line_ready[0], NOT_component} : 0;
     
     // Generate Letters
-    circuit_letter_A letter_a (pixel_index, x, y, letter_ready[0]);
-    circuit_letter_B letter_b (pixel_index, x, y, letter_ready[1]);
-    circuit_letter_C letter_c (pixel_index, x, y, letter_ready[2]);
+    circuit_letter_A #(192, 128) letter_a (pixel_index, x, y, letter_ready[0]);
+    circuit_letter_B #(192, 128) letter_b (pixel_index, x, y, letter_ready[1]);
+    circuit_letter_C #(192, 128) letter_c (pixel_index, x, y, letter_ready[2]);
     
     // Generate Lines
-    line_generator v1 (pixel_index, x + 2, y + 6, x + 2, y + 60, line_thickness, line_ready[0]);
-    line_generator v2 (pixel_index, x + 16, y + 12, x + 16, y + 60, line_thickness, line_ready[1]);
-    line_generator h1 (pixel_index, x + 3, y + 12, x + 4, y + 12, line_thickness, line_ready[2]);
+    line_generator #(192, 128) v1 (pixel_index, x + 2, y + 6, x + 2, y + 60, line_thickness, line_ready[0]);
+    line_generator #(192, 128) v2 (pixel_index, x + 16, y + 12, x + 16, y + 60, line_thickness, line_ready[1]);
+    line_generator #(192, 128) h1 (pixel_index, x + 3, y + 12, x + 4, y + 12, line_thickness, line_ready[2]);
 
     // Generate NOT Gate
-    NOT_gate n1 (pixel_index, x + 5, y + 8, not_gate_ready);
+    NOT_gate #(192, 128) n1 (pixel_index, x + 5, y + 8, not_gate_ready);
 endmodule

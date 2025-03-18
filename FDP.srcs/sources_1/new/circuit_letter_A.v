@@ -21,8 +21,8 @@
 
 
 module circuit_letter_A #(
-    parameter DISPLAY_WIDTH   = 192,
-    parameter DISPLAY_HEIGHT  = 128,
+    parameter DISPLAY_WIDTH   = 96,
+    parameter DISPLAY_HEIGHT  = 64,
     parameter X_BIT           = $clog2(DISPLAY_WIDTH) - 1,
     parameter Y_BIT           = $clog2(DISPLAY_HEIGHT) - 1,
     parameter PIXEL_INDEX_BIT = $clog2(DISPLAY_WIDTH * DISPLAY_HEIGHT) - 1,
@@ -37,7 +37,7 @@ module circuit_letter_A #(
     wire [3:0] ready;
     assign draw = |ready;
     // Vertical left line of "A"
-    line_generator L0 (
+    line_generator #(192, 128) L0 (
         .pixel_index(pixel_index), 
         .x1(x), 
         .y1(y), 
@@ -48,7 +48,7 @@ module circuit_letter_A #(
     );
  
     // Horizontal top line of "A"
-    line_generator L1 (
+    line_generator #(192, 128) L1 (
         .pixel_index(pixel_index), 
         .x1(x), 
         .y1(y), 
@@ -59,7 +59,7 @@ module circuit_letter_A #(
     );
   
     // Crossbar of "A"
-    line_generator L2 (
+    line_generator #(192, 128) L2 (
         .pixel_index(pixel_index), 
         .x1(x), 
         .y1(y + 2), 
@@ -70,7 +70,7 @@ module circuit_letter_A #(
     );
  
     // Vertical right line of "A"
-    line_generator L3 (
+    line_generator #(192, 128) L3 (
         .pixel_index(pixel_index), 
         .x1(x + 4), 
         .y1(y), 
