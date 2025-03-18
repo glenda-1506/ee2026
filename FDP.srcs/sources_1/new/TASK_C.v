@@ -73,6 +73,7 @@ module TASK_C(
     
     keyboard_display display (
         .clk(clk),
+        .reset(reset),
         .pixel_index(pixel_index),
         .btnU(btnU_debounced), 
         .btnD(btnD_debounced),

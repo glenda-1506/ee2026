@@ -21,6 +21,7 @@
 
 module keyboard_display(
     input clk,
+    input reset,
     input [12:0] pixel_index,
     input btnU, btnD, btnL, btnR, btnC,
     output reg [15:0] oled_data,
@@ -97,6 +98,7 @@ module keyboard_display(
     
     key_selector selector (
         .clk(clk),
+        .reset(reset),
         .btnU(btnU),
         .btnD(btnD),
         .btnL(btnL),
