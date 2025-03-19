@@ -43,8 +43,8 @@ module TASK_A(
     wire bU, bD, bL,bR;
     wire [3:0] pb = {bU, bD, bL,bR};
     wire [14:0] virtual_index;
-    wire [8:0] x_index = virtual_index % 192;
-    wire [8:0] y_index = virtual_index / 192;
+    wire [8:0] x_index;
+    wire [8:0] y_index;
     
     // Generate the ready flags for items to draw
     wire [2:0] var_ready;
@@ -61,7 +61,7 @@ module TASK_A(
     clock clk25 (MAIN_CLOCK, 1, clk_25M);
     
     // Generate virtual oled
-    virtual_oled_generator v_oled (clk_6p25M, reset, pb, pixel_index, virtual_index);
+    virtual_oled_generator v_oled (clk_6p25M, reset, pb, pixel_index, x_index, y_index);
     
     //////////////////////////////////////////////////////////////////////////////////
     // MAIN CODE LOGIC
@@ -110,15 +110,15 @@ module TASK_A(
     OR_gate #(192, 128) o1 (
         .x_addr(x_index),
         .y_addr(y_index),
-        .x (75),
-        .y (32),
-        .draw (gate_ready[0]));
+        .x(75),
+        .y(32),
+        .draw(gate_ready[0]));
     
     AND_gate #(192, 128) a1 (
         .x_addr(x_index),
         .y_addr(y_index),
-        .x (75),
-        .y (52),
-        .draw (gate_ready[1]));
+        .x(75),
+        .y(52),
+        .draw(gate_ready[1]));
     
 endmodule
