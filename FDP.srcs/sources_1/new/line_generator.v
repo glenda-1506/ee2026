@@ -37,15 +37,15 @@ module line_generator #(
     );
 
     // Compute the bounding box (min/max values)
-    wire [X_BIT:0] x_min = (x1 <= x2) ? x1 : x2;
-    wire [X_BIT:0] x_max = (x1 <= x2) ? x2 : x1;
-    wire [Y_BIT:0] y_min = (y1 <= y2) ? y1 : y2;
-    wire [Y_BIT:0] y_max = (y1 <= y2) ? y2 : y1;
+    wire [X_BIT:0] x_min = (x1 < x2) ? x1 : x2;
+    wire [X_BIT:0] x_max = (x1 < x2) ? x2 : x1;
+    wire [Y_BIT:0] y_min = (y1 < y2) ? y1 : y2;
+    wire [Y_BIT:0] y_max = (y1 < y2) ? y2 : y1;
 
     wire in_box = (x_addr >= x_min) && (x_addr <= x_max) &&
                   (y_addr >= y_min) && (y_addr <= y_max);
 
-    // Calculate differences for the line (only need to compute once)
+    // Calculate differences for the line
     wire [X_BIT:0] diff_x_line = x_max - x_min;
     wire [Y_BIT:0] diff_y_line = y_max - y_min;
 
@@ -54,7 +54,7 @@ module line_generator #(
     wire [Y_BIT:0] diff_y_pixel = (y_addr >= y1) ? (y_addr - y1) : (y1 - y_addr);
 
     // Check for cases: vertical or horizontal lines
-    wire is_vertical   = (diff_x_line == 0);
+    wire is_vertical = (diff_x_line == 0);
     wire is_horizontal = (diff_y_line == 0);
 
     // For angled lines, calculate the absolute cross product
@@ -65,7 +65,7 @@ module line_generator #(
     wire condition;
     assign condition = is_vertical ? (diff_x_pixel <= thickness) :
                        is_horizontal ? (diff_y_pixel <= thickness) :
-                                       (abs_cross   <= thickness);
+                                       (abs_cross <= thickness);
 
     assign draw = in_box && condition;
 
