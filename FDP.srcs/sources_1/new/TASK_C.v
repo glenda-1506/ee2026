@@ -22,7 +22,8 @@
 
 module TASK_C(
     input clk,
-    input [12:0] pixel_index,
+    input [6:0] x_addr,
+    input [5:0] y_addr,
     input reset,
     input btnU, btnD, btnL, btnR, btnC,
     output [15:0] oled_data,
@@ -74,7 +75,8 @@ module TASK_C(
     keyboard_display display (
         .clk(clk),
         .reset(reset),
-        .pixel_index(pixel_index),
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .btnU(btnU_debounced), 
         .btnD(btnD_debounced),
         .btnL(btnL_debounced), 

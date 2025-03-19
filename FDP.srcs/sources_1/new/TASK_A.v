@@ -22,7 +22,8 @@
 
 module TASK_A(
     input MAIN_CLOCK,
-    input [12:0] pixel_index,
+    input [6:0] x_addr,
+    input [5:0] y_addr,
     input [15:0] sw,
     input reset,
     input btnU, btnD, btnL, btnR,
@@ -61,7 +62,7 @@ module TASK_A(
     clock clk25 (MAIN_CLOCK, 1, clk_25M);
     
     // Generate virtual oled
-    virtual_oled_generator v_oled (clk_6p25M, reset, pb, pixel_index, x_index, y_index);
+    virtual_oled_generator v_oled (clk_6p25M, reset, pb, x_addr, y_addr, x_index, y_index);
     
     //////////////////////////////////////////////////////////////////////////////////
     // MAIN CODE LOGIC

@@ -22,7 +22,8 @@
 module keyboard_display(
     input clk,
     input reset,
-    input [12:0] pixel_index,
+    input [6:0] x_addr,
+    input [5:0] y_addr,
     input btnU, btnD, btnL, btnR, btnC,
     output reg [15:0] oled_data,
     output [3:0] selected_key,
@@ -31,9 +32,6 @@ module keyboard_display(
 
     wire [1:0] current_row;
     wire [1:0] current_col;
-    wire [6:0] x_addr = pixel_index % 96;
-    wire [5:0] y_addr = pixel_index / 96;
-    
     wire draw_A, draw_B, draw_C, draw_NOT, draw_OR, draw_AND, draw_LBRAC, draw_RBRAC, draw_DELETE, draw_ENTER;
 
     keyboard_A A_display (
