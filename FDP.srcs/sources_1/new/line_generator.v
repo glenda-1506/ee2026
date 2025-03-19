@@ -50,6 +50,3 @@ module line_generator #(
     wire in_box = in_x_range && in_y_range;
     assign draw = in_box && (abs_cross <= thickness);
 endmodule
-
-
-
