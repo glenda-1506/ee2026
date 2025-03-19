@@ -25,10 +25,10 @@ module keyboard_letter_A #(
     parameter DISPLAY_HEIGHT  = 64,
     parameter X_BIT           = $clog2(DISPLAY_WIDTH) - 1,
     parameter Y_BIT           = $clog2(DISPLAY_HEIGHT) - 1,
-    parameter PIXEL_INDEX_BIT = $clog2(DISPLAY_WIDTH * DISPLAY_HEIGHT) - 1,
     parameter [3:0] line_thickness = 1
     )(
-    input [PIXEL_INDEX_BIT:0] pixel_index, 
+    input [X_BIT:0] x_addr,
+    input [Y_BIT:0] y_addr,
     input [X_BIT:0]  x,                     
     input [Y_BIT:0]  y,  
     output draw
@@ -38,7 +38,8 @@ module keyboard_letter_A #(
     assign draw = |ready;
     
     line_generator L0 (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .x1(x), 
         .y1(y), 
         .x2(x), 
@@ -48,7 +49,8 @@ module keyboard_letter_A #(
     );
  
     line_generator L1 (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .x1(x), 
         .y1(y), 
         .x2(x + 7), 
@@ -58,7 +60,8 @@ module keyboard_letter_A #(
     );
 
     line_generator L2 (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .x1(x), 
         .y1(y + 4), 
         .x2(x + 7), 
@@ -68,7 +71,8 @@ module keyboard_letter_A #(
     );
  
     line_generator L3 (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .x1(x + 7), 
         .y1(y), 
         .x2(x + 7), 

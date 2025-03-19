@@ -21,21 +21,24 @@
 
 
 module keyboard_ENTER(
-    input [12:0] pixel_index,
+    input [6:0] x_addr,
+    input [5:0] y_addr,
     output draw
     );
     
     wire draw_variable, draw_grid;
     
     keyboard_function_ENTER function_ENTER (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .x(70), 
         .y(51), 
         .draw(draw_variable)
     );
     
     keyboard_unit_grid grid_ENTER (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .x(65), 
         .y(43), 
         .draw(draw_grid)

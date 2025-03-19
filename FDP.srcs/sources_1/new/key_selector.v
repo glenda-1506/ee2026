@@ -21,6 +21,7 @@
 
 module key_selector(
     input clk,
+    input reset,
     input btnU, btnD, btnL, btnR, btnC,
     output reg [3:0] selected_key,
     output reg key_pressed,
@@ -52,48 +53,50 @@ module key_selector(
     assign btnC_rise = btnC && !btnC_prev;
 
     always @(posedge clk) begin
-        if (btnU_rise && current_row > 2'b00) begin
-            current_row <= current_row - 1;
-            if (current_row == 2'b10 && current_col == 2'b11) begin
-                current_col <= 2'b10;
-            end
-        end
-        
-        else if (btnD_rise && current_row < 2'b10) begin
-            current_row <= current_row + 1;
-            if (current_col > 2'b10) begin
-                current_col <= 2'b10;
-            end
-        end
-        
-        else if (btnL_rise) begin
-            if (current_row == 2'b10 && current_col == 2'b11) begin
-                current_col <= 2'b10;
-            end
-            else if (current_col > 2'b00) begin
-                current_col <= current_col - 1;
-            end
-        end
-        
-        else if (btnR_rise) begin
-            if (current_row != 2'b10 && current_col < 2'b10) begin
-                current_col <= current_col + 1;
-            end
-            else if (current_row == 2'b10) begin
-                if (current_col == 2'b10) begin
-                    current_col <= 2'b11;
+        if (!reset) begin
+            if (btnU_rise && current_row > 2'b00) begin
+                current_row <= current_row - 1;
+                if (current_row == 2'b10 && current_col == 2'b11) begin
+                    current_col <= 2'b10;
                 end
-                else if (current_col < 2'b10) begin
+            end
+            
+            else if (btnD_rise && current_row < 2'b10) begin
+                current_row <= current_row + 1;
+                if (current_col > 2'b10) begin
+                    current_col <= 2'b10;
+                end
+            end
+            
+            else if (btnL_rise) begin
+                if (current_row == 2'b10 && current_col == 2'b11) begin
+                    current_col <= 2'b10;
+                end
+                else if (current_col > 2'b00) begin
+                    current_col <= current_col - 1;
+                end
+            end
+            
+            else if (btnR_rise) begin
+                if (current_row != 2'b10 && current_col < 2'b10) begin
                     current_col <= current_col + 1;
                 end
+                else if (current_row == 2'b10) begin
+                    if (current_col == 2'b10) begin
+                        current_col <= 2'b11;
+                    end
+                    else if (current_col < 2'b10) begin
+                        current_col <= current_col + 1;
+                    end
+                end
             end
+    
+            if (btnC_rise) begin
+                selected_key <= {current_row, current_col};
+                key_pressed <= 1;
+            end
+            
+            key_pressed <= 0;
         end
-
-        if (btnC_rise) begin
-            selected_key <= {current_row, current_col};
-            key_pressed <= 1;
-        end
-        
-        key_pressed <= 0;
     end
 endmodule

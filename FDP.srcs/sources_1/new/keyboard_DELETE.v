@@ -21,21 +21,24 @@
 
 
 module keyboard_DELETE(
-    input [12:0] pixel_index,
+    input [6:0] x_addr,
+    input [5:0] y_addr,
     output draw
     );
     
     wire draw_variable, draw_grid;
     
     keyboard_function_DELETE function_DELETE (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .x(54), 
         .y(52), 
         .draw(draw_variable)
     );
     
     keyboard_unit_grid grid_DELETE (
-        .pixel_index(pixel_index), 
+        .x_addr(x_addr),
+        .y_addr(y_addr),
         .x(48), 
         .y(43), 
         .draw(draw_grid)

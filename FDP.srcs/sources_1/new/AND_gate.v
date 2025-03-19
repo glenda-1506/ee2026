@@ -29,7 +29,8 @@ module AND_gate #(
     parameter [6:0] size         = 5,    // Half the length of the vertical line    
     parameter [3:0] line_thickness = 1     // Thickness for the drawn lines
     )(
-    input [PIXEL_INDEX_BIT:0] pixel_index, 
+    input [X_BIT:0] x_addr, 
+    input [Y_BIT:0] y_addr,
     input [X_BIT:0]  x,                     
     input [Y_BIT:0]  y,  
     output draw
@@ -37,11 +38,11 @@ module AND_gate #(
     
     wire [5:0] ready;
     assign draw = |ready;
-    line_generator #(192, 128) v1 (pixel_index, x, y, x, (y + size * 2), line_thickness, ready[0]);
-    line_generator #(192, 128) r1 (pixel_index, x, y, (x + size + 1), y, line_thickness, ready[1]);
-    line_generator #(192, 128) d1 (pixel_index, (x + size + 1), y, (x + size * 2 - 1), (y + size - 2), line_thickness, ready[2]);
-    line_generator #(192, 128) v2 (pixel_index, (x + size * 2 - 1), (y + size - 2), (x + size * 2 - 1), (y + size + 1), line_thickness, ready[3]);
-    line_generator #(192, 128) d2 (pixel_index, (x + size * 2 - 1), (y + size + 1), (x + size + 1), (y + size * 2 - 1), line_thickness, ready[4]);
-    line_generator #(192, 128) r2 (pixel_index, (x + size), (y + size * 2), x, (y + size * 2), line_thickness, ready[5]);
+    line_generator #(192, 128) v1 (x_addr, y_addr, x, y, x, (y + size * 2), line_thickness, ready[0]);
+    line_generator #(192, 128) r1 (x_addr, y_addr, x, y, (x + size + 1), y, line_thickness, ready[1]);
+    line_generator #(192, 128) d1 (x_addr, y_addr, (x + size + 1), y, (x + size * 2 - 1), (y + size - 2), line_thickness, ready[2]);
+    line_generator #(192, 128) v2 (x_addr, y_addr, (x + size * 2 - 1), (y + size - 2), (x + size * 2 - 1), (y + size + 1), line_thickness, ready[3]);
+    line_generator #(192, 128) d2 (x_addr, y_addr, (x + size * 2 - 1), (y + size + 1), (x + size + 1), (y + size * 2 - 1), line_thickness, ready[4]);
+    line_generator #(192, 128) r2 (x_addr, y_addr, (x + size), (y + size * 2), x, (y + size * 2), line_thickness, ready[5]);
     
 endmodule
