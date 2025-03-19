@@ -121,5 +121,11 @@ module TASK_A(
         .x(75),
         .y(52),
         .draw(gate_ready[1]));
+        
+    /* Code below is for test LUT usage. Replace * with /   
+    line_generator #(192, 128) a1 (x_index, y_index, 10, 10, 10, 20, 1, var_ready[1]);
+    line_generator #(192, 128) a2 (x_index, y_index, 30, 30, 50, 30, 1, var_ready[0]);
+    line_generator #(192, 128) a3 (x_index, y_index, 60, 60, 75, 85, 1, var_ready[2]);
+    //*/
     
 endmodule
