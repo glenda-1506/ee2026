@@ -46,9 +46,10 @@ module Top_Student (
     wire [15:0] oled_data_right = oled_data_right_reg;
     wire [15:0] oled_data_left = oled_data_left_reg;
     wire [1:0] fb;
-    wire [12:0] pixel_index;
-    wire [6:0] x_addr =  pixel_index % 96;
-    wire [5:0] y_addr = pixel_index / 96;
+    wire [12:0] pixel_index_left;
+    wire [12:0] pixel_index_right;
+    wire [6:0] x_addr_right =  pixel_index_right % 96;
+    wire [5:0] y_addr_right = pixel_index_right / 96;
     wire [15:0] oled_data_A;
     wire [15:0] oled_data_B;
     wire [15:0] oled_data_C;
@@ -70,7 +71,7 @@ module Top_Student (
         .frame_begin(fb[0]), 
         .sending_pixels(), 
         .sample_pixel(), 
-        .pixel_index(pixel_index), 
+        .pixel_index(pixel_index_right), 
         .pixel_data(oled_data_right), 
         .cs(JB[0]), 
         .sdin(JB[1]), 
@@ -86,7 +87,7 @@ module Top_Student (
         .frame_begin(fb[1]), 
         .sending_pixels(), 
         .sample_pixel(), 
-        .pixel_index(), 
+        .pixel_index(pixel_index_left), 
         .pixel_data(oled_data_left), 
         .cs(JA[0]), 
         .sdin(JA[1]), 
@@ -113,9 +114,9 @@ module Top_Student (
     end
     
     // Generate Individual Tasks
-    TASK_A task_a (clk, x_addr, y_addr, sw, !CURRENT_SCREEN[0], btnU, btnD, btnL, btnR, oled_data_A);
-    //TASK_B task_b (clk, pixel_index, sw, !CURRENT_SCREEN[1], oled_data_B);    
-    //TASK_C task_c (clk, x_addr, y_addr, !CURRENT_SCREEN[1], btnU, btnD, btnL, btnR, btnC, oled_data_C, selected_key, key_pressed);
+    TASK_A task_a (clk, x_addr_right, y_addr_right, sw, !CURRENT_SCREEN[0], btnU, btnD, btnL, btnR, oled_data_A);
+    //TASK_B task_b (clk, pixel_index_left, sw, !CURRENT_SCREEN[1], oled_data_B);    
+    //TASK_C task_c (clk, x_addr_right, y_addr_right, !CURRENT_SCREEN[1], btnU, btnD, btnL, btnR, btnC, oled_data_C, selected_key, key_pressed);
         
     assign led [3:0] = selected_key;
 endmodule
