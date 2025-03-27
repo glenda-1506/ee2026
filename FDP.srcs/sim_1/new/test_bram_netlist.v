@@ -23,13 +23,13 @@
 module test_bram_netlist(
 
     );
-    parameter NETLIST_WIDTH = 276;
+    parameter NETLIST_WIDTH = 368;
     reg clk = 0;
     reg [7:0] id = 0;
     wire [NETLIST_WIDTH-1:0] out;
     
     always #5 clk = ~clk;
-    netlist_generator #(0) dut (clk, id, out);
+    netlist_generator #(1) dut (clk, id, out);
     
     integer i;
     initial begin

@@ -18,19 +18,26 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-// HOW TO DECODE THE BINARY STRING (in the .mem file):
+// HOW TO DECODE THE STRING (in the .mem file):
 //   Each netlist is stored on a single line, in hex.
-//   Information is in packets of 16 bits as follows from left to right:
+//   Information is in packets of (10 + n * 6) bits where n is number of inputs 
+//   each gate can accept. Configuration as follows from left to right:
 //     - gate_type (2 bits): 00=NOT, 01=AND, 10=OR, 11=literal
 //     - num_inputs (2 bits): (#inputs - 1)
 //     - output_id (6 bits)
 //     - input_ids (6 bits each)
+//
+// 2-input: 22 bits
+// 3-input: 28 bits
+// 4-input: 34 bits
+// IMPORTANT: ALL STRINGS START WITH THE f bit (start bit)
+// -> checked that none uses f bit at the start in all mpos and msop configurations
 //////////////////////////////////////////////////////////////////////////////////
 
 
 module netlist_generator #(
     parameter IS_MSOP = 1,
-    parameter NETLIST_WIDTH = 276 // 3-gate has 69 characters -> each char is 4 bits
+    parameter NETLIST_WIDTH = 368 // 3-gate has 92 characters -> each char is 4 bits
     )(
     input clk,
     input [7:0] func_id,
