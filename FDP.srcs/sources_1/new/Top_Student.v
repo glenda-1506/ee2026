@@ -117,6 +117,23 @@ module Top_Student (
     TASK_A task_a (clk, x_addr_right, y_addr_right, sw, !CURRENT_SCREEN[0], btnU, btnD, btnL, btnR, oled_data_A);
     //TASK_B task_b (clk, pixel_index_left, sw, !CURRENT_SCREEN[1], oled_data_B);    
     //TASK_C task_c (clk, x_addr_right, y_addr_right, !CURRENT_SCREEN[1], btnU, btnD, btnL, btnR, btnC, oled_data_C, selected_key, key_pressed);
-        
+    
     assign led [3:0] = selected_key;
+    
+    
+    //////////////////////////////////////////////////////////////////////////////////
+    // CODES FOR TESTING
+    ////////////////////////////////////////////////////////////////////////////////// 
+    
+    /* TEST BRAM and DECODER
+    wire [7:0] func_id = 8'b10101010;
+    wire[1:0] gate_type;
+    wire[1:0] num_inputs;
+    wire [5:0] output_id;
+    wire [5:0] input_id0;
+    wire [5:0] input_id1;
+    wire[5:0] input_id2;
+    wire valid_gate;
+    netlist_decoder_3 (clk,func_id, gate_type,num_inputs,output_id ,input_id0,input_id1 ,input_id2,valid_gate);
+    //*/
 endmodule

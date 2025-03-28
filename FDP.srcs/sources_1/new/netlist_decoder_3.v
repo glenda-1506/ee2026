@@ -53,10 +53,8 @@ module netlist_decoder_3 #(
     reg receive_ready = 1'b0;
     reg [NETLIST_WIDTH-1:0] data_reg;
     reg [STATE_BIT:0] state;
-    reg [NETLIST_INDEX_BIT:0] bit_index;
+    reg [NETLIST_INDEX_BIT:0] bit_index, search_index;
     reg [PACKET_SIZE-1:0] current_packet;
-    integer start_index;
-    integer i;
     
     netlist_generator #(
         .IS_MSOP (IS_MSOP),
@@ -82,6 +80,7 @@ module netlist_decoder_3 #(
             IDLE: begin
                 if (transmit_ready) begin
                     data_reg <= netlist_data;
+                    search_index <= NETLIST_WIDTH - 1;
                     state <= WAIT_LINE;
                 end
             end
@@ -92,18 +91,25 @@ module netlist_decoder_3 #(
             end
             
             SEARCH: begin
-                start_index = -1;
-                for (i = NETLIST_WIDTH - 1; i >= PACKET_SIZE; i = i - 4) begin
-                    if (data_reg [i -: 4] == 4'hF) begin
-                        start_index = i;
-                        i = -1; // break
+                if (search_index >= PACKET_SIZE) begin
+                    if (data_reg[search_index -: 4] == 4'hF) begin
+                        // found start signal
+                        if (search_index >= (PACKET_SIZE + 3)) begin
+                            bit_index <= search_index - 4;
+                            state <= DECODE;
+                        end else begin
+                            state <= DONE;
+                        end
+                    end
+                    else begin
+                        if (search_index >= 4) 
+                            search_index <= search_index - 4;
+                        else
+                            state <= DONE;
                     end
                 end
-                if (start_index >= (PACKET_SIZE + 3)) begin // 31:28 -> start, 27:0 -> packet
-                    bit_index <= start_index - 4;
-                    state <= DECODE;
-                end else begin
-                    state <= DONE; // might need to add error checking
+                else begin
+                    state <= DONE;
                 end
             end
             

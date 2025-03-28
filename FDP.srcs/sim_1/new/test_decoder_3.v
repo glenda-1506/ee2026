@@ -42,7 +42,7 @@ module test_decoder_3(
         #5;
         for (i = 0; i < 256; i = i + 1) begin
             func_id = i;
-            #100;  // give time to decode multiple gates
+            #200;  // give time to decode multiple gates
         end
         #20 $finish;
     end
