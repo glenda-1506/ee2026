@@ -41,6 +41,8 @@ module netlist_generator #(
     )(
     input clk,
     input [7:0] func_id,
+    input receive_ready,
+    output reg transmit_ready = 0,
     output reg [NETLIST_WIDTH - 1: 0] netlist_data
     );
     
@@ -53,9 +55,13 @@ module netlist_generator #(
             $readmemh("mpos_3gate.mem", memory);
         end
     end
-
     
     always @(posedge clk) begin
-        netlist_data <= memory[func_id];
+        if (receive_ready) begin
+            netlist_data <= memory[func_id];
+            transmit_ready <= 1'b1;
+        end else begin
+            transmit_ready <= 1'b0;
+        end
     end
 endmodule

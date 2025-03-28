@@ -26,10 +26,12 @@ module test_bram_netlist(
     parameter NETLIST_WIDTH = 368;
     reg clk = 0;
     reg [7:0] id = 0;
+    reg receive_ready = 1;
+    wire transmit_ready;
     wire [NETLIST_WIDTH-1:0] out;
     
     always #5 clk = ~clk;
-    netlist_generator #(1) dut (clk, id, out);
+    netlist_generator #(1) dut (clk, id, receive_ready, transmit_ready, out);
     
     integer i;
     initial begin
@@ -42,6 +44,6 @@ module test_bram_netlist(
     end
     
     initial begin
-        $monitor("At time %t, id=%d out=%h", $time, id, out);
+        $monitor("At time %t, id=%d, transmit_ready=%b, out=%h", $time, id, transmit_ready, out);
     end
 endmodule
