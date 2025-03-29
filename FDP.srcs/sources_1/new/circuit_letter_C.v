@@ -23,8 +23,9 @@
 module circuit_letter_C #(
     parameter DISPLAY_WIDTH   = 96,
     parameter DISPLAY_HEIGHT  = 64,
-    parameter X_BIT = $clog2(DISPLAY_WIDTH) - 1,
-    parameter Y_BIT = $clog2(DISPLAY_HEIGHT) - 1
+    parameter X_BIT           = $clog2(DISPLAY_WIDTH) - 1,
+    parameter Y_BIT           = $clog2(DISPLAY_HEIGHT) - 1,
+    parameter [3:0] line_thickness = 1
     )(
     input [X_BIT:0] x_addr, 
     input [Y_BIT:0] y_addr,
@@ -32,35 +33,41 @@ module circuit_letter_C #(
     input [Y_BIT:0]  y,  
     output draw
     );
+
+    wire [2:0] ready;
+    assign draw = |ready;
     
-    localparam integer WIDTH  = 5;
-    localparam integer HEIGHT = 5;
-
-    // Identify when we are inside the bounding box
-    wire in_range = (x_addr >= x) && (x_addr < x + WIDTH) &&
-                    (y_addr >= y) && (y_addr < y + HEIGHT);
-
-    wire [$clog2(HEIGHT)-1:0] row_index = y_addr - y; 
-    wire [$clog2(WIDTH)-1:0] column_index = x_addr - x;  
-
-    // A function that returns the pattern for each row
-    function [WIDTH-1:0] shape_row;
-        input [$clog2(HEIGHT)-1:0] row;
-        begin
-            case (row)
-                4'd0 : shape_row = 5'b11111;
-                4'd1 : shape_row = 5'b00001;
-                4'd2 : shape_row = 5'b00001;
-                4'd3 : shape_row = 5'b00001;
-                4'd4 : shape_row = 5'b11111;
-                default: shape_row = 5'b00000;
-            endcase
-        end
-    endfunction
-
-    wire [WIDTH-1:0] row = shape_row(row_index);
-    wire pixel_on = in_range ? row[column_index] : 1'b0;
-
-    assign draw = pixel_on;
-
+    // Left vertical line of "C"
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L0 (
+        .x_addr(x_addr),
+        .y_addr(y_addr),
+        .x1(x),
+        .y1(y),
+        .x2(x),
+        .y2(y + 4),
+        .thickness(line_thickness),
+        .draw(ready[0]));
+   
+    // Top horizontal line of "C"
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L1 (
+        .x_addr(x_addr),
+        .y_addr(y_addr),  
+        .x1(x),
+        .y1(y),
+        .x2(x + 4),
+        .y2(y),
+        .thickness(line_thickness),
+        .draw(ready[1]));
+   
+    // Bottom horizontal line of "C"
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L2 (
+        .x_addr(x_addr),
+        .y_addr(y_addr),
+        .x1(x),
+        .y1(y + 4),
+        .x2(x + 4),
+        .y2(y + 4),
+        .thickness(line_thickness),
+        .draw(ready[2]));
+        
 endmodule

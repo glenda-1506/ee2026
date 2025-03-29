@@ -48,17 +48,17 @@ module AND_gate #(
         input [$clog2(HEIGHT)-1:0] row;
         begin
             case (row)
-                4'd0 : shape_row = 10'b1111100000;
-                4'd1 : shape_row = 10'b1000001100;
-                4'd2 : shape_row = 10'b1000000010;
-                4'd3 : shape_row = 10'b1000000010;
+                4'd0 : shape_row = 10'b0000111111;
+                4'd1 : shape_row = 10'b0011000001;
+                4'd2 : shape_row = 10'b0100000001;
+                4'd3 : shape_row = 10'b0100000001;
                 4'd4 : shape_row = 10'b1000000001;
                 4'd5 : shape_row = 10'b1000000001;
                 4'd6 : shape_row = 10'b1000000001;
-                4'd7 : shape_row = 10'b1000000010;
-                4'd8 : shape_row = 10'b1000000010;
-                4'd9 : shape_row = 10'b1000001100;
-                4'd10: shape_row = 10'b1111100000;
+                4'd7 : shape_row = 10'b0100000001;
+                4'd8 : shape_row = 10'b0100000001;
+                4'd9 : shape_row = 10'b0011000001;
+                4'd10: shape_row = 10'b0000111111;
                 default: shape_row = 10'b0000000000;
             endcase
         end
