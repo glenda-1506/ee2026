@@ -53,8 +53,8 @@ module variable_circuit_segment#(
     circuit_letter_C #(DISPLAY_WIDTH, DISPLAY_HEIGHT) letter_c (x_addr, y_addr, x, y, letter_ready[2]);
     
     // Generate Lines
-    v_line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 54) (x_addr, y_addr, x + 2, y + 6, line_ready[0]);
-    v_line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 48) (x_addr, y_addr, x + 16, y + 12, line_ready[1]);
+    v_line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 84) (x_addr, y_addr, x + 2, y + 6, line_ready[0]);
+    v_line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 78) (x_addr, y_addr, x + 16, y + 12, line_ready[1]);
     h_line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 1)  (x_addr, y_addr, x + 3, y + 12, line_ready[2]);
 
     // Generate NOT Gate

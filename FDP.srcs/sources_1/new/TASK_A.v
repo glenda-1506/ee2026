@@ -37,8 +37,8 @@ module TASK_A(
     // Set local parameters
     parameter BLACK = 16'h0000;
     parameter WHITE = 16'hFFFF;
-    parameter DISPLAY_WIDTH = 192;
-    parameter DISPLAY_HEIGHT = 128;
+    parameter DISPLAY_WIDTH = 142; // Change this if require a different dimension
+    parameter DISPLAY_HEIGHT = 96; // Change this if require a different dimension
     
     // Generate required wires and regs
     wire clk_25M;
@@ -53,7 +53,7 @@ module TASK_A(
     wire [2:0] var_ready;
     wire [1:0] gate_ready;
     
-    // Generate single pulse buttons
+    // Generate delayed pulse buttons
     delay s1(MAIN_CLOCK, btnU, 250_000, bU);
     delay s2(MAIN_CLOCK, btnD, 250_000, bD);
     delay s3(MAIN_CLOCK, btnL, 250_000, bL);
@@ -64,7 +64,8 @@ module TASK_A(
     clock clk25 (MAIN_CLOCK, 1, clk_25M);
     
     // Generate virtual oled
-    virtual_oled_generator v_oled (clk_6p25M, reset, pb, x_addr, y_addr, x_index, y_index);
+    virtual_oled_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) v_oled 
+                            (clk_6p25M, reset, pb, x_addr, y_addr, x_index, y_index);
     
     //////////////////////////////////////////////////////////////////////////////////
     // MAIN CODE LOGIC
