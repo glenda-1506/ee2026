@@ -40,12 +40,12 @@ module OR_gate #(
     wire in_range = (x_addr >= x) && (x_addr < x + WIDTH) &&
                     (y_addr >= y) && (y_addr < y + HEIGHT);
 
-    wire [3:0] row_index    = y_addr - y; 
-    wire [3:0] column_index = x_addr - x;  
+    wire [$clog2(HEIGHT)-1:0] row_index = y_addr - y; 
+    wire [$clog2(WIDTH)-1:0] column_index = x_addr - x;  
 
     // A function that returns the 10-bit pattern for each row
     function [WIDTH-1:0] shape_row;
-        input [3:0] row;
+        input [$clog2(HEIGHT)-1:0] row;
         begin
             case (row)
                 4'd0 : shape_row = 10'b0000011111;
