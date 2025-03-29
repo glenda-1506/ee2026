@@ -34,14 +34,16 @@ module gate_container#(
     input [Y_BIT:0] y,  
     input [GATE_INPUTS-1:0] input_lines, // [MIDDLE : TOP : BOTTOM]
     input [1:0] gate_select, // 2'b01 : AND , 2'b10: OR
+    input [5:0] output_id_in,
     output draw,
-    output [6:0] output_id // available if output_signal is 0
+    output [5:0] output_id // available if output_signal is not X
     // note: only need output id !!! -> use input id at top level
     );
 
     wire draw_and;
     wire draw_or;
     reg buffer;
+    assign output_id = output_id_in;
     assign draw = (gate_select == 2'b1) ? draw_and : (gate_select == 2'b10) ? (draw_or || buffer) : 0;
     // GATES 
     AND_gate #(DISPLAY_WIDTH, DISPLAY_HEIGHT)

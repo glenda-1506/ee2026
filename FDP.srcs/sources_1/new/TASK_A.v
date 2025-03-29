@@ -119,6 +119,7 @@ module TASK_A(
         .y(22),
         .input_lines({sw[9],sw[8],sw[7]}),
         .gate_select({sw[6],sw[5]}),
+        .output_id_in(6'hXX),
         .draw(gate_ready[0]),
         .output_id(0));
 
@@ -130,6 +131,7 @@ module TASK_A(
         .y(50),
         .input_lines({sw[9],sw[8],sw[7]}),
         .gate_select({sw[6],sw[5]}),
+        .output_id_in(6'hXX),
         .draw(gate_ready[1]),
         .output_id(0));
 
@@ -141,6 +143,7 @@ module TASK_A(
         .y(78),
         .input_lines({sw[9],sw[8],sw[7]}),
         .gate_select({sw[6],sw[5]}),
+        .output_id_in(6'hXX),
         .draw(gate_ready[2]),
         .output_id(0));
 
@@ -152,6 +155,7 @@ module TASK_A(
         .y(36),
         .input_lines({sw[9],sw[8],sw[7]}),
         .gate_select({sw[6],sw[5]}),
+        .output_id_in(6'hXX),
         .draw(gate_ready[3]),
         .output_id(0));
 
@@ -163,6 +167,7 @@ module TASK_A(
         .y(64),
         .input_lines({sw[9],sw[8],sw[7]}),
         .gate_select({sw[6],sw[5]}),
+        .output_id_in(6'hXX),
         .draw(gate_ready[4]),
         .output_id(0));
 
@@ -174,6 +179,7 @@ module TASK_A(
         .y(50),
         .input_lines({sw[9],sw[8],sw[7]}),
         .gate_select({sw[6],sw[5]}),
+        .output_id_in(6'hXX),
         .draw(gate_ready[5]),
         .output_id(0));
     
