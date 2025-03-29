@@ -39,15 +39,15 @@ module OR_gate #(
     assign draw = |ready;
     
     // 10 lines generation
-    line_generator #(192, 128) L0 (x_addr, y_addr, x, y, (x + 3), y, line_thickness, ready[0]);
-    line_generator #(192, 128) L1 (x_addr, y_addr, (x + 3), y, (x + 7), (y + 2), line_thickness, ready[1]);
-    line_generator #(192, 128) L2 (x_addr, y_addr, (x + 7), (y + 2), (x + 9), (y + 5), line_thickness, ready[2]);
-    line_generator #(192, 128) L3 (x_addr, y_addr, (x + 9), (y + 5), (x + 7), (y + 8), line_thickness, ready[3]);
-    line_generator #(192, 128) L4 (x_addr, y_addr, (x + 7), (y + 8), (x + 3), (y + 10), line_thickness, ready[4]);
-    line_generator #(192, 128) L5 (x_addr, y_addr, (x + 3), (y + 10), x, (y + 10), line_thickness, ready[5]);
-    line_generator #(192, 128) L6 (x_addr, y_addr, x, (y + 10), (x + 2), (y + 8), line_thickness, ready[6]);
-    line_generator #(192, 128) L7 (x_addr, y_addr, (x + 2), (y + 8), (x + 3), (y + 5), line_thickness, ready[7]);
-    line_generator #(192, 128) L8 (x_addr, y_addr, (x + 3), (y + 5), (x + 2), (y + 2), line_thickness, ready[8]);
-    line_generator #(192, 128) L9 (x_addr, y_addr, (x + 2), (y + 2), x, y, line_thickness, ready[9]);
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L0 (x_addr, y_addr, x, y, (x + 3), y, line_thickness, ready[0]);
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L1 (x_addr, y_addr, (x + 3), y, (x + 7), (y + 2), line_thickness, ready[1]);
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L2 (x_addr, y_addr, (x + 7), (y + 2), (x + 9), (y + 5), line_thickness, ready[2]);
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L3 (x_addr, y_addr, (x + 9), (y + 5), (x + 7), (y + 8), line_thickness, ready[3]);
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L4 (x_addr, y_addr, (x + 7), (y + 8), (x + 3), (y + 10), line_thickness, ready[4]);
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L5 (x_addr, y_addr, (x + 3), (y + 10), x, (y + 10), line_thickness, ready[5]);
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L6 (x_addr, y_addr, x, (y + 10), (x + 2), (y + 8), line_thickness, ready[6]);
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L7 (x_addr, y_addr, (x + 2), (y + 8), (x + 3), (y + 5), line_thickness, ready[7]);
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L8 (x_addr, y_addr, (x + 3), (y + 5), (x + 2), (y + 2), line_thickness, ready[8]);
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L9 (x_addr, y_addr, (x + 2), (y + 2), x, y, line_thickness, ready[9]);
 
 endmodule

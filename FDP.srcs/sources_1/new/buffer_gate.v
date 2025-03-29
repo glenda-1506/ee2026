@@ -38,7 +38,7 @@ module buffer_gate #(
     assign draw = ready[0] || ready[1] || ready[2];
     
     // Generate 3 lines (triangle)
-    line_generator #(192, 128) vertical (x_addr, y_addr, x, y, x, (y + size * 2), LINE_THICKNESS, ready[0]);
-    line_generator #(192, 128) slant_down (x_addr, y_addr, x, y, (x + size * 2), (y + size), LINE_THICKNESS, ready[1]);
-    line_generator #(192, 128) slant_up (x_addr, y_addr, x, (y + size * 2), (x + size * 2), (y + size), LINE_THICKNESS, ready[2]);
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) vertical (x_addr, y_addr, x, y, x, (y + size * 2), LINE_THICKNESS, ready[0]);
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) slant_down (x_addr, y_addr, x, y, (x + size * 2), (y + size), LINE_THICKNESS, ready[1]);
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) slant_up (x_addr, y_addr, x, (y + size * 2), (x + size * 2), (y + size), LINE_THICKNESS, ready[2]);
 endmodule

@@ -37,6 +37,8 @@ module TASK_A(
     // Set local parameters
     parameter BLACK = 16'h0000;
     parameter WHITE = 16'hFFFF;
+    parameter DISPLAY_WIDTH = 192;
+    parameter DISPLAY_HEIGHT = 128;
     
     // Generate required wires and regs
     wire clk_25M;
@@ -73,11 +75,11 @@ module TASK_A(
     end
             
     //////////////////////////////////////////////////////////////////////////////////
-    // Modules to draw
+    // MAIN MODULES
     //////////////////////////////////////////////////////////////////////////////////       
     
-    // Generate variable components
-    variable_circuit_segment #(192, 128) A (
+    //* Generate variable components
+    variable_circuit_segment #(DISPLAY_WIDTH, DISPLAY_HEIGHT) A (
         .x_addr(x_index),
         .y_addr(y_index),
         .x(2),
@@ -87,7 +89,7 @@ module TASK_A(
         .segment_visability(sw[15]),
         .draw(var_ready[0]));
         
-    variable_circuit_segment #(192, 128) B (
+    variable_circuit_segment #(DISPLAY_WIDTH, DISPLAY_HEIGHT) B (
         .x_addr(x_index),
         .y_addr(y_index),
         .x(23),
@@ -97,7 +99,7 @@ module TASK_A(
         .segment_visability(sw[13]),
         .draw(var_ready[1]));
         
-    variable_circuit_segment #(192, 128) C (
+    variable_circuit_segment #(DISPLAY_WIDTH, DISPLAY_HEIGHT) C (
         .x_addr(x_index),
         .y_addr(y_index),
         .x(44),
@@ -108,24 +110,29 @@ module TASK_A(
         .draw(var_ready[2]));
     
     // Generate the gates
-    OR_gate #(192, 128) o1 (
+    OR_gate #(DISPLAY_WIDTH, DISPLAY_HEIGHT) o1 (
         .x_addr(x_index),
         .y_addr(y_index),
         .x(75),
         .y(32),
         .draw(gate_ready[0]));
     
-    AND_gate #(192, 128) a1 (
+    AND_gate #(DISPLAY_WIDTH, DISPLAY_HEIGHT) a1 (
         .x_addr(x_index),
         .y_addr(y_index),
         .x(75),
         .y(52),
         .draw(gate_ready[1]));
+    //*/
+    
+    //////////////////////////////////////////////////////////////////////////////////
+    // TEST CODE
+    ////////////////////////////////////////////////////////////////////////////////// 
         
     /* Code below is for test LUT usage. Replace * with /   
-    line_generator #(192, 128) a1 (x_index, y_index, 10, 10, 10, 20, 1, var_ready[1]);
-    line_generator #(192, 128) a2 (x_index, y_index, 30, 30, 50, 30, 1, var_ready[0]);
-    line_generator #(192, 128) a3 (x_index, y_index, 60, 60, 75, 85, 1, var_ready[2]);
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) a1 (x_index, y_index, 10, 10, 10, 20, 1, var_ready[1]);
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) a2 (x_index, y_index, 30, 30, 50, 30, 1, var_ready[0]);
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) a3 (x_index, y_index, 60, 60, 75, 85, 1, var_ready[2]);
     //*/
     
 endmodule

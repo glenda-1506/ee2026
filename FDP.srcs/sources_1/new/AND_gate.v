@@ -38,11 +38,11 @@ module AND_gate #(
     
     wire [5:0] ready;
     assign draw = |ready;
-    line_generator #(192, 128) v1 (x_addr, y_addr, x, y, x, (y + size * 2), line_thickness, ready[0]);
-    line_generator #(192, 128) r1 (x_addr, y_addr, x, y, (x + size + 1), y, line_thickness, ready[1]);
-    line_generator #(192, 128) d1 (x_addr, y_addr, (x + size + 1), y, (x + size * 2 - 1), (y + size - 2), line_thickness, ready[2]);
-    line_generator #(192, 128) v2 (x_addr, y_addr, (x + size * 2 - 1), (y + size - 2), (x + size * 2 - 1), (y + size + 1), line_thickness, ready[3]);
-    line_generator #(192, 128) d2 (x_addr, y_addr, (x + size * 2 - 1), (y + size + 1), (x + size + 1), (y + size * 2 - 1), line_thickness, ready[4]);
-    line_generator #(192, 128) r2 (x_addr, y_addr, (x + size), (y + size * 2), x, (y + size * 2), line_thickness, ready[5]);
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) v1 (x_addr, y_addr, x, y, x, (y + size * 2), line_thickness, ready[0]);
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) r1 (x_addr, y_addr, x, y, (x + size + 1), y, line_thickness, ready[1]);
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) d1 (x_addr, y_addr, (x + size + 1), y, (x + size * 2 - 1), (y + size - 2), line_thickness, ready[2]);
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) v2 (x_addr, y_addr, (x + size * 2 - 1), (y + size - 2), (x + size * 2 - 1), (y + size + 1), line_thickness, ready[3]);
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) d2 (x_addr, y_addr, (x + size * 2 - 1), (y + size + 1), (x + size + 1), (y + size * 2 - 1), line_thickness, ready[4]);
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) r2 (x_addr, y_addr, (x + size), (y + size * 2), x, (y + size * 2), line_thickness, ready[5]);
     
 endmodule

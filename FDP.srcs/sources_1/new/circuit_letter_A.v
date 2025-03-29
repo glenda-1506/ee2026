@@ -37,7 +37,7 @@ module circuit_letter_A #(
     wire [3:0] ready;
     assign draw = |ready;
     // Vertical left line of "A"
-    line_generator #(192, 128) L0 (
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L0 (
         .x_addr(x_addr),
         .y_addr(y_addr),
         .x1(x), 
@@ -49,7 +49,7 @@ module circuit_letter_A #(
     );
  
     // Horizontal top line of "A"
-    line_generator #(192, 128) L1 (
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L1 (
         .x_addr(x_addr),
         .y_addr(y_addr),
         .x1(x), 
@@ -61,7 +61,7 @@ module circuit_letter_A #(
     );
   
     // Crossbar of "A"
-    line_generator #(192, 128) L2 (
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L2 (
         .x_addr(x_addr),
         .y_addr(y_addr), 
         .x1(x), 
@@ -73,7 +73,7 @@ module circuit_letter_A #(
     );
  
     // Vertical right line of "A"
-    line_generator #(192, 128) L3 (
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L3 (
         .x_addr(x_addr),
         .y_addr(y_addr), 
         .x1(x + 4), 

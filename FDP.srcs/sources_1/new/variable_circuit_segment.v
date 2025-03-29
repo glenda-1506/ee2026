@@ -48,15 +48,15 @@ module variable_circuit_segment#(
     assign draw = segment_visability ? |{letter_ready[letter_info], line_ready[0], NOT_component} : 0;
     
     // Generate Letters
-    circuit_letter_A #(192, 128) letter_a (x_addr, y_addr, x, y, letter_ready[0]);
-    circuit_letter_B #(192, 128) letter_b (x_addr, y_addr, x, y, letter_ready[1]);
-    circuit_letter_C #(192, 128) letter_c (x_addr, y_addr, x, y, letter_ready[2]);
+    circuit_letter_A #(DISPLAY_WIDTH, DISPLAY_HEIGHT) letter_a (x_addr, y_addr, x, y, letter_ready[0]);
+    circuit_letter_B #(DISPLAY_WIDTH, DISPLAY_HEIGHT) letter_b (x_addr, y_addr, x, y, letter_ready[1]);
+    circuit_letter_C #(DISPLAY_WIDTH, DISPLAY_HEIGHT) letter_c (x_addr, y_addr, x, y, letter_ready[2]);
     
     // Generate Lines
-    line_generator #(192, 128) v1 (x_addr, y_addr, x + 2, y + 6, x + 2, y + 60, line_thickness, line_ready[0]);
-    line_generator #(192, 128) v2 (x_addr, y_addr, x + 16, y + 12, x + 16, y + 60, line_thickness, line_ready[1]);
-    line_generator #(192, 128) h1 (x_addr, y_addr, x + 3, y + 12, x + 4, y + 12, line_thickness, line_ready[2]);
+    v_line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 54) (x_addr, y_addr, x + 2, y + 6, line_ready[0]);
+    v_line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 48) (x_addr, y_addr, x + 16, y + 12, line_ready[1]);
+    h_line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 1)  (x_addr, y_addr, x + 3, y + 12, line_ready[2]);
 
     // Generate NOT Gate
-    NOT_gate #(192, 128) n1 (x_addr, y_addr, x + 5, y + 8, not_gate_ready);
+    NOT_gate #(DISPLAY_WIDTH, DISPLAY_HEIGHT) n1 (x_addr, y_addr, x + 5, y + 8, not_gate_ready);
 endmodule

@@ -38,7 +38,7 @@ module circuit_letter_C #(
     assign draw = |ready;
     
     // Left vertical line of "C"
-    line_generator #(192, 128) L0 (
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L0 (
         .x_addr(x_addr),
         .y_addr(y_addr),
         .x1(x),
@@ -49,7 +49,7 @@ module circuit_letter_C #(
         .draw(ready[0]));
    
     // Top horizontal line of "C"
-    line_generator #(192, 128) L1 (
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L1 (
         .x_addr(x_addr),
         .y_addr(y_addr),  
         .x1(x),
@@ -60,7 +60,7 @@ module circuit_letter_C #(
         .draw(ready[1]));
    
     // Bottom horizontal line of "C"
-    line_generator #(192, 128) L2 (
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L2 (
         .x_addr(x_addr),
         .y_addr(y_addr),
         .x1(x),

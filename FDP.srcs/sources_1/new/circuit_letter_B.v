@@ -38,7 +38,7 @@ module circuit_letter_B #(
     assign draw = |ready;
 
     // Left vertical line of "B"
-    line_generator #(192, 128) L0 (
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L0 (
         .x_addr(x_addr),
         .y_addr(y_addr),
         .x1(x),
@@ -49,7 +49,7 @@ module circuit_letter_B #(
         .draw(ready[0]));
    
     // Top horizontal line of "B"
-    line_generator #(192, 128) L1 (
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L1 (
         .x_addr(x_addr),
         .y_addr(y_addr),
         .x1(x),
@@ -60,7 +60,7 @@ module circuit_letter_B #(
         .draw(ready[1]));
     
     // Middle horizontal line of "B"
-    line_generator #(192, 128) L2 (
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L2 (
         .x_addr(x_addr),
         .y_addr(y_addr),
         .x1(x),
@@ -71,7 +71,7 @@ module circuit_letter_B #(
         .draw(ready[2]));
     
     // Right vertical line of "B"
-    line_generator #(192, 128) L3 (
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L3 (
         .x_addr(x_addr),
         .y_addr(y_addr),
         .x1(x + 4),
@@ -82,7 +82,7 @@ module circuit_letter_B #(
         .draw(ready[3]));
     
     // Bottom horizontal line of "B"
-    line_generator #(192, 128) L4 (
+    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L4 (
         .x_addr(x_addr),
         .y_addr(y_addr),
         .x1(x),
