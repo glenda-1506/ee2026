@@ -51,7 +51,7 @@ module TASK_A(
     
     // Generate the ready flags for items to draw
     wire [2:0] var_ready;
-    wire [1:0] gate_ready;
+    wire [5:0] gate_ready;
     
     // Generate delayed pulse buttons
     delay s1(MAIN_CLOCK, btnU, 250_000, bU);
@@ -111,19 +111,72 @@ module TASK_A(
         .draw(var_ready[2]));
     
     // Generate the gates
-    OR_gate #(DISPLAY_WIDTH, DISPLAY_HEIGHT) o1 (
+    gate_container #(DISPLAY_WIDTH, DISPLAY_HEIGHT) g0 (
+        .clk(MAIN_CLOCK),
         .x_addr(x_index),
         .y_addr(y_index),
         .x(75),
-        .y(32),
-        .draw(gate_ready[0]));
+        .y(22),
+        .input_lines({sw[9],sw[8],sw[7]}),
+        .gate_select({sw[6],sw[5]}),
+        .draw(gate_ready[0]),
+        .output_id(0));
+
+    gate_container #(DISPLAY_WIDTH, DISPLAY_HEIGHT) g1 (
+        .clk(MAIN_CLOCK),
+        .x_addr(x_index),
+        .y_addr(y_index),
+        .x(75),
+        .y(50),
+        .input_lines({sw[9],sw[8],sw[7]}),
+        .gate_select({sw[6],sw[5]}),
+        .draw(gate_ready[1]),
+        .output_id(0));
+
+    gate_container #(DISPLAY_WIDTH, DISPLAY_HEIGHT) g2 (
+        .clk(MAIN_CLOCK),
+        .x_addr(x_index),
+        .y_addr(y_index),
+        .x(75),
+        .y(78),
+        .input_lines({sw[9],sw[8],sw[7]}),
+        .gate_select({sw[6],sw[5]}),
+        .draw(gate_ready[2]),
+        .output_id(0));
+
+    gate_container #(DISPLAY_WIDTH, DISPLAY_HEIGHT) g3 (
+        .clk(MAIN_CLOCK),
+        .x_addr(x_index),
+        .y_addr(y_index),
+        .x(99),
+        .y(36),
+        .input_lines({sw[9],sw[8],sw[7]}),
+        .gate_select({sw[6],sw[5]}),
+        .draw(gate_ready[3]),
+        .output_id(0));
+
+    gate_container #(DISPLAY_WIDTH, DISPLAY_HEIGHT) g4 (
+        .clk(MAIN_CLOCK),
+        .x_addr(x_index),
+        .y_addr(y_index),
+        .x(99),
+        .y(64),
+        .input_lines({sw[9],sw[8],sw[7]}),
+        .gate_select({sw[6],sw[5]}),
+        .draw(gate_ready[4]),
+        .output_id(0));
+
+    gate_container #(DISPLAY_WIDTH, DISPLAY_HEIGHT) g5 (
+        .clk(MAIN_CLOCK),
+        .x_addr(x_index),
+        .y_addr(y_index),
+        .x(124),
+        .y(50),
+        .input_lines({sw[9],sw[8],sw[7]}),
+        .gate_select({sw[6],sw[5]}),
+        .draw(gate_ready[5]),
+        .output_id(0));
     
-    AND_gate #(DISPLAY_WIDTH, DISPLAY_HEIGHT) a1 (
-        .x_addr(x_index),
-        .y_addr(y_index),
-        .x(75),
-        .y(52),
-        .draw(gate_ready[1]));
     //*/
     
     //////////////////////////////////////////////////////////////////////////////////

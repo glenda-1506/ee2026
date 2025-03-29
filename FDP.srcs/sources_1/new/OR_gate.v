@@ -21,33 +21,52 @@
 
 
 module OR_gate #(
-    parameter DISPLAY_WIDTH   = 96,
-    parameter DISPLAY_HEIGHT  = 64,
-    parameter X_BIT           = $clog2(DISPLAY_WIDTH) - 1,
-    parameter Y_BIT           = $clog2(DISPLAY_HEIGHT) - 1,
-    parameter PIXEL_INDEX_BIT = $clog2(DISPLAY_WIDTH * DISPLAY_HEIGHT) - 1,
-    parameter [3:0] line_thickness = 2
+    parameter DISPLAY_WIDTH = 96,
+    parameter DISPLAY_HEIGHT = 64,
+    parameter X_BIT = $clog2(DISPLAY_WIDTH) - 1,
+    parameter Y_BIT = $clog2(DISPLAY_HEIGHT) - 1
     )(
     input [X_BIT:0] x_addr, 
     input [Y_BIT:0] y_addr,
-    input [X_BIT:0]  x,                     
-    input [Y_BIT:0]  y,  
+    input [X_BIT:0] x, 
+    input [Y_BIT:0] y,  
     output draw
     );
-     
-    wire [9:0] ready;
-    assign draw = |ready;
-    
-    // 10 lines generation
-    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L0 (x_addr, y_addr, x, y, (x + 3), y, line_thickness, ready[0]);
-    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L1 (x_addr, y_addr, (x + 3), y, (x + 7), (y + 2), line_thickness, ready[1]);
-    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L2 (x_addr, y_addr, (x + 7), (y + 2), (x + 9), (y + 5), line_thickness, ready[2]);
-    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L3 (x_addr, y_addr, (x + 9), (y + 5), (x + 7), (y + 8), line_thickness, ready[3]);
-    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L4 (x_addr, y_addr, (x + 7), (y + 8), (x + 3), (y + 10), line_thickness, ready[4]);
-    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L5 (x_addr, y_addr, (x + 3), (y + 10), x, (y + 10), line_thickness, ready[5]);
-    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L6 (x_addr, y_addr, x, (y + 10), (x + 2), (y + 8), line_thickness, ready[6]);
-    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L7 (x_addr, y_addr, (x + 2), (y + 8), (x + 3), (y + 5), line_thickness, ready[7]);
-    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L8 (x_addr, y_addr, (x + 3), (y + 5), (x + 2), (y + 2), line_thickness, ready[8]);
-    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) L9 (x_addr, y_addr, (x + 2), (y + 2), x, y, line_thickness, ready[9]);
+
+    localparam integer WIDTH  = 10;
+    localparam integer HEIGHT = 11;
+
+    // Identify when we are inside the bounding box
+    wire in_range = (x_addr >= x) && (x_addr < x + WIDTH) &&
+                    (y_addr >= y) && (y_addr < y + HEIGHT);
+
+    wire [3:0] row_index    = y_addr - y; 
+    wire [3:0] column_index = x_addr - x;  
+
+    // A function that returns the 10-bit pattern for each row
+    function [WIDTH-1:0] shape_row;
+        input [3:0] row;
+        begin
+            case (row)
+                4'd0 : shape_row = 10'b0000011111;
+                4'd1 : shape_row = 10'b0001100011;
+                4'd2 : shape_row = 10'b0011000100;
+                4'd3 : shape_row = 10'b0110001100;
+                4'd4 : shape_row = 10'b1100001000;
+                4'd5 : shape_row = 10'b1000001000;
+                4'd6 : shape_row = 10'b1100001000;
+                4'd7 : shape_row = 10'b0100000100;
+                4'd8 : shape_row = 10'b0011000110;
+                4'd9 : shape_row = 10'b0001110011;
+                4'd10: shape_row = 10'b0000011111;
+                default: shape_row = 10'b0000000000;
+            endcase
+        end
+    endfunction
+
+    wire [WIDTH-1:0] row = shape_row(row_index);
+    wire pixel_on = in_range ? row[column_index] : 1'b0;
+
+    assign draw = pixel_on;
 
 endmodule
