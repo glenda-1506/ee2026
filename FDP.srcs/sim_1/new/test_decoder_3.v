@@ -34,7 +34,7 @@ module test_decoder_3(
     
     always #1 clk = ~clk;    
     
-    netlist_decoder_3 dut (clk, func_id, gate_type, num_inputs, output_id, 
+    netlist_decoder_3 dut (clk, func_id, 1, gate_type, num_inputs, output_id, 
                            input_id0, input_id1, input_id2, valid_gate);
     
     integer i;

@@ -27,6 +27,7 @@ module netlist_decoder_3 #(
     )(
     input clk,
     input [FUNCTION_BIT:0] func_id,
+    input top_ready,
     output reg [1:0] gate_type,
     output reg [1:0] num_inputs,
     output reg [5:0] output_id,
@@ -117,17 +118,19 @@ module netlist_decoder_3 #(
                 if (valid_gate == 1'b1) begin
                     valid_gate <= 1'b0;
                 end
-                if (bit_index >= (PACKET_SIZE - 1)) begin
-                    current_packet <= data_reg[bit_index -: PACKET_SIZE];
-                    if (!(bit_index + 1 == PACKET_SIZE)) begin
-                        bit_index <= bit_index - PACKET_SIZE;
+                if (top_ready) begin
+                    if (bit_index >= (PACKET_SIZE - 1)) begin
+                        current_packet <= data_reg[bit_index -: PACKET_SIZE];
+                        if (!(bit_index + 1 == PACKET_SIZE)) begin
+                            bit_index <= bit_index - PACKET_SIZE;
+                        end else begin
+                            bit_index <= 0;
+                        end
+                        state <= OUTPUT;
                     end else begin
-                        bit_index <= 0;
-                    end
-                    state <= OUTPUT;
-                end else begin
-                    state <= DONE;
-                end            
+                        state <= DONE;
+                    end 
+                end           
             end
             
             OUTPUT: begin // PROBLEM!!!
