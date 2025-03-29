@@ -31,13 +31,15 @@ module test_decoder_3(
     wire [5:0] output_id;
     wire [5:0] input_id0, input_id1, input_id2;
     wire valid_gate;
+    reg ready = 1;
     
     always #1 clk = ~clk;    
     
-    netlist_decoder_3 dut (clk, func_id, 1, gate_type, num_inputs, output_id, 
+    netlist_decoder_3 dut (clk, func_id, ready, gate_type, num_inputs, output_id, 
+     
                            input_id0, input_id1, input_id2, valid_gate);
-    
     integer i;
+    /* Test info sending    
     initial begin
         #5;
         for (i = 0; i < 256; i = i + 1) begin
@@ -46,6 +48,22 @@ module test_decoder_3(
         end
         #20 $finish;
     end
+    //*/
+    
+    //* Test ready states
+    initial begin
+        #1 ready <= 0;
+        func_id = 105;  
+        for (i = -1; i < 10; i = i + 1) begin 
+            // shows that the top module needs to run slower and send out 1 pulse signals
+            // Requires 1 clock cycle before starting to decode
+            #1 ready <= 1;
+            #1 ready <= 0;
+            #50;
+        end  
+        #20 $finish;
+    end
+    //*/
 
     always @(posedge clk) begin
         if (valid_gate) begin
