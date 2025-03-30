@@ -36,8 +36,27 @@ module h_line_generator#(
     output draw
     );
     
-    wire [X_BIT:0] x_end = IS_RIGHT_DIR ? (x + LENGTH) : (x - LENGTH);
-    line_generator #(DISPLAY_WIDTH,DISPLAY_HEIGHT)
-                    (x_addr, y_addr, x, y, x_end, y, LINE_THICKNESS, draw);
-
+    localparam integer BOX_WIDTH  = LENGTH + 1;
+    localparam integer BOX_HEIGHT = LINE_THICKNESS;
+    wire [X_BIT:0] x_end = IS_RIGHT_DIR ? x : (x - LENGTH);
+    
+    // Identify when inside the bounding box.
+    wire in_range = (x_addr >= x_end) && (x_addr < x_end + BOX_WIDTH) &&
+                    (y_addr >= y) && (y_addr < y + BOX_HEIGHT);
+                    
+    // box coordinates
+    wire [$clog2(BOX_HEIGHT)-1:0] row_index = y_addr - y;
+    wire [$clog2(BOX_WIDTH)-1:0] column_index = x_addr - x_end;
+    
+    function [BOX_WIDTH-1:0] shape_row;
+        input [$clog2(BOX_HEIGHT)-1:0] row;
+        begin
+            shape_row = {BOX_WIDTH{1'b1}};
+        end
+    endfunction
+    
+    wire [BOX_WIDTH-1:0] pattern = shape_row(row_index);
+    wire pixel_on = in_range ? pattern[column_index] : 1'b0;
+    assign draw = pixel_on;
+    
 endmodule
