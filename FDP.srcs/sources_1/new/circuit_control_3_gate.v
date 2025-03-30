@@ -22,8 +22,8 @@
 
 module circuit_control_3_gate(
     input clk,
-    input [13:0] x_addr,
-    input [13:0] y_addr,
+    input [6:0] x_addr,
+    input [5:0] y_addr,
     input [15:0] sw,
     input reset,
     input btnU, btnD, btnL, btnR,

@@ -37,21 +37,17 @@ module TASK_A(
     // Generate required wires and regs
     wire bU, bD, bL, bR;
     wire [15:0] oled_data_3_gate;
-    wire clk_6p25M;
     
     // Generate delayed pulse buttons
-    delay s1(clk, btnU, 250_000, bU);
-    delay s2(clk, btnD, 250_000, bD);
-    delay s3(clk, btnL, 250_000, bL);
-    delay s4(clk, btnR, 250_000, bR);
-    
-    // Generate clk that matches oled display
-    clock clk6p25 (clk, 7 , clk_6p25M);
+    delay s1(clk, btnU, 200_000, bU);
+    delay s2(clk, btnD, 200_000, bD);
+    delay s3(clk, btnL, 200_000, bL);
+    delay s4(clk, btnR, 200_000, bR);
 
     //////////////////////////////////////////////////////////////////////////////////
     // MAIN CODE LOGIC
     //////////////////////////////////////////////////////////////////////////////////    
-    always @(posedge clk_6p25M) begin
+    always @(posedge clk) begin
         oled_data_reg <= oled_data_3_gate; // use switch cases if there are more
     end
 
@@ -59,7 +55,7 @@ module TASK_A(
     // MAIN MODULES
     //////////////////////////////////////////////////////////////////////////////////       
     circuit_control_3_gate (
-        .clk(clk_6p25M),
+        .clk(clk),
         .x_addr(x_addr),
         .y_addr(y_addr),
         .sw(sw),
