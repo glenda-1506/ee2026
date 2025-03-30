@@ -70,7 +70,7 @@ module circuit_control_3_gate(
     reg [GATE_INPUT_BIT-1:0] g0_input_lines, g1_input_lines, g2_input_lines, g3_input_lines, g4_input_lines, g5_input_lines;
     wire [GATE_OUTPUT_ID_BIT-1:0] g0_out_id, g1_out_id, g2_out_id, g3_out_id, g4_out_id, g5_out_id;
     
-    // Data Packets (immutable)
+    // Data Packets (for lookup)
     wire [DATA_PACKET_BIT-1:0] g0_packet = {g0_out_id, g0_input_lines, g0_gate_type};
     wire [DATA_PACKET_BIT-1:0] g1_packet = {g1_out_id, g1_input_lines, g1_gate_type};
     wire [DATA_PACKET_BIT-1:0] g2_packet = {g2_out_id, g2_input_lines, g2_gate_type};
@@ -98,11 +98,10 @@ module circuit_control_3_gate(
                 4: begin g4_input_lines = {sw[13:11]}; g4_gate_type = {sw[15:14]}; end
                 5: begin g5_input_lines = {sw[13:11]}; g5_gate_type = {sw[15:14]}; end
             endcase
-        end
-        
+        end  
     end
     
-    // SET THE PIXELS TO BE LIGHTED UP (SHOULD BE UNCHANGED)
+    // SET THE PIXELS TO BE LIGHTED UP
     always @(posedge clk) begin
         oled_data_reg <= (|var_ready || |gate_ready)
                           ? WHITE : BLACK;
@@ -111,7 +110,7 @@ module circuit_control_3_gate(
     //////////////////////////////////////////////////////////////////////////////////
     // WIRE MODULES
     //////////////////////////////////////////////////////////////////////////////////      
-    
+//    var_wire_3 #(DISPLAY_WIDTH, DISPLAY_HEIGHT)(x_addr, y_addr, 4, 25, 1'b0);
   
     //////////////////////////////////////////////////////////////////////////////////
     // GATE MODULES
@@ -220,4 +219,5 @@ module circuit_control_3_gate(
         .output_id_in(g5_out_id_in),
         .draw(gate_ready[5]),
         .output_id(g5_out_id));
+    //*/
 endmodule
