@@ -35,6 +35,6 @@ module NOT_gate #(
     );
     wire [1:0] ready;
     assign draw = ready[0] || ready[1];
-    buffer_gate #(192, 128) b1 (x_addr, y_addr, x, y, SIZE, ready[0]);
-    circle_generator #(192, 128)(x_addr, y_addr, (x + SIZE * 2 + 2), (y + SIZE), 1, 0, ready[1]);
+    buffer_gate #(DISPLAY_WIDTH, DISPLAY_HEIGHT) b1 (x_addr, y_addr, x, y, SIZE, ready[0]);
+    circle_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT)(x_addr, y_addr, (x + SIZE * 2 + 2), (y + SIZE), 1, 0, ready[1]);
 endmodule

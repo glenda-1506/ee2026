@@ -22,10 +22,10 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module virtual_oled_generator #(
+    parameter VIRTUAL_WIDTH = 192,
+    parameter VIRTUAL_HEIGHT = 128,    
     parameter OLED_WIDTH = 96,
     parameter OLED_HEIGHT = 64,
-    parameter VIRTUAL_WIDTH = 192,
-    parameter VIRTUAL_HEIGHT = 128,
     parameter PIXEL_INDEX_BIT = $clog2(OLED_WIDTH * OLED_HEIGHT) - 1,
     parameter VIRTUAL_ADDR_BIT = $clog2(VIRTUAL_WIDTH * VIRTUAL_HEIGHT) - 1,
     parameter MAX_X_OFFSET = VIRTUAL_WIDTH - OLED_WIDTH,
@@ -34,7 +34,7 @@ module virtual_oled_generator #(
     input clk,
     input reset,
     input [3:0] pb, // btnU, btnD, btnL, btnR
-    input [VIRTUAL_ADDR_BIT:0] x_addr, y_addr,
+    input [PIXEL_INDEX_BIT:0] x_addr, y_addr,
     output [VIRTUAL_ADDR_BIT:0] adjusted_x, adjusted_y
     );
     //////////////////////////////////////////////////////////////////////////////////

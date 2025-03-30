@@ -55,14 +55,12 @@ module Top_Student (
     wire [15:0] oled_data_C;
     wire [15:0] oled_data_D;
     wire clk_6p25M;
-    wire clk_25M;
     wire [1:0] CURRENT_SCREEN = sw[1:0];
     wire [3:0] selected_key;
     wire key_pressed;
     
     // Generate clock signals
     clock clk6p25 (clk, 7, clk_6p25M);
-    clock clk25 (clk, 1, clk_25M);
     
     // Instantiate OLED
     Oled_Display oled_right (
@@ -100,7 +98,7 @@ module Top_Student (
     //////////////////////////////////////////////////////////////////////////////////
     // MAIN CODE LOGIC
     ////////////////////////////////////////////////////////////////////////////////// 
-    always @(posedge clk_25M) begin
+    always @(posedge clk_6p25M) begin
         case (CURRENT_SCREEN)
             2'b01: begin
                 oled_data_right_reg <= oled_data_A; // c2
@@ -114,9 +112,26 @@ module Top_Student (
     end
     
     // Generate Individual Tasks
-    TASK_A task_a (clk, x_addr_right, y_addr_right, sw, !CURRENT_SCREEN[0], btnU, btnD, btnL, btnR, oled_data_A);
-    //TASK_B task_b (clk, pixel_index_left, sw, !CURRENT_SCREEN[1], oled_data_B);    
-    //TASK_C task_c (clk, x_addr_right, y_addr_right, !CURRENT_SCREEN[1], btnU, btnD, btnL, btnR, btnC, oled_data_C, selected_key, key_pressed);
-        
+    TASK_A task_a (clk_6p25M, x_addr_right, y_addr_right, sw, !CURRENT_SCREEN[0], btnU, btnD, btnL, btnR, oled_data_A);
+    //TASK_B task_b (clk_6p25M, pixel_index_left, sw, !CURRENT_SCREEN[1], oled_data_B);    
+    //TASK_C task_c (clk_6p25M, x_addr_right, y_addr_right, !CURRENT_SCREEN[1], btnU, btnD, btnL, btnR, btnC, oled_data_C, selected_key, key_pressed);
+    
     assign led [3:0] = selected_key;
+    
+    
+    //////////////////////////////////////////////////////////////////////////////////
+    // CODES FOR TESTING
+    ////////////////////////////////////////////////////////////////////////////////// 
+    
+    /* TEST BRAM and DECODER
+    wire [7:0] func_id = 8'b10101010;
+    wire[1:0] gate_type;
+    wire[1:0] num_inputs;
+    wire [5:0] output_id;
+    wire [5:0] input_id0;
+    wire [5:0] input_id1;
+    wire[5:0] input_id2;
+    wire valid_gate;
+    netlist_decoder_3 (clk_6p25M,func_id, 1, gate_type, num_inputs, output_id, input_id0, input_id1 , input_id2, valid_gate);
+    //*/
 endmodule
