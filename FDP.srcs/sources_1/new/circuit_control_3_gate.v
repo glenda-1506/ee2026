@@ -40,6 +40,7 @@ module circuit_control_3_gate(
     parameter WHITE = 16'hFFFF;
     parameter DISPLAY_WIDTH = 142; // Change this if require a different dimension
     parameter DISPLAY_HEIGHT = 96; // Change this if require a different dimension
+    parameter MODULE_COUNT = 5;
     
     // Generate required wires and regs
     wire [3:0] pb = {btnU, btnD, btnL, btnR};
@@ -49,6 +50,7 @@ module circuit_control_3_gate(
     // Generate the ready flags for items to draw
     wire [2:0] var_ready;
     wire [5:0] gate_ready;
+    wire [MODULE_COUNT-1:0] wire_ready;
     
     // Generate virtual oled
     virtual_oled_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) v_oled 
