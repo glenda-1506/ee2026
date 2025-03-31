@@ -212,7 +212,7 @@ module circuit_control_3_gate(
         .clk(clk),
         .x_addr(x_index),
         .y_addr(y_index),
-        .x(124),
+        .x(123),
         .y(50),
         .input_lines(g5_input_lines),
         .gate_select(g5_gate_type),

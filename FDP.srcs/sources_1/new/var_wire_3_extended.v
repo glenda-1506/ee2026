@@ -64,6 +64,7 @@ module var_wire_3_extended#(
     
     assign draw = |wire_ready;
     always @(posedge clk) begin
+        assignment_is_successful <= 1'b0;
         case (input_id) 
             A_ID: assignment_is_successful <=  !is_used[0];
             B_ID: assignment_is_successful <=  !is_used[1];
@@ -71,6 +72,7 @@ module var_wire_3_extended#(
             A_BAR_ID: assignment_is_successful <=  !is_used[3];
             B_BAR_ID: assignment_is_successful <=  !is_used[4];
             C_BAR_ID: assignment_is_successful <=  !is_used[5];
+            default: assignment_is_successful <= 1'b0;
         endcase
     end
 endmodule
