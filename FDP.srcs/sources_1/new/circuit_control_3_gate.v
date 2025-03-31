@@ -93,27 +93,57 @@ module circuit_control_3_gate(
         g5_out_id_in = 6'hXX;
         for (i = 0; i < 6; i = i + 1) begin
             case (i)
-                0: begin g0_input_lines = {sw[13:11]}; g0_gate_type = {sw[15:14]}; end
-                1: begin g1_input_lines = {sw[13:11]}; g1_gate_type = {sw[15:14]}; end
-                2: begin g2_input_lines = {sw[13:11]}; g2_gate_type = {sw[15:14]}; end
-                3: begin g3_input_lines = {sw[13:11]}; g3_gate_type = {sw[15:14]}; end
-                4: begin g4_input_lines = {sw[13:11]}; g4_gate_type = {sw[15:14]}; end
-                5: begin g5_input_lines = {sw[13:11]}; g5_gate_type = {sw[15:14]}; end
+                0: begin g0_input_lines = 3'b1; g0_gate_type = 2'b1; end
+                1: begin g1_input_lines = 3'b1; g1_gate_type = 2'b1; end
+                2: begin g2_input_lines = 3'b1; g2_gate_type = 2'b1; end
+                3: begin g3_input_lines = 3'b1; g3_gate_type = 2'b1; end
+                4: begin g4_input_lines = 3'b1; g4_gate_type = 2'b1; end
+                5: begin g5_input_lines = 3'b1; g5_gate_type = 2'b1; end
             endcase
         end  
     end
     
     // SET THE PIXELS TO BE LIGHTED UP
     always @(posedge clk) begin
-        oled_data_reg <= (|var_ready || |gate_ready)
+        oled_data_reg <= (|var_ready || |gate_ready || |wire_ready)
                           ? WHITE : BLACK;
     end
-            
+    
     //////////////////////////////////////////////////////////////////////////////////
     // WIRE MODULES
     //////////////////////////////////////////////////////////////////////////////////      
 //    var_wire_3 #(DISPLAY_WIDTH, DISPLAY_HEIGHT)(x_addr, y_addr, 4, 25, 1'b0);
-  
+
+    wire assignment_done;
+    reg start_reg = 0;  
+    reg [GATE_TYPE_BIT:0] wire_gate_type = 0;
+    reg [5:0] wire_input_id = 0;
+    
+    wire_combined #(
+        .DISPLAY_WIDTH(DISPLAY_WIDTH),
+        .DISPLAY_HEIGHT(DISPLAY_HEIGHT)
+    ) wire_test (
+        .clk(clk),
+        .start(start_reg),
+        .reset(sw[2]),
+        .x_index(x_index),
+        .y_index(y_index),
+        .start_module(0), // to change => figure out where to start (look at pixel mapping)
+        .gate_type(wire_gate_type),
+        .input_id(wire_input_id),
+        .wire_ready(wire_ready),
+        .assignment_done(assignment_done)
+    );
+    wire trigger;
+    single_pulse_debouncer (clk, sw[15], trigger);
+    always @(posedge clk) begin
+        if (!assignment_done)begin
+            wire_gate_type <= sw[14:13];
+            wire_input_id  <= sw[12:7];
+        end
+        start_reg <= trigger; 
+    end
+
     //////////////////////////////////////////////////////////////////////////////////
     // GATE MODULES
     //////////////////////////////////////////////////////////////////////////////////       

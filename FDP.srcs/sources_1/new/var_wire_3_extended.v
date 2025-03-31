@@ -33,18 +33,18 @@ module var_wire_3_extended#(
     input [Y_BIT:0] y_addr,
     input [X_BIT:0]  x,                     
     input [Y_BIT:0]  y,  
-    input [3:0] input_id,
+    input [5:0] input_id,
     output draw,
     output reg assignment_is_successful
     );
     
     // Set parameters
-    localparam [3:0] A_ID = 4'd0;
-    localparam [3:0] B_ID = 4'd1;
-    localparam [3:0] C_ID = 4'd2;
-    localparam [3:0] A_BAR_ID = 4'd5;
-    localparam [3:0] B_BAR_ID = 4'd6;
-    localparam [3:0] C_BAR_ID = 4'd7;
+    localparam [5:0] A_ID = 4'd0;
+    localparam [5:0] B_ID = 4'd1;
+    localparam [5:0] C_ID = 4'd2;
+    localparam [5:0] A_BAR_ID = 4'd5;
+    localparam [5:0] B_BAR_ID = 4'd6;
+    localparam [5:0] C_BAR_ID = 4'd7;
     
     // generate the 6 wires
     wire [5:0] wire_ready;
