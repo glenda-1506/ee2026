@@ -66,7 +66,7 @@ module wire_combined#(
     // Logic
     always @(posedge clk) begin
           if (start) begin assignment_done <= 1'b0; trigger <= 1'b1; end
-          if (trigger) assignment_done <= |assignment_is_successful;
+          else if (trigger) assignment_done <= |assignment_is_successful;
           if (|assignment_is_successful || enable_module == TOTAL_MODULES - 1) trigger <= 0;
           wire_id <= map_wire(input_id, gate_type);
       end
