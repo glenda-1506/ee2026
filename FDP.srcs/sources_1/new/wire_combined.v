@@ -42,7 +42,7 @@ module wire_combined#(
     localparam MODULE_COUNT_BIT = $clog2(TOTAL_MODULES) - 1;
     reg trigger;
     reg [5:0] wire_id;
-    reg [MODULE_COUNT_BIT:0] enable_module;
+    wire [MODULE_COUNT_BIT:0] enable_module;
     wire [TOTAL_MODULES-1:0] assignment_is_successful;
     wire slow_clock;
     clock (clk, 0, slow_clock);
@@ -64,10 +64,10 @@ module wire_combined#(
     endfunction
 
     // Logic
-    always @(posedge clk or posedge start) begin
-          if (start) begin assignment_done <= 1'b0; trigger <= 1; end
+    always @(posedge clk) begin
+          if (start) begin assignment_done <= 1'b0; trigger <= 1'b1; end
           if (trigger) assignment_done <= |assignment_is_successful;
-          if (enable_module == TOTAL_MODULES - 1) trigger <= 0;
+          if (|assignment_is_successful || enable_module == TOTAL_MODULES - 1) trigger <= 0;
           wire_id <= map_wire(input_id, gate_type);
       end
 
