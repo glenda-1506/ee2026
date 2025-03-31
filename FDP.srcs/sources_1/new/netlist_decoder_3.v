@@ -138,8 +138,8 @@ module netlist_decoder_3 #(
                 num_inputs = current_packet[25:24];
                 output_id = current_packet[23:18];
                 input_id0 = current_packet[17:12];
-                input_id1 = (num_inputs > 2'b0) ? current_packet[11:6] : 6'hXX;
-                input_id2 = (num_inputs > 2'b1) ? current_packet[5:0] : 6'hXX;
+                input_id1 = (num_inputs > 2'b0) ? current_packet[11:6] : 6'hFF;
+                input_id2 = (num_inputs > 2'b1) ? current_packet[5:0] : 6'hFF;
                 valid_gate = 1'b1;
                 state = DECODE;
             end
