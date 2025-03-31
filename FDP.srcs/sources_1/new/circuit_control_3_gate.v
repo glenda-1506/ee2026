@@ -85,12 +85,12 @@ module circuit_control_3_gate(
     //////////////////////////////////////////////////////////////////////////////////    
     integer i;
     always @(posedge clk) begin
-        g0_out_id_in = 6'hXX;
-        g1_out_id_in = 6'hXX;
-        g2_out_id_in = 6'hXX;
-        g3_out_id_in = 6'hXX;
-        g4_out_id_in = 6'hXX;
-        g5_out_id_in = 6'hXX;
+        g0_out_id_in = 6'hFF; // not possible to reach this number for id
+        g1_out_id_in = 6'hFF;
+        g2_out_id_in = 6'hFF;
+        g3_out_id_in = 6'hFF;
+        g4_out_id_in = 6'hFF;
+        g5_out_id_in = 6'hFF;
         for (i = 0; i < 6; i = i + 1) begin
             case (i)
                 0: begin g0_input_lines = 3'b1; g0_gate_type = 2'b1; end
@@ -128,7 +128,7 @@ module circuit_control_3_gate(
         .reset(sw[2]),
         .x_index(x_index),
         .y_index(y_index),
-        .start_module(0), // to change => figure out where to start (look at pixel mapping)
+        .available_gates(6'b111111), // to change => use output ID as a way to check if the gate is available. if there is an id, we know that the gate is used
         .gate_type(wire_gate_type),
         .input_id(wire_input_id),
         .wire_ready(wire_ready),

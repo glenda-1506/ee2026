@@ -25,7 +25,7 @@ module wire_combined#(
     parameter DISPLAY_HEIGHT = 64,
     parameter TOTAL_MODULES = 5,
     parameter GATE_TYPE_BIT = 2,
-    parameter TOTAL_MODULE_BIT = 4, // 0 to 12 (only 13 modules is possible for 3-input gate)
+    parameter TOTAL_GATE_BIT = 5, // 0 to 5 
     parameter X_BIT = $clog2(DISPLAY_WIDTH) - 1,
     parameter Y_BIT = $clog2(DISPLAY_HEIGHT) - 1
     )(
@@ -34,7 +34,7 @@ module wire_combined#(
     input reset,
     input [X_BIT:0] x_index,
     input [Y_BIT:0] y_index,
-    input [TOTAL_MODULE_BIT:0] start_module, // top module should have settled where to start 
+    input [TOTAL_GATE_BIT:0] available_gates,
     input [GATE_TYPE_BIT:0] gate_type,
     input [5:0] input_id, // only needs 1 since every clk cycle i deal with only 1
     output [TOTAL_MODULES-1:0] wire_ready,
@@ -52,7 +52,7 @@ module wire_combined#(
         input [GATE_TYPE_BIT:0] gt;
         reg [5:0] result;
         begin
-            result = 6'd60; // default (an invalid id)
+            result = 6'hFF; // default (an invalid id)
             if (in_id == 0 && gt != 0) result = 6'd0; //  A
             if (in_id == 1 && gt != 0) result = 6'd1; //  B
             if (in_id == 2 && gt != 0) result = 6'd2; //  C
@@ -93,7 +93,7 @@ module wire_combined#(
 
                 LOAD: begin
                     wire_id <= map_wire(input_id, gate_type);
-                    enable_module <= start_module;
+                    enable_module <= 0;
                     trigger <= 1'b1; // searching in progress
                     state_reg <= ASSIGN;
                 end
@@ -137,7 +137,7 @@ module wire_combined#(
         .y_addr(y_index),
         .x(4),
         .y(25),
-        .input_id((enable_module == 0) ? wire_id : 6'd60),
+        .input_id((enable_module == 0) ? wire_id : 6'hFF),
         .draw(wire_ready[0]), 
         .assignment_is_successful(assignment_is_successful[0]));
     
@@ -148,7 +148,7 @@ module wire_combined#(
         .y_addr(y_index),
         .x(4),
         .y(53),
-        .input_id((enable_module == 1) ? wire_id : 6'd60),
+        .input_id((enable_module == 1) ? wire_id : 6'hFF),
         .draw(wire_ready[1]), 
         .assignment_is_successful(assignment_is_successful[1]));
         
@@ -159,7 +159,7 @@ module wire_combined#(
         .y_addr(y_index),
         .x(4),
         .y(81),
-        .input_id((enable_module == 2) ? wire_id : 6'd60),
+        .input_id((enable_module == 2) ? wire_id : 6'hFF),
         .draw(wire_ready[2]), 
         .assignment_is_successful(assignment_is_successful[2])); 
         
@@ -170,7 +170,7 @@ module wire_combined#(
         .y_addr(y_index),
         .x(4),
         .y(39),
-        .input_id((enable_module == 3) ? wire_id : 6'd60),
+        .input_id((enable_module == 3) ? wire_id : 6'hFF),
         .draw(wire_ready[3]), 
         .assignment_is_successful(assignment_is_successful[3])); 
         
@@ -182,7 +182,7 @@ module wire_combined#(
         .y_addr(y_index),
         .x(4),
         .y(67),
-        .input_id((enable_module == 4) ? wire_id : 6'd60),
+        .input_id((enable_module == 4) ? wire_id : 6'hFF),
         .draw(wire_ready[4]), 
         .assignment_is_successful(assignment_is_successful[4]));
 
