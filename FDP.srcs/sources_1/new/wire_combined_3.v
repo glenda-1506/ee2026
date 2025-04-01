@@ -5,7 +5,7 @@
 // 
 // Create Date: 03/31/2025 01:46:19 PM
 // Design Name: 
-// Module Name: wire_combined
+// Module Name: wire_combined_3
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -46,7 +46,7 @@ module wire_combined_3#(
     reg [MODULE_COUNT_BIT-1:0] enable_module;
     wire [TOTAL_MODULES-1:0] assignment_is_successful;
     
-    function [5:0] map_wire;
+    function [5:0] map_wire; //rework on this. mapping should be done by top module since it has more info on the gates
         input [5:0] in_id;
         input [GATE_TYPE_BIT:0] gate;
         reg [5:0] result;

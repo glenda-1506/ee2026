@@ -5,7 +5,7 @@
 // 
 // Create Date: 03/31/2025 12:10:54 AM
 // Design Name: 
-// Module Name: var_wire_3_extended
+// Module Name: var_wires_3_extended
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 

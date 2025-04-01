@@ -5,7 +5,7 @@
 // 
 // Create Date: 03/31/2025 12:43:44 PM
 // Design Name: 
-// Module Name: combined_gate
+// Module Name: combined_gate_3
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
