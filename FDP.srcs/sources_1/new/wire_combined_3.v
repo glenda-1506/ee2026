@@ -37,7 +37,7 @@ module wire_combined_3#(
     input [GATE_TYPE_BIT:0] gate_type,
     input [5:0] input_id, // only needs 1 since every clk cycle i deal with only 1
     output [TOTAL_MODULES-1:0] wire_ready,
-    output reg assignment_done // signal to top module to move on
+    output reg assignment_done // signal to top module to move on (can consider a success/failure check)
     );
 
     localparam MODULE_COUNT_BIT = $clog2(TOTAL_MODULES);
@@ -111,7 +111,7 @@ module wire_combined_3#(
                         state_reg <= ASSIGN;
                     end else begin
                         // Last module
-                        assignment_done <= |assignment_is_successful;
+                        assignment_done <= 1'b1;
                         trigger <= 1'b0;
                         state_reg <= DONE;
                     end
