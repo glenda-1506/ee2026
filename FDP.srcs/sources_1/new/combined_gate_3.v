@@ -19,7 +19,7 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-module combined_gate#(
+module combined_gate_3#(
     parameter DISPLAY_WIDTH       = 96,
     parameter DISPLAY_HEIGHT      = 64,
     parameter GATE_TYPE_BIT       = 2,

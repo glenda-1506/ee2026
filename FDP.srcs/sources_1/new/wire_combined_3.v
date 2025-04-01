@@ -19,8 +19,7 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-
-module wire_combined#(
+module wire_combined_3#(
     parameter DISPLAY_WIDTH = 96,
     parameter DISPLAY_HEIGHT = 64,
     parameter TOTAL_MODULES = 5,
@@ -49,16 +48,16 @@ module wire_combined#(
     
     function [5:0] map_wire;
         input [5:0] in_id;
-        input [GATE_TYPE_BIT:0] gt;
+        input [GATE_TYPE_BIT:0] gate;
         reg [5:0] result;
         begin
             result = 6'hFF; // default (an invalid id)
-            if (in_id == 0 && gt != 0) result = 6'd0; //  A
-            if (in_id == 1 && gt != 0) result = 6'd1; //  B
-            if (in_id == 2 && gt != 0) result = 6'd2; //  C
-            if (in_id == 0 && gt == 0) result = 6'd5; // ~A
-            if (in_id == 1 && gt == 0) result = 6'd6; // ~B
-            if (in_id == 2 && gt == 0) result = 6'd7; // ~C
+            if (in_id == 0 && gate != 0) result = 6'd0; //  A
+            if (in_id == 1 && gate != 0) result = 6'd1; //  B
+            if (in_id == 2 && gate != 0) result = 6'd2; //  C
+            if (in_id == 0 && gate == 0) result = 6'd5; // ~A
+            if (in_id == 1 && gate == 0) result = 6'd6; // ~B
+            if (in_id == 2 && gate == 0) result = 6'd7; // ~C
             map_wire = result;
         end
     endfunction
@@ -79,7 +78,7 @@ module wire_combined#(
             assignment_done <= 1'b0;
             trigger <= 1'b0;
             enable_module <= 0;
-            wire_id <= 6'd3;
+            wire_id <= 6'hFF;
         end
         else begin
             case (state_reg)
@@ -163,7 +162,7 @@ module wire_combined#(
         .draw(wire_ready[2]), 
         .assignment_is_successful(assignment_is_successful[2])); 
         
-    var_wire_3_extended #(DISPLAY_WIDTH, DISPLAY_HEIGHT) g3_in (
+    var_wires_3_extended #(DISPLAY_WIDTH, DISPLAY_HEIGHT) g3_in (
         .clk(clk),
         .reset(reset),
         .x_addr(x_index),
@@ -175,7 +174,7 @@ module wire_combined#(
         .assignment_is_successful(assignment_is_successful[3])); 
         
             
-    var_wire_3_extended #(DISPLAY_WIDTH, DISPLAY_HEIGHT) g4_in (
+    var_wires_3_extended #(DISPLAY_WIDTH, DISPLAY_HEIGHT) g4_in (
         .clk(clk),
         .reset(reset),
         .x_addr(x_index),

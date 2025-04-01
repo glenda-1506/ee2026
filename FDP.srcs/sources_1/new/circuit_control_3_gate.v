@@ -112,28 +112,27 @@ module circuit_control_3_gate(
     //////////////////////////////////////////////////////////////////////////////////
     // WIRE MODULES
     //////////////////////////////////////////////////////////////////////////////////      
-//    var_wire_3 #(DISPLAY_WIDTH, DISPLAY_HEIGHT)(x_addr, y_addr, 4, 25, 1'b0);
-
     wire assignment_done;
     reg start_reg = 0;  
     reg [GATE_TYPE_BIT:0] wire_gate_type = 0;
     reg [5:0] wire_input_id = 0;
     
-    wire_combined #(
+    wire_combined_3 #(
         .DISPLAY_WIDTH(DISPLAY_WIDTH),
         .DISPLAY_HEIGHT(DISPLAY_HEIGHT)
-    ) wire_test (
+        )(
         .clk(clk),
-        .start(start_reg),
-        .reset(sw[2]),
+        .start(start_reg), // to change
+        .reset(sw[2]), // to change
         .x_index(x_index),
         .y_index(y_index),
-        .available_gates(6'b111111), // to change => use output ID as a way to check if the gate is available. if there is an id, we know that the gate is used
-        .gate_type(wire_gate_type),
-        .input_id(wire_input_id),
+        .available_gates(6'hFF), // to change => use output ID as a way to check if the gate is available. if there is an id, we know that the gate is used
+        .gate_type(wire_gate_type), // to change
+        .input_id(wire_input_id), // to change
         .wire_ready(wire_ready),
-        .assignment_done(assignment_done)
-    );
+        .assignment_done(assignment_done));
+        
+    // Testing 
     wire trigger;
     single_pulse_debouncer (clk, sw[15], trigger);
     always @(posedge clk) begin
@@ -148,7 +147,7 @@ module circuit_control_3_gate(
     // GATE MODULES
     //////////////////////////////////////////////////////////////////////////////////       
     //*
-    combined_gate #(
+    combined_gate_3 #(
         .DISPLAY_WIDTH(DISPLAY_WIDTH),
         .DISPLAY_HEIGHT(DISPLAY_HEIGHT),
         .GATE_TYPE_BIT(GATE_TYPE_BIT),

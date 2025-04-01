@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module var_wire_3_extended#(
+module var_wires_3_extended#(
     parameter DISPLAY_WIDTH   = 96,
     parameter DISPLAY_HEIGHT  = 64,
     parameter GATE_INPUTS = 3,
