@@ -40,6 +40,7 @@ module circuit_control_3_gate(
     parameter WHITE = 16'hFFFF;
     parameter DISPLAY_WIDTH = 142; // Change this if require a different dimension
     parameter DISPLAY_HEIGHT = 96; // Change this if require a different dimension
+    parameter MODULE_COUNT = 5;
     
     // Generate required wires and regs
     wire [3:0] pb = {btnU, btnD, btnL, btnR};
@@ -49,6 +50,7 @@ module circuit_control_3_gate(
     // Generate the ready flags for items to draw
     wire [2:0] var_ready;
     wire [5:0] gate_ready;
+    wire [MODULE_COUNT-1:0] wire_ready;
     
     // Generate virtual oled
     virtual_oled_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) v_oled 
@@ -83,141 +85,104 @@ module circuit_control_3_gate(
     //////////////////////////////////////////////////////////////////////////////////    
     integer i;
     always @(posedge clk) begin
-        g0_out_id_in = 6'hXX;
-        g1_out_id_in = 6'hXX;
-        g2_out_id_in = 6'hXX;
-        g3_out_id_in = 6'hXX;
-        g4_out_id_in = 6'hXX;
-        g5_out_id_in = 6'hXX;
+        g0_out_id_in = 6'hFF; // not possible to reach this number for id
+        g1_out_id_in = 6'hFF;
+        g2_out_id_in = 6'hFF;
+        g3_out_id_in = 6'hFF;
+        g4_out_id_in = 6'hFF;
+        g5_out_id_in = 6'hFF;
         for (i = 0; i < 6; i = i + 1) begin
             case (i)
-                0: begin g0_input_lines = {sw[13:11]}; g0_gate_type = {sw[15:14]}; end
-                1: begin g1_input_lines = {sw[13:11]}; g1_gate_type = {sw[15:14]}; end
-                2: begin g2_input_lines = {sw[13:11]}; g2_gate_type = {sw[15:14]}; end
-                3: begin g3_input_lines = {sw[13:11]}; g3_gate_type = {sw[15:14]}; end
-                4: begin g4_input_lines = {sw[13:11]}; g4_gate_type = {sw[15:14]}; end
-                5: begin g5_input_lines = {sw[13:11]}; g5_gate_type = {sw[15:14]}; end
+                0: begin g0_input_lines = 3'b1; g0_gate_type = 2'b1; end
+                1: begin g1_input_lines = 3'b1; g1_gate_type = 2'b1; end
+                2: begin g2_input_lines = 3'b1; g2_gate_type = 2'b1; end
+                3: begin g3_input_lines = 3'b1; g3_gate_type = 2'b1; end
+                4: begin g4_input_lines = 3'b1; g4_gate_type = 2'b1; end
+                5: begin g5_input_lines = 3'b1; g5_gate_type = 2'b1; end
             endcase
         end  
     end
     
     // SET THE PIXELS TO BE LIGHTED UP
     always @(posedge clk) begin
-        oled_data_reg <= (|var_ready || |gate_ready)
+        oled_data_reg <= (|var_ready || |gate_ready || |wire_ready)
                           ? WHITE : BLACK;
     end
-            
+    
     //////////////////////////////////////////////////////////////////////////////////
     // WIRE MODULES
     //////////////////////////////////////////////////////////////////////////////////      
 //    var_wire_3 #(DISPLAY_WIDTH, DISPLAY_HEIGHT)(x_addr, y_addr, 4, 25, 1'b0);
-  
+
+    wire assignment_done;
+    reg start_reg = 0;  
+    reg [GATE_TYPE_BIT:0] wire_gate_type = 0;
+    reg [5:0] wire_input_id = 0;
+    
+    wire_combined #(
+        .DISPLAY_WIDTH(DISPLAY_WIDTH),
+        .DISPLAY_HEIGHT(DISPLAY_HEIGHT)
+    ) wire_test (
+        .clk(clk),
+        .start(start_reg),
+        .reset(sw[2]),
+        .x_index(x_index),
+        .y_index(y_index),
+        .available_gates(6'b111111), // to change => use output ID as a way to check if the gate is available. if there is an id, we know that the gate is used
+        .gate_type(wire_gate_type),
+        .input_id(wire_input_id),
+        .wire_ready(wire_ready),
+        .assignment_done(assignment_done)
+    );
+    wire trigger;
+    single_pulse_debouncer (clk, sw[15], trigger);
+    always @(posedge clk) begin
+        if (!assignment_done)begin
+            wire_gate_type <= sw[14:13];
+            wire_input_id  <= sw[12:7];
+        end
+        start_reg <= trigger; 
+    end
+
     //////////////////////////////////////////////////////////////////////////////////
     // GATE MODULES
     //////////////////////////////////////////////////////////////////////////////////       
-    
-    //* Generate variable components
-    variable_circuit_segment #(DISPLAY_WIDTH, DISPLAY_HEIGHT) A (
-        .x_addr(x_index),
-        .y_addr(y_index),
-        .x(2),
-        .y(2),
-        .letter_info(0),
-        .not_gate_visability(1), //to-change
-        .segment_visability(1), //to-change
-        .draw(var_ready[0]));
-        
-    variable_circuit_segment #(DISPLAY_WIDTH, DISPLAY_HEIGHT) B (
-        .x_addr(x_index),
-        .y_addr(y_index),
-        .x(23),
-        .y(2),
-        .letter_info(1),
-        .not_gate_visability(1), //to-change
-        .segment_visability(1), //to-change
-        .draw(var_ready[1]));
-        
-    variable_circuit_segment #(DISPLAY_WIDTH, DISPLAY_HEIGHT) C (
-        .x_addr(x_index),
-        .y_addr(y_index),
-        .x(44),
-        .y(2),
-        .letter_info(2),
-        .not_gate_visability(1), //to-change
-        .segment_visability(1), //to-change
-        .draw(var_ready[2]));
-    
-    // Generate the gates
-    gate_container #(DISPLAY_WIDTH, DISPLAY_HEIGHT) g0 (
+    //*
+    combined_gate #(
+        .DISPLAY_WIDTH(DISPLAY_WIDTH),
+        .DISPLAY_HEIGHT(DISPLAY_HEIGHT),
+        .GATE_TYPE_BIT(GATE_TYPE_BIT),
+        .GATE_OUTPUT_ID_BIT(GATE_OUTPUT_ID_BIT),
+        .GATE_INPUT_BIT(GATE_INPUT_BIT)
+        )(
         .clk(clk),
-        .x_addr(x_index),
-        .y_addr(y_index),
-        .x(75),
-        .y(22),
-        .input_lines(g0_input_lines),
-        .gate_select(g0_gate_type),
-        .output_id_in(g0_out_id_in),
-        .draw(gate_ready[0]),
-        .output_id(g0_out_id));
-
-    gate_container #(DISPLAY_WIDTH, DISPLAY_HEIGHT) g1 (
-        .clk(clk),
-        .x_addr(x_index),
-        .y_addr(y_index),
-        .x(75),
-        .y(50),
-        .input_lines(g1_input_lines),
-        .gate_select(g1_gate_type),
-        .output_id_in(g1_out_id_in),
-        .draw(gate_ready[1]),
-        .output_id(g1_out_id));
-
-    gate_container #(DISPLAY_WIDTH, DISPLAY_HEIGHT) g2 (
-        .clk(clk),
-        .x_addr(x_index),
-        .y_addr(y_index),
-        .x(75),
-        .y(78),
-        .input_lines(g2_input_lines),
-        .gate_select(g2_gate_type),
-        .output_id_in(g2_out_id_in),
-        .draw(gate_ready[2]),
-        .output_id(g2_out_id));
-
-    gate_container #(DISPLAY_WIDTH, DISPLAY_HEIGHT) g3 (
-        .clk(clk),
-        .x_addr(x_index),
-        .y_addr(y_index),
-        .x(99),
-        .y(36),
-        .input_lines(g3_input_lines),
-        .gate_select(g3_gate_type),
-        .output_id_in(g3_out_id_in),
-        .draw(gate_ready[3]),
-        .output_id(g3_out_id));
-
-    gate_container #(DISPLAY_WIDTH, DISPLAY_HEIGHT) g4 (
-        .clk(clk),
-        .x_addr(x_index),
-        .y_addr(y_index),
-        .x(99),
-        .y(64),
-        .input_lines(g4_input_lines),
-        .gate_select(g4_gate_type),
-        .output_id_in(g4_out_id_in),
-        .draw(gate_ready[4]),
-        .output_id(g4_out_id));
-
-    gate_container #(DISPLAY_WIDTH, DISPLAY_HEIGHT) g5 (
-        .clk(clk),
-        .x_addr(x_index),
-        .y_addr(y_index),
-        .x(124),
-        .y(50),
-        .input_lines(g5_input_lines),
-        .gate_select(g5_gate_type),
-        .output_id_in(g5_out_id_in),
-        .draw(gate_ready[5]),
-        .output_id(g5_out_id));
+        .x_index(x_index),
+        .y_index(y_index),
+        .g0_input_lines(g0_input_lines),
+        .g0_gate_type(g0_gate_type),
+        .g0_out_id_in(g0_out_id_in),
+        .g1_input_lines(g1_input_lines),
+        .g1_gate_type(g1_gate_type),
+        .g1_out_id_in(g1_out_id_in),
+        .g2_input_lines(g2_input_lines),
+        .g2_gate_type(g2_gate_type),
+        .g2_out_id_in(g2_out_id_in),
+        .g3_input_lines(g3_input_lines),
+        .g3_gate_type(g3_gate_type),
+        .g3_out_id_in(g3_out_id_in),
+        .g4_input_lines(g4_input_lines),
+        .g4_gate_type(g4_gate_type),
+        .g4_out_id_in(g4_out_id_in),
+        .g5_input_lines(g5_input_lines),
+        .g5_gate_type(g5_gate_type),
+        .g5_out_id_in(g5_out_id_in),
+        .var_ready(var_ready),
+        .gate_ready(gate_ready),
+        .g0_out_id(g0_out_id),
+        .g1_out_id(g1_out_id),
+        .g2_out_id(g2_out_id),
+        .g3_out_id(g3_out_id),
+        .g4_out_id(g4_out_id),
+        .g5_out_id(g5_out_id));
     //*/
 endmodule
