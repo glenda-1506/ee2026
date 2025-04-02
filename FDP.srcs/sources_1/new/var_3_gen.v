@@ -29,31 +29,86 @@
 
 module var_3_gen#(
     parameter IS_MSOP = 1,
-    parameter DATA_WIDTH = 120 // 30 characters -> each char is 4 bits
+    parameter DATA_WIDTH = 120  // e.g. 30 hex characters (30*4 bits)
     )(
     input clk,
     input [7:0] func_id,
     input receive_ready,
     output reg transmit_ready = 0,
-    output reg [DATA_WIDTH - 1: 0] data
+    output reg [3:0] char_out
     );
+
+    // Calculate number of hex characters in a line.
+    localparam NUM_CHARS = DATA_WIDTH / 4;
     
+    // FSM state definitions.
+    localparam IDLE   = 2'd0,
+               SEARCH = 2'd1,
+               SEND   = 2'd2,
+               DONE   = 2'd3;
+    
+    reg [1:0] state = IDLE;
+    reg [$clog2(NUM_CHARS)-1:0] index;
+    reg [DATA_WIDTH-1:0] expression;
     reg [DATA_WIDTH-1:0] memory [0:255];
     
-    initial begin
-        if (IS_MSOP) begin
-            $readmemh("msop_3_var.mem", memory);
-        end else begin
-            $readmemh("mpos_3_var.mem", memory);
-        end
-    end
+    wire [3:0] current_hex;
+    assign current_hex = (expression >> (((NUM_CHARS - 1 - index) * 4))) & 4'hF;
     
+    initial begin
+        if (IS_MSOP)
+            $readmemh("msop_3_var.mem", memory);
+        else
+            $readmemh("mpos_3_var.mem", memory);
+    end
+
     always @(posedge clk) begin
-        if (receive_ready) begin
-            data <= memory[func_id];
-            transmit_ready <= 1'b1;
-        end else begin
-            transmit_ready <= 1'b0;
-        end
+        case(state)
+            IDLE: begin
+                transmit_ready <= 0;
+                if (receive_ready) begin
+                    expression <= memory[func_id];
+                    index <= 0;
+                    state <= SEARCH;
+                end
+            end
+            
+            SEARCH: begin
+                transmit_ready <= 0;
+                if (current_hex == 4'hF) begin
+                    if (index < NUM_CHARS - 1) begin
+                        index <= index + 1;
+                        state <= SEND;
+                    end else begin
+                        state <= DONE;
+                    end
+                end else begin
+                    if (index < NUM_CHARS - 1) begin
+                        index <= index + 1;
+                        state <= SEARCH;
+                    end else begin
+                        state <= DONE;
+                    end
+                end
+            end
+
+            SEND: begin
+                char_out <= current_hex;
+                transmit_ready <= 1;
+                if (index < NUM_CHARS - 1) begin
+                    index <= index + 1;
+                    state <= SEND;
+                end else begin
+                    state <= DONE;
+                end
+            end
+            
+            DONE: begin
+                transmit_ready <= 0;
+                state <= IDLE;
+            end
+
+            default: state <= IDLE;
+        endcase
     end
 endmodule
