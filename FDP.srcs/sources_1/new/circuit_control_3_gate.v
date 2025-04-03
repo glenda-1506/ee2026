@@ -40,7 +40,7 @@ module circuit_control_3_gate(
     parameter WHITE = 16'hFFFF;
     parameter DISPLAY_WIDTH = 142; // Change this if require a different dimension
     parameter DISPLAY_HEIGHT = 96; // Change this if require a different dimension
-    parameter MODULE_COUNT = 5;
+    parameter MODULE_COUNT = 50;
     
     // Generate required wires and regs
     wire [3:0] pb = {btnU, btnD, btnL, btnR};
@@ -93,12 +93,12 @@ module circuit_control_3_gate(
         g5_out_id_in = 6'hFF;
         for (i = 0; i < 6; i = i + 1) begin
             case (i)
-                0: begin g0_input_lines = 3'b1; g0_gate_type = 2'b1; end
-                1: begin g1_input_lines = 3'b1; g1_gate_type = 2'b1; end
-                2: begin g2_input_lines = 3'b1; g2_gate_type = 2'b1; end
-                3: begin g3_input_lines = 3'b1; g3_gate_type = 2'b1; end
-                4: begin g4_input_lines = 3'b1; g4_gate_type = 2'b1; end
-                5: begin g5_input_lines = 3'b1; g5_gate_type = 2'b1; end
+                0: begin g0_input_lines = 3'b111; g0_gate_type = 2'b1; end
+                1: begin g1_input_lines = 3'b111; g1_gate_type = 2'b1; end
+                2: begin g2_input_lines = 3'b111; g2_gate_type = 2'b1; end
+                3: begin g3_input_lines = 3'b111; g3_gate_type = 2'b1; end
+                4: begin g4_input_lines = 3'b111; g4_gate_type = 2'b1; end
+                5: begin g5_input_lines = 3'b111; g5_gate_type = 2'b1; end
             endcase
         end  
     end
@@ -112,34 +112,29 @@ module circuit_control_3_gate(
     //////////////////////////////////////////////////////////////////////////////////
     // WIRE MODULES
     //////////////////////////////////////////////////////////////////////////////////      
-//    var_wire_3 #(DISPLAY_WIDTH, DISPLAY_HEIGHT)(x_addr, y_addr, 4, 25, 1'b0);
-
     wire assignment_done;
     reg start_reg = 0;  
-    reg [GATE_TYPE_BIT:0] wire_gate_type = 0;
-    reg [5:0] wire_input_id = 0;
+    reg [$clog2(MODULE_COUNT):0] wire_input_id = 0;
     
-    wire_combined #(
+    wire_combined_3 #(
         .DISPLAY_WIDTH(DISPLAY_WIDTH),
         .DISPLAY_HEIGHT(DISPLAY_HEIGHT)
-    ) wire_test (
+        )(
         .clk(clk),
-        .start(start_reg),
-        .reset(sw[2]),
+        .start(start_reg), // to change
+        .reset(sw[2]), // to change
         .x_index(x_index),
         .y_index(y_index),
-        .available_gates(6'b111111), // to change => use output ID as a way to check if the gate is available. if there is an id, we know that the gate is used
-        .gate_type(wire_gate_type),
-        .input_id(wire_input_id),
+        .input_id(wire_input_id), // to change
         .wire_ready(wire_ready),
-        .assignment_done(assignment_done)
-    );
+        .assignment_done(assignment_done));
+        
+    // Testing 
     wire trigger;
     single_pulse_debouncer (clk, sw[15], trigger);
     always @(posedge clk) begin
         if (!assignment_done)begin
-            wire_gate_type <= sw[14:13];
-            wire_input_id  <= sw[12:7];
+            wire_input_id  <= sw[14:9];
         end
         start_reg <= trigger; 
     end
@@ -148,7 +143,7 @@ module circuit_control_3_gate(
     // GATE MODULES
     //////////////////////////////////////////////////////////////////////////////////       
     //*
-    combined_gate #(
+    combined_gate_3 #(
         .DISPLAY_WIDTH(DISPLAY_WIDTH),
         .DISPLAY_HEIGHT(DISPLAY_HEIGHT),
         .GATE_TYPE_BIT(GATE_TYPE_BIT),

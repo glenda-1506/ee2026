@@ -5,7 +5,7 @@
 // 
 // Create Date: 03/31/2025 12:43:44 PM
 // Design Name: 
-// Module Name: combined_gate
+// Module Name: combined_gate_3
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -19,7 +19,7 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-module combined_gate#(
+module combined_gate_3#(
     parameter DISPLAY_WIDTH       = 96,
     parameter DISPLAY_HEIGHT      = 64,
     parameter GATE_TYPE_BIT       = 2,
