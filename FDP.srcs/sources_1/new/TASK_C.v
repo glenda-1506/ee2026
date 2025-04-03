@@ -75,15 +75,15 @@ module TASK_C(
     keyboard_display display (
         .clk(clk),
         .reset(reset),
-        .x_addr(x_addr),
-        .y_addr(y_addr),
+        .x(x_addr),
+        .y(y_addr),
         .btnU(btnU_debounced), 
         .btnD(btnD_debounced),
         .btnL(btnL_debounced), 
         .btnR(btnR_debounced), 
         .btnC(btnC_debounced),
-        .oled_data(oled_data),
-        .selected_key(selected_key),
+        .pixel_data(oled_data),
+        .key_value(selected_key),
         .key_pressed(key_pressed)
     );
 endmodule
