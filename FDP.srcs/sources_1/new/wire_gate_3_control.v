@@ -48,7 +48,7 @@ module wire_gate_3_control#(
 
     // FSM STATES 
     reg [4:0] state;
-    localparam [5:0] IDLE = 5'd0,
+    localparam [4:0] IDLE = 5'd0,
                      READ = 5'd1,
                      WAIT_FOR_PARSE = 5'd2,
                      PARSE_COMPLETE = 5'd3,
@@ -231,7 +231,7 @@ module wire_gate_3_control#(
                             wire_output_index <= wire_output_index + 1;
                         end else if (wire_output_index == 1) begin
                             output_wire(map_gate_wire(4,5));
-                            wire_output_index <= wire_output_index + 1;
+                            wire_output_index <= 0;
                             state <= OR5_GATE_OUT;
                         end
                     end
@@ -259,6 +259,7 @@ module wire_gate_3_control#(
         end
         
         for(i = 0; i < 6; i = i + 1) used_gate[i] = 0;
+        for(i = 0; i < 50; i = i + 1) wire_used[i] = 1'b0;
         
         wire_set[0][0] = 18; wire_set[0][1] = 21; wire_set[0][2] = 31; wire_set[0][3] = 34; wire_set[0][4] = 37;
         wire_set[1][0] = 19; wire_set[1][1] = 22; wire_set[1][2] = 30; wire_set[1][3] = 33; wire_set[1][4] = 36;
