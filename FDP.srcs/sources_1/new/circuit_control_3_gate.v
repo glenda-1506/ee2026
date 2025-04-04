@@ -59,85 +59,41 @@ module circuit_control_3_gate(
     //////////////////////////////////////////////////////////////////////////////////
     // GATE VARIABLES / WIRES / REGS
     //////////////////////////////////////////////////////////////////////////////////  
-    
-    // Set parameters
-    localparam GATE_TYPE_BIT = 2;
-    localparam GATE_OUTPUT_ID_BIT = 6;
-    localparam GATE_INPUT_BIT = 3;
-    localparam DATA_PACKET_BIT = GATE_TYPE_BIT + GATE_OUTPUT_ID_BIT + GATE_INPUT_BIT;
-    
-    // Individual regs and wires
-    reg [GATE_TYPE_BIT-1:0] g0_gate_type, g1_gate_type, g2_gate_type, g3_gate_type, g4_gate_type, g5_gate_type;
-    reg [GATE_OUTPUT_ID_BIT-1:0] g0_out_id_in, g1_out_id_in, g2_out_id_in, g3_out_id_in, g4_out_id_in, g5_out_id_in;
-    reg [GATE_INPUT_BIT-1:0] g0_input_lines, g1_input_lines, g2_input_lines, g3_input_lines, g4_input_lines, g5_input_lines;
-    wire [GATE_OUTPUT_ID_BIT-1:0] g0_out_id, g1_out_id, g2_out_id, g3_out_id, g4_out_id, g5_out_id;
-    
-    // Data Packets (for lookup)
-    wire [DATA_PACKET_BIT-1:0] g0_packet = {g0_out_id, g0_input_lines, g0_gate_type};
-    wire [DATA_PACKET_BIT-1:0] g1_packet = {g1_out_id, g1_input_lines, g1_gate_type};
-    wire [DATA_PACKET_BIT-1:0] g2_packet = {g2_out_id, g2_input_lines, g2_gate_type};
-    wire [DATA_PACKET_BIT-1:0] g3_packet = {g3_out_id, g3_input_lines, g3_gate_type};
-    wire [DATA_PACKET_BIT-1:0] g4_packet = {g4_out_id, g4_input_lines, g4_gate_type};
-    wire [DATA_PACKET_BIT-1:0] g5_packet = {g5_out_id, g5_input_lines, g5_gate_type};
+    wire [7:0] function_id = sw[15:8];
+    reg [7:0] old_func_id;
+    wire [2:0] gate_input_count;
+    wire [1:0] gate_type;
+    wire [2:0] gate_id;
+    wire control_valid;
+    wire [$clog2(MODULE_COUNT):0] wire_input_id;
     
     //////////////////////////////////////////////////////////////////////////////////
     // MAIN CODE LOGIC
     //////////////////////////////////////////////////////////////////////////////////    
-    integer i;
-    always @(posedge clk) begin
-        g0_out_id_in = 6'hFF; // not possible to reach this number for id
-        g1_out_id_in = 6'hFF;
-        g2_out_id_in = 6'hFF;
-        g3_out_id_in = 6'hFF;
-        g4_out_id_in = 6'hFF;
-        g5_out_id_in = 6'hFF;
-        for (i = 0; i < 6; i = i + 1) begin
-            case (i)
-                0: begin g0_input_lines = 3'b111; g0_gate_type = 2'b1; end
-                1: begin g1_input_lines = 3'b111; g1_gate_type = 2'b1; end
-                2: begin g2_input_lines = 3'b111; g2_gate_type = 2'b1; end
-                3: begin g3_input_lines = 3'b111; g3_gate_type = 2'b1; end
-                4: begin g4_input_lines = 3'b111; g4_gate_type = 2'b1; end
-                5: begin g5_input_lines = 3'b111; g5_gate_type = 2'b1; end
-            endcase
-        end  
-    end
+    
     
     // SET THE PIXELS TO BE LIGHTED UP
     always @(posedge clk) begin
+        old_func_id <= function_id;
         oled_data_reg <= (|var_ready || |gate_ready || |wire_ready)
                           ? WHITE : BLACK;
     end
     
     //////////////////////////////////////////////////////////////////////////////////
     // WIRE MODULES
-    //////////////////////////////////////////////////////////////////////////////////      
-    wire assignment_done;
-    reg start_reg = 0;  
-    reg [$clog2(MODULE_COUNT):0] wire_input_id = 0;
+    //////////////////////////////////////////////////////////////////////////////////        
+    
     
     wire_combined_3 #(
         .DISPLAY_WIDTH(DISPLAY_WIDTH),
         .DISPLAY_HEIGHT(DISPLAY_HEIGHT)
         )(
         .clk(clk),
-        .start(start_reg), // to change
-        .reset(sw[2]), // to change
+        .reset(old_func_id != function_id), 
         .x_index(x_index),
         .y_index(y_index),
-        .input_id(wire_input_id), // to change
-        .wire_ready(wire_ready),
-        .assignment_done(assignment_done));
-        
-    // Testing 
-    wire trigger;
-    single_pulse_debouncer (clk, sw[15], trigger);
-    always @(posedge clk) begin
-        if (!assignment_done)begin
-            wire_input_id  <= sw[14:9];
-        end
-        start_reg <= trigger; 
-    end
+        .input_id(wire_input_id),
+        .wire_ready(wire_ready));
 
     //////////////////////////////////////////////////////////////////////////////////
     // GATE MODULES
@@ -145,39 +101,30 @@ module circuit_control_3_gate(
     //*
     combined_gate_3 #(
         .DISPLAY_WIDTH(DISPLAY_WIDTH),
-        .DISPLAY_HEIGHT(DISPLAY_HEIGHT),
-        .GATE_TYPE_BIT(GATE_TYPE_BIT),
-        .GATE_OUTPUT_ID_BIT(GATE_OUTPUT_ID_BIT),
-        .GATE_INPUT_BIT(GATE_INPUT_BIT)
+        .DISPLAY_HEIGHT(DISPLAY_HEIGHT)
         )(
         .clk(clk),
+        .reset(old_func_id != function_id),
         .x_index(x_index),
         .y_index(y_index),
-        .g0_input_lines(g0_input_lines),
-        .g0_gate_type(g0_gate_type),
-        .g0_out_id_in(g0_out_id_in),
-        .g1_input_lines(g1_input_lines),
-        .g1_gate_type(g1_gate_type),
-        .g1_out_id_in(g1_out_id_in),
-        .g2_input_lines(g2_input_lines),
-        .g2_gate_type(g2_gate_type),
-        .g2_out_id_in(g2_out_id_in),
-        .g3_input_lines(g3_input_lines),
-        .g3_gate_type(g3_gate_type),
-        .g3_out_id_in(g3_out_id_in),
-        .g4_input_lines(g4_input_lines),
-        .g4_gate_type(g4_gate_type),
-        .g4_out_id_in(g4_out_id_in),
-        .g5_input_lines(g5_input_lines),
-        .g5_gate_type(g5_gate_type),
-        .g5_out_id_in(g5_out_id_in),
+        .input_count(control_valid ? gate_input_count : 3'd7),
+        .gate_type(control_valid ? gate_type : 2'd0),
+        .gate_id(control_valid ? gate_id : 3'd7),
         .var_ready(var_ready),
-        .gate_ready(gate_ready),
-        .g0_out_id(g0_out_id),
-        .g1_out_id(g1_out_id),
-        .g2_out_id(g2_out_id),
-        .g3_out_id(g3_out_id),
-        .g4_out_id(g4_out_id),
-        .g5_out_id(g5_out_id));
+        .gate_ready(gate_ready));
     //*/
+    
+    //////////////////////////////////////////////////////////////////////////////////
+    // CONTROL MODULE
+    ////////////////////////////////////////////////////////////////////////////////// 
+    
+    wire_gate_3_control ctrl (
+        .clk(clk),
+        .reset(old_func_id != function_id),
+        .func_id(function_id),
+        .wire_id(wire_input_id),
+        .gate_type(gate_type),
+        .gate_id(gate_id),
+        .input_count(gate_input_count),
+        .valid(control_valid));
 endmodule

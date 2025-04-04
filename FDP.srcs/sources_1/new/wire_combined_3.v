@@ -28,49 +28,13 @@ module wire_combined_3#(
     parameter MODULE_COUNT_BIT = $clog2(TOTAL_MODULES)
     )(
     input clk,
-    input start,
     input reset,
     input [X_BIT:0] x_index,
     input [Y_BIT:0] y_index,
-    input [MODULE_COUNT_BIT:0] input_id, // only needs 1 since every clk cycle i deal with only 1
-    output [TOTAL_MODULES-1:0] wire_ready,
-    output reg assignment_done // signal to top module to move on (can consider a success/failure check)
+    input [MODULE_COUNT_BIT:0] input_id,
+    output [TOTAL_MODULES-1:0] wire_ready
     );
     
-    localparam IDLE = 2'd0,
-               WAIT = 2'd1,
-               DONE = 2'd2;
-               
-    reg [MODULE_COUNT_BIT:0] wire_id;
-    reg [1:0] state_reg = IDLE;
-    
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
-            state_reg <= IDLE;
-            assignment_done <= 1'b0;
-            wire_id <= 6'hFF;
-        end else begin
-            case (state_reg)
-                IDLE: begin
-                    assignment_done <= 1'b0;
-                    if (start) begin
-                        wire_id <= input_id;
-                        state_reg <= WAIT;
-                    end
-                end
-    
-                WAIT: begin state_reg <= DONE; end // give 1 clock cycle to assign
-                
-                DONE: begin
-                    if (!start) state_reg <= IDLE;
-                    assignment_done <= 1'b1;
-                end
-    
-                default: state_reg <= IDLE;
-            endcase
-        end
-    end
-
     //////////////////////////////////////////////////////////////////////////////////
     // ALL WIRE MODULES
     //////////////////////////////////////////////////////////////////////////////////
