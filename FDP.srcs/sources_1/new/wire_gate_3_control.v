@@ -5,7 +5,7 @@
 // 
 // Create Date: 04/03/2025 01:33:10 PM
 // Design Name: 
-// Module Name: circuit_control
+// Module Name: wire_gate_3_control
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module circuit_control(
+module wire_gate_3_control(
 
     );
 endmodule
