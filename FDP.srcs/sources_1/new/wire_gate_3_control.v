@@ -37,7 +37,7 @@ module wire_gate_3_control#(
     reg [7:0] old_func_id = 8'hff;
     wire transmit_ready;
     wire [3:0] char;   
-    var_3_gen #(IS_MSOP)(clk, func_id, receive_ready, transmit_ready, char); 
+    var_3_gen #(IS_MSOP) gen (clk, func_id, receive_ready, transmit_ready, char); 
  
     // Storage for product terms
     reg [3:0] product_vars [0:3][0:2];
@@ -48,7 +48,7 @@ module wire_gate_3_control#(
 
     // FSM STATES 
     reg [4:0] state;
-    localparam [6:0] IDLE = 5'd0,
+    localparam [5:0] IDLE = 5'd0,
                      READ = 5'd1,
                      WAIT_FOR_PARSE = 5'd2,
                      PARSE_COMPLETE = 5'd3,
@@ -82,15 +82,15 @@ module wire_gate_3_control#(
     always @ (posedge clk or posedge reset) begin
         if (reset) begin
             old_func_id <= 8'hFF;
-            set_default_output;
-            init; // task to re-initialise all
+            set_default_output();
+            init(); // task to re-initialise all
         end else begin
             if (func_id != old_func_id) begin // check if func_id changed
                 old_func_id <= func_id;
                 valid <= 1'b0;
-                init;
+                init();
             end else begin
-                set_default_output;
+                set_default_output();
                 
                 case (state)
                     IDLE: state <= READ;
@@ -98,13 +98,14 @@ module wire_gate_3_control#(
                         if (transmit_ready) begin
                             if (char == 4'hF) begin // end
                                 parse_done <= 1;
-                                update_product_count;
+                                update_product_count();
                                 state <= WAIT_FOR_PARSE;
                             end else if(char == 4'h5) begin // OR
-                                update_product_count;
+                                update_product_count();
                                 current_product <= (current_product < 3) ? current_product + 1 : current_product;
                             end else if(char == 4'h4) begin // NOT
                                 state <= WAIT_NOT; // char comes in the next clk
+                            end else if (char == 4'h6) begin // AND GATE -> just continue
                             end else begin // 0,1,2 -> A, B, C 
                                 if (char <= 4'h2) store_variable(char);
                             end
@@ -281,6 +282,7 @@ module wire_gate_3_control#(
         wire_id <= 6'd63;
         gate_type <= 2'b11;
         gate_id <= 3'b111;
+        input_count <= 3'b111;
     end
     endtask
     
@@ -335,8 +337,9 @@ module wire_gate_3_control#(
         conflicts = 1'b0;
         for(i = 0; i < 6; i = i + 1) begin
             if (wire_in_set(w, wire_set[i][0], wire_set[i][1], wire_set[i][2], wire_set[i][3], wire_set[i][4]) &&
-                any_wire_used_in_set(wire_set[i][0], wire_set[i][1], wire_set[i][2], wire_set[i][3], wire_set[i][4]))
-                conflicts = 1'b1; i = 7;
+                any_wire_used_in_set(wire_set[i][0], wire_set[i][1], wire_set[i][2], wire_set[i][3], wire_set[i][4])) begin
+                conflicts = 1'b1; 
+            end
         end  
     end
     endfunction
@@ -358,7 +361,6 @@ module wire_gate_3_control#(
             if (wire_in_set(w, wire_set[i][0], wire_set[i][1], 
                 wire_set[i][2], wire_set[i][3], wire_set[i][4])) begin
                 mark_used_wire_set(wire_set[i][0], wire_set[i][1], wire_set[i][2], wire_set[i][3], wire_set[i][4]);
-                i = 7;
             end
         end 
     end
