@@ -29,7 +29,7 @@
 
 module var_3_gen#(
     parameter IS_MSOP = 1,
-    parameter DATA_WIDTH = 120  // e.g. 30 hex characters (30*4 bits)
+    parameter DATA_WIDTH = 124  // e.g. 30 hex characters (30*4 bits)
     )(
     input clk,
     input [7:0] func_id,
