@@ -11,7 +11,8 @@ module TASK_B(
     input key_pressed,
     output led,
     output signal,
-    output reg [15:0] oled_data_reg = 0
+    output reg [15:0] oled_data_reg = 0,
+    output keyboard_lock
 ); 
     wire clk6p25m;
     wire [15:0] out;
@@ -28,7 +29,8 @@ module TASK_B(
         .key_pressed(key_pressed),
         .led(led),
         .signal(signal),
-        .pixel_data(out)
+        .pixel_data(out),
+        .keyboard_lock(keyboard_lock)
     );
 
 always @(posedge clk6p25m) begin

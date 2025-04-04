@@ -26,17 +26,28 @@ module input_manager_sim;
     reg key_pressed = 0;
     reg [3:0] key_value = 4'b0000;
     wire [63:0] buffer_out;
+    wire locked;
+    
+    parameter KEY_A = 4'b0000; 
+    parameter KEY_B = 4'b0001; 
+    parameter KEY_C = 4'b0010; 
+    parameter KEY_NOT = 4'b0100; 
+    parameter KEY_OR = 4'b0101; 
+    parameter KEY_AND = 4'b0110; 
+    parameter KEY_LBRAC = 4'b1000; 
+    parameter KEY_RBRAC = 4'b1001; 
+    parameter KEY_DELETE = 4'b1010; 
+    parameter KEY_ENTER = 4'b1011;
 
-    // Instantiate your key_buffer module
-    input_manager uut (
+    input_manager manager (
         .clk(clk),
         .reset(reset),
+        .selected_key(key_value),
         .key_pressed(key_pressed),
-        .key_value(key_value),
-        .buffer_out(buffer_out)
+        .buffer_out(buffer_out),
+        .locked(locked)
     );
 
-    // Clock generation: 100MHz
     always #5 clk = ~clk;
 
     initial begin
@@ -45,41 +56,32 @@ module input_manager_sim;
         #20;
         reset = 0;
 
-        // Type A (0000), B (0001), C (0010)
-        press_key(4'b0000); // A
-        press_key(4'b0001); // B
-        press_key(4'b0010); // C
-        press_key(4'b0010);
-        press_key(4'b0010);
-        press_key(4'b0010);
-        press_key(4'b0010);
-        press_key(4'b0010);
-        press_key(4'b0010);
-        press_key(4'b0010);
-        press_key(4'b0010);
-        press_key(4'b0010);
-        press_key(4'b0010);
-        press_key(4'b0010);
-        press_key(4'b0010);
-        press_key(4'b0010);
-        press_key(4'b0010);
-        press_key(4'b0010);
+        press_key(KEY_A); 
+        press_key(KEY_NOT); 
+        press_key(KEY_OR); 
+        press_key(KEY_NOT); 
+        press_key(KEY_LBRAC); 
+        press_key(KEY_B); 
+        press_key(KEY_RBRAC); 
+        press_key(KEY_LBRAC); 
+        press_key(KEY_AND); 
+        press_key(KEY_LBRAC); 
+        press_key(KEY_C); 
+        press_key(KEY_AND); 
+        press_key(KEY_RBRAC); 
+        press_key(KEY_B); 
+        press_key(KEY_RBRAC); 
         
-
-        // Press DELETE (1010) ? should remove C
         press_key(4'b1010);
         press_key(4'b1010);
 
-        // Press ENTER (1011) ? should lock input
         press_key(4'b1011);
 
-        // Try typing ~ (0100) after lock ? should be ignored
         press_key(4'b0100);
 
         #50;
     end
 
-    // Helper task to simulate key press
     task press_key(input [3:0] val);
         begin
             key_value = val;
