@@ -28,7 +28,8 @@ module TASK_C(
     input btnU, btnD, btnL, btnR, btnC,
     output [15:0] oled_data,
     output [3:0] selected_key,
-    output key_pressed
+    output key_pressed,
+    output [63:0] full_input
     );
     
     wire btnC_debounced;
@@ -85,5 +86,13 @@ module TASK_C(
         .pixel_data(oled_data),
         .key_value(selected_key),
         .key_pressed(key_pressed)
+    );
+    
+    input_manager manager (
+        .clk(clk),
+        .reset(reset),
+        .key_pressed(key_pressed),
+        .key_value(selected_key),
+        .buffer_out(full_input)
     );
 endmodule
