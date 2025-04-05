@@ -81,169 +81,163 @@ module wire_gate_3_control#(
     ////////////////////////////////////////////////////////////////////////////////// 
     always @ (posedge clk or posedge reset) begin
         if (reset) begin
-            old_func_id <= 8'hFF;
+            old_func_id <= func_id;
             set_default_output();
             init(); // task to re-initialise all
         end else begin
-            if (func_id != old_func_id) begin // check if func_id changed
-                old_func_id <= func_id;
-                valid <= 1'b0;
-                init();
-            end else begin
-                set_default_output();
+            set_default_output();
+            
+            case (state)
+                IDLE:begin state <= READ; receive_ready <= 1'b1; end
+                READ: begin
+                    if (transmit_ready) begin
+                        if (char == 4'hF) begin // end
+                            parse_done <= 1;
+                            update_product_count();
+                            state <= WAIT_FOR_PARSE;
+                        end else if(char == 4'h5) begin // OR
+                            update_product_count();
+                            current_product <= (current_product < 3) ? current_product + 1 : current_product;
+                        end else if(char == 4'h4) begin // NOT
+                            state <= WAIT_NOT; // char comes in the next clk
+                        end else if (char == 4'h6) begin // AND GATE -> just continue
+                        end else begin // 0,1,2 -> A, B, C 
+                            if (char <= 4'h2) store_variable(char);
+                        end
+                    end
+                end
                 
-                case (state)
-                    IDLE:begin state <= READ; receive_ready <= 1'b1; end
-                    READ: begin
-                        if (transmit_ready) begin
-                            if (char == 4'hF) begin // end
-                                parse_done <= 1;
-                                update_product_count();
-                                state <= WAIT_FOR_PARSE;
-                            end else if(char == 4'h5) begin // OR
-                                update_product_count();
-                                current_product <= (current_product < 3) ? current_product + 1 : current_product;
-                            end else if(char == 4'h4) begin // NOT
-                                state <= WAIT_NOT; // char comes in the next clk
-                            end else if (char == 4'h6) begin // AND GATE -> just continue
-                            end else begin // 0,1,2 -> A, B, C 
-                                if (char <= 4'h2) store_variable(char);
-                            end
-                        end
+                WAIT_NOT: begin
+                    if (transmit_ready) begin
+                        case (char) 
+                            4'd0: store_variable(4'd3); // ~A
+                            4'd1: store_variable(4'd4); // ~B
+                            4'd2: store_variable(4'd5); // ~C
+                        endcase
+                        state <= READ;
                     end
-                    
-                    WAIT_NOT: begin
-                        if (transmit_ready) begin
-                            case (char) 
-                                4'd0: store_variable(4'd3); // ~A
-                                4'd1: store_variable(4'd4); // ~B
-                                4'd2: store_variable(4'd5); // ~C
-                            endcase
-                            state <= READ;
-                        end
+                end
+                
+                WAIT_FOR_PARSE: state <= PARSE_COMPLETE;
+                PARSE_COMPLETE: begin
+                    if (parse_done && total_products > 0) state <= P0_WIRE_OUT;
+                    else if(parse_done) state <= DONE;
+                end
+                
+                P0_WIRE_OUT: begin
+                    if (wire_output_index < product_count[0])begin
+                        output_wire(map_var_wire(product_vars[0][wire_output_index], 3'd0));
+                        wire_output_index <= wire_output_index + 1;
+                    end else begin
+                        wire_output_index <= 0;
+                        state <= P0_GATE_OUT; // wire complete, proceed to gate assignment
                     end
-                    
-                    WAIT_FOR_PARSE: state <= PARSE_COMPLETE;
-                    PARSE_COMPLETE: begin
-                        if (parse_done && total_products > 0) state <= P0_WIRE_OUT;
-                        else if(parse_done) state <= DONE;
-                    end
-                    
-                    P0_WIRE_OUT: begin
-                        if (wire_output_index < product_count[0])begin
-                            output_wire(map_var_wire(product_vars[0][wire_output_index], 3'd0));
+                end
+                
+                P0_GATE_OUT: begin // definitely AND gate
+                    output_gate(2'b10, 3'd0, product_count[0]);
+                    state <= P1_WIRE_OUT;
+                end
+                
+                P1_WIRE_OUT: begin
+                    if(total_products > 1) begin
+                        if (wire_output_index < product_count[1])begin
+                            output_wire(map_var_wire(product_vars[1][wire_output_index], 3'd1));
                             wire_output_index <= wire_output_index + 1;
                         end else begin
                             wire_output_index <= 0;
-                            state <= P0_GATE_OUT; // wire complete, proceed to gate assignment
+                            state <= P1_GATE_OUT; 
                         end
                     end
-                    
-                    P0_GATE_OUT: begin // definitely AND gate
-                        output_gate(2'b10, 3'd0, product_count[0]);
-                        state <= P1_WIRE_OUT;
-                    end
-                    
-                    P1_WIRE_OUT: begin
-                        if(total_products > 1) begin
-                            if (wire_output_index < product_count[1])begin
-                                output_wire(map_var_wire(product_vars[1][wire_output_index], 3'd1));
-                                wire_output_index <= wire_output_index + 1;
-                            end else begin
-                                wire_output_index <= 0;
-                                state <= P1_GATE_OUT; 
-                            end
-                        end
-                    end
-                    
-                    P1_GATE_OUT: begin // definitely AND gate
-                        output_gate(2'b10, 3'd1, product_count[1]);
-                        state <= (total_products > 2) ? P2_WIRE_OUT : OR_SET_UP;
-                    end
-                    
-                    P2_WIRE_OUT: begin
-                        if(total_products > 2) begin
-                            if (wire_output_index < product_count[2])begin
-                                output_wire(map_var_wire(product_vars[2][wire_output_index], 3'd2));
-                                wire_output_index <= wire_output_index + 1;
-                            end else begin
-                                wire_output_index <= 0;
-                                state <= P2_GATE_OUT; 
-                            end
-                        end
-                    end
-                    
-                    P2_GATE_OUT: begin // definitely AND gate
-                        output_gate(2'b10, 3'd2, product_count[2]);
-                        state <= (total_products > 3) ? P3_WIRE_OUT : OR_SET_UP ;
-                    end
-                    
-                    P3_WIRE_OUT: begin
-                        if (total_products > 3) begin
-                            if (wire_output_index < product_count[3])begin
-                                output_wire(map_var_wire(product_vars[3][wire_output_index], 3'd3));
-                                wire_output_index <= wire_output_index + 1;
-                            end else begin
-                            wire_output_index <= 0;
-                            state <= P3_GATE_OUT;
-                            end
+                end
+                
+                P1_GATE_OUT: begin // definitely AND gate
+                    output_gate(2'b10, 3'd1, product_count[1]);
+                    state <= (total_products > 2) ? P2_WIRE_OUT : OR_SET_UP;
+                end
+                
+                P2_WIRE_OUT: begin
+                    if(total_products > 2) begin
+                        if (wire_output_index < product_count[2])begin
+                            output_wire(map_var_wire(product_vars[2][wire_output_index], 3'd2));
+                            wire_output_index <= wire_output_index + 1;
                         end else begin
-                            state <= OR_SET_UP;
+                            wire_output_index <= 0;
+                            state <= P2_GATE_OUT; 
                         end
                     end
-                    
-                    P3_GATE_OUT: begin // definitely AND gate
-                        output_gate(2'b10, 3'd3, product_count[3]);
+                end
+                
+                P2_GATE_OUT: begin // definitely AND gate
+                    output_gate(2'b10, 3'd2, product_count[2]);
+                    state <= (total_products > 3) ? P3_WIRE_OUT : OR_SET_UP ;
+                end
+                
+                P3_WIRE_OUT: begin
+                    if (total_products > 3) begin
+                        if (wire_output_index < product_count[3])begin
+                            output_wire(map_var_wire(product_vars[3][wire_output_index], 3'd3));
+                            wire_output_index <= wire_output_index + 1;
+                        end else begin
+                        wire_output_index <= 0;
+                        state <= P3_GATE_OUT;
+                        end
+                    end else begin
                         state <= OR_SET_UP;
                     end
-                    
-                    OR_SET_UP: begin
-                        if (total_products == 1) state <= DONE; // since 1 product means there is no need for OR gate
-                        else state <= OR4_WIRE_OUT;
+                end
+                
+                P3_GATE_OUT: begin // definitely AND gate
+                    output_gate(2'b10, 3'd3, product_count[3]);
+                    state <= OR_SET_UP;
+                end
+                
+                OR_SET_UP: begin
+                    if (total_products == 1) state <= DONE; // since 1 product means there is no need for OR gate
+                    else state <= OR4_WIRE_OUT;
+                end
+                
+                OR4_WIRE_OUT: begin
+                    if(wire_output_index == 0) begin 
+                        output_wire(map_gate_wire(0,4)); // gate 0 to 4
+                        wire_output_index <= wire_output_index + 1;
+                    end else if (wire_output_index == 1 && total_products >= 2) begin
+                        output_wire(map_gate_wire(1,4)); // gate 1 to 4
+                        wire_output_index <= wire_output_index + 1;
+                    end else if (wire_output_index == 2 && total_products >= 3) begin
+                        output_wire(map_gate_wire(2,4)); // gate 2 to 4
+                        wire_output_index <= wire_output_index + 1;
+                    end else begin
+                        wire_output_index <= 0;
+                        state <= OR4_GATE_OUT;
                     end
-                    
-                    OR4_WIRE_OUT: begin
-                        if(wire_output_index == 0) begin 
-                            output_wire(map_gate_wire(0,4)); // gate 0 to 4
-                            wire_output_index <= wire_output_index + 1;
-                        end else if (wire_output_index == 1 && total_products >= 2) begin
-                            output_wire(map_gate_wire(1,4)); // gate 1 to 4
-                            wire_output_index <= wire_output_index + 1;
-                        end else if (wire_output_index == 2 && total_products >= 3) begin
-                            output_wire(map_gate_wire(2,4)); // gate 2 to 4
-                            wire_output_index <= wire_output_index + 1;
-                        end else begin
-                            wire_output_index <= 0;
-                            state <= OR4_GATE_OUT;
-                        end
+                end
+                
+                OR4_GATE_OUT: begin
+                    // Can either have an OR with 2 or 3 inputs
+                    if(total_products == 2) output_gate(2'b01, 3'd4, 3'd2);
+                    else if(total_products == 3 || total_products == 4) output_gate(2'b01, 3'd4, 3'd3);
+                    state <= (total_products == 4) ? OR5_WIRE_OUT : DONE; // need another OR gate if there are more than 3 products
+                end
+                
+                OR5_WIRE_OUT: begin
+                    if (wire_output_index == 0) begin
+                        output_wire(map_gate_wire(3,5));
+                        wire_output_index <= wire_output_index + 1;
+                    end else if (wire_output_index == 1) begin
+                        output_wire(map_gate_wire(4,5));
+                        wire_output_index <= 0;
+                        state <= OR5_GATE_OUT;
                     end
-                    
-                    OR4_GATE_OUT: begin
-                        // Can either have an OR with 2 or 3 inputs
-                        if(total_products == 2) output_gate(2'b01, 3'd4, 3'd2);
-                        else if(total_products == 3 || total_products == 4) output_gate(2'b01, 3'd4, 3'd3);
-                        state <= (total_products == 4) ? OR5_WIRE_OUT : DONE; // need another OR gate if there are more than 3 products
-                    end
-                    
-                    OR5_WIRE_OUT: begin
-                        if (wire_output_index == 0) begin
-                            output_wire(map_gate_wire(3,5));
-                            wire_output_index <= wire_output_index + 1;
-                        end else if (wire_output_index == 1) begin
-                            output_wire(map_gate_wire(4,5));
-                            wire_output_index <= 0;
-                            state <= OR5_GATE_OUT;
-                        end
-                    end
-                    
-                    OR5_GATE_OUT: begin
-                        output_gate(2'b01, 3'd5, 3'd2);
-                        state <= DONE;
-                    end
-                    
-                    DONE: receive_ready <= 1'b0;
-                endcase
-            end
+                end
+                
+                OR5_GATE_OUT: begin
+                    output_gate(2'b01, 3'd5, 3'd2);
+                    state <= DONE;
+                end
+                
+                DONE: receive_ready <= 1'b0;
+            endcase
         end
     end
 
