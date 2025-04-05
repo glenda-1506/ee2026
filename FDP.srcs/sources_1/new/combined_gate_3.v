@@ -57,10 +57,10 @@ module combined_gate_3#(
         begin
             if ((w == 0) || (w == 3) || (w == 6) || (w == 9) || (w == 12) ||
                 (w == 15) || (w == 18) || (w == 21) || (w == 24) || (w == 27))
-                map_wire_to_line = 3'b100;
+                map_wire_to_line = 3'b010;
             else if ((w == 1) || (w == 4) || (w == 7) || (w == 10) || (w == 13) ||
                      (w == 16) || (w == 19) || (w == 22) || (w == 25) || (w == 28))
-                map_wire_to_line = 3'b010;
+                map_wire_to_line = 3'b100;
             else if ((w == 2) || (w == 5) || (w == 8) || (w == 11) || (w == 14) ||
                      (w == 17) || (w == 20) || (w == 23) || (w == 26) || (w == 29))
                 map_wire_to_line = 3'b001;
