@@ -92,7 +92,7 @@ module circuit_control_3_gate(
         .reset(old_func_id != function_id), 
         .x_index(x_index),
         .y_index(y_index),
-        .input_id(wire_input_id),
+        .input_id(control_valid ? wire_input_id : 6'd63),
         .wire_ready(wire_ready));
 
     //////////////////////////////////////////////////////////////////////////////////
