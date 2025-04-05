@@ -112,7 +112,7 @@ module Top_Student (
     end
     
     // Generate Individual Tasks
-    TASK_A task_a (clk_6p25M, x_addr_right, y_addr_right, sw, !CURRENT_SCREEN[0], btnU, btnD, btnL, btnR, oled_data_A);
+    TASK_A task_a (clk_6p25M, x_addr_right, y_addr_right, sw, !CURRENT_SCREEN[0], btnU, btnD, btnL, btnR, btnC, oled_data_A);
     //TASK_B task_b (clk_6p25M, pixel_index_left, sw, !CURRENT_SCREEN[1], oled_data_B);    
     //TASK_C task_c (clk_6p25M, x_addr_right, y_addr_right, !CURRENT_SCREEN[1], btnU, btnD, btnL, btnR, btnC, oled_data_C, selected_key, key_pressed);
     

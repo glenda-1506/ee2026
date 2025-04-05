@@ -26,7 +26,7 @@ module TASK_A(
     input [5:0] y_addr,
     input [15:0] sw,
     input reset,
-    input btnU, btnD, btnL, btnR,
+    input btnU, btnD, btnL, btnR, btnC,
     output reg [15:0] oled_data_reg = 0
     );
     
@@ -35,7 +35,7 @@ module TASK_A(
     //////////////////////////////////////////////////////////////////////////////////
        
     // Generate required wires and regs
-    wire bU, bD, bL, bR;
+    wire bU, bD, bL, bR, bC;
     wire [15:0] oled_data_3_gate;
     
     // Generate delayed pulse buttons
@@ -43,6 +43,7 @@ module TASK_A(
     delay s2(clk, btnD, 200_000, bD);
     delay s3(clk, btnL, 200_000, bL);
     delay s4(clk, btnR, 200_000, bR);
+    single_pulse_debouncer(clk, btnC, bC);
 
     //////////////////////////////////////////////////////////////////////////////////
     // MAIN CODE LOGIC
@@ -64,6 +65,7 @@ module TASK_A(
         .btnD(bD),
         .btnL(bL),
         .btnR(bR),
+        .btnC(bC),
         .oled_data_reg(oled_data_3_gate));
 
     //*/

@@ -5,7 +5,7 @@
 // 
 // Create Date: 04/03/2025 01:33:10 PM
 // Design Name: 
-// Module Name: wire_gate_3_control
+// Module Name: wire_gate_3_control_MSOP
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
