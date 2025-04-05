@@ -67,6 +67,8 @@ module circuit_control_3_gate(
     wire control_valid_MSOP, control_valid_MPOS, control_valid;
     wire [$clog2(MODULE_COUNT):0] wire_input_id_MSOP, wire_input_id_MPOS, wire_input_id;
     reg current_req;
+    reg control_reset;
+    reg prev_btnC;
     assign gate_input_count = current_req ? gate_input_count_MPOS : gate_input_count_MSOP;
     assign gate_type = current_req ? gate_type_MPOS : gate_type_MSOP;
     assign gate_id = current_req ? gate_id_MPOS : gate_id_MSOP;
@@ -81,7 +83,12 @@ module circuit_control_3_gate(
     
     // SET THE PIXELS TO BE LIGHTED UP
     always @(posedge clk) begin
-        if (btnC) current_req <= ~current_req;
+        prev_btnC <= btnC;
+        control_reset <= 1'b0;
+        if ((old_func_id != function_id) || (btnC && !prev_btnC)) begin
+            control_reset <= 1'b1;
+            current_req <= btnC ? ~current_req : current_req;
+        end
         old_func_id <= function_id;
         oled_data_reg <= (|var_ready || |gate_ready || |wire_ready)
                           ? WHITE : BLACK;
@@ -90,14 +97,13 @@ module circuit_control_3_gate(
     //////////////////////////////////////////////////////////////////////////////////
     // WIRE MODULES
     //////////////////////////////////////////////////////////////////////////////////        
-    
-    
+
     wire_combined_3 #(
         .DISPLAY_WIDTH(DISPLAY_WIDTH),
         .DISPLAY_HEIGHT(DISPLAY_HEIGHT)
         )(
         .clk(clk),
-        .reset(((old_func_id != function_id) || current_req)), 
+        .reset(control_reset), 
         .x_index(x_index),
         .y_index(y_index),
         .input_id(control_valid ? wire_input_id : 6'd63),
@@ -112,7 +118,7 @@ module circuit_control_3_gate(
         .DISPLAY_HEIGHT(DISPLAY_HEIGHT)
         )(
         .clk(clk),
-        .reset(((old_func_id != function_id) || current_req)),
+        .reset(control_reset),
         .x_index(x_index),
         .y_index(y_index),
         .input_count(control_valid ? gate_input_count : 3'd7),
@@ -129,7 +135,7 @@ module circuit_control_3_gate(
     
     wire_gate_3_control_MSOP ctrl (
         .clk(clk),
-        .reset(((old_func_id != function_id) || current_req)),
+        .reset(control_reset),
         .func_id(function_id),
         .wire_id(wire_input_id_MSOP),
         .gate_type(gate_type_MSOP),
@@ -139,7 +145,7 @@ module circuit_control_3_gate(
         
     wire_gate_3_control_MPOS ctrl2 (
         .clk(clk),
-        .reset(((old_func_id != function_id) || current_req)),
+        .reset(control_reset),
         .func_id(function_id),
         .wire_id(wire_input_id_MPOS),
         .gate_type(gate_type_MPOS),
