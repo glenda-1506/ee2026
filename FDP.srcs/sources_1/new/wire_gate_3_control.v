@@ -34,7 +34,7 @@ module wire_gate_3_control#(
     
     // Wires / Regs / Other modules  
     reg receive_ready;
-    reg [7:0] old_func_id = 8'hff;
+    reg [7:0] old_func_id = 8'hFF;
     wire transmit_ready;
     wire [3:0] char;   
     var_3_gen #(IS_MSOP) gen (clk, func_id, receive_ready, transmit_ready, char); 
@@ -93,7 +93,7 @@ module wire_gate_3_control#(
                 set_default_output();
                 
                 case (state)
-                    IDLE: state <= READ;
+                    IDLE:begin state <= READ; receive_ready <= 1'b1; end
                     READ: begin
                         if (transmit_ready) begin
                             if (char == 4'hF) begin // end
@@ -273,7 +273,7 @@ module wire_gate_3_control#(
         parse_done = 0;
         wire_output_index = 0;
         state = IDLE;
-        receive_ready = 1'b1;
+        receive_ready = 1'b0;
     end
     endtask
     
