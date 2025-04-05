@@ -119,7 +119,7 @@ module circuit_control_3_gate(
     // CONTROL MODULE
     ////////////////////////////////////////////////////////////////////////////////// 
     
-    wire_gate_3_control ctrl (
+    wire_gate_3_control_MSOP ctrl (
         .clk(clk),
         .reset(old_func_id != function_id),
         .func_id(function_id),

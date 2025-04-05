@@ -19,7 +19,7 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
     
-module wire_gate_3_control#(
+module wire_gate_3_control_MSOP#(
     parameter IS_MSOP = 1
     )(
     input clk,

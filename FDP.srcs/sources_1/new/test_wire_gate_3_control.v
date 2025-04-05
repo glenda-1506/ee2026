@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module test_wire_gate_3_control(
+module test_wire_gate_3_control_MSOP(
 
     );
     reg clk = 0;
@@ -37,7 +37,7 @@ module test_wire_gate_3_control(
     always #1 clk = ~clk;
     
     // Instantiate the circuit_control module (which instantiates var_3_gen internally)
-    wire_gate_3_control dut (
+    wire_gate_3_control_MSOP dut (
         .clk(clk),
         .reset(rst),
         .func_id(func_id),
