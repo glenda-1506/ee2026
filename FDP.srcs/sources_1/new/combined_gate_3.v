@@ -35,12 +35,52 @@ module combined_gate_3#(
     input [GATE_INPUT_BIT-1:0] input_count,
     input [GATE_TYPE_BIT-1:0] gate_type,
     input [2:0] gate_id,
+    input [5:0] wire_id,
     output [2:0] var_ready,
     output [5:0] gate_ready
     );
     
-    wire [2:0] input_line_value = (input_count == 3'd1) ? 3'b100 :
-                                  (input_count == 3'd2) ? 3'b110 : 3'b111;
+    /*
+    A  : [0,6,12,18,24]
+    B  : [1,7,13,19,25]
+    C  : [2,8,14,20,26]
+    ~A : [3,9,15,21,27]
+    ~B : [4,10,16,22,28]
+    ~C : [5,11,17,23,29]
+    */
+    // Input Line Mapping Logic
+    reg [2:0] stored_mapping;
+    wire [2:0] input_line_value = (input_count == 3'd3) ? 3'b111 : stored_mapping;
+    function [2:0] map_wire_to_line;
+        input [5:0] w;
+        input [GATE_INPUT_BIT-1:0] input_count;
+        begin
+            if ((w == 0) || (w == 3) || (w == 6) || (w == 9) || (w == 12) ||
+                (w == 15) || (w == 18) || (w == 21) || (w == 24) || (w == 27))
+                map_wire_to_line = 3'b100;
+            else if ((w == 1) || (w == 4) || (w == 7) || (w == 10) || (w == 13) ||
+                     (w == 16) || (w == 19) || (w == 22) || (w == 25) || (w == 28))
+                map_wire_to_line = 3'b010;
+            else if ((w == 2) || (w == 5) || (w == 8) || (w == 11) || (w == 14) ||
+                     (w == 17) || (w == 20) || (w == 23) || (w == 26) || (w == 29))
+                map_wire_to_line = 3'b001;
+            else
+                map_wire_to_line = (input_count == 3'd2) ? 3'b110 : 
+                                   (input_count == 3'd1) ? 3'b100 : 3'b0;
+        end
+    endfunction
+    
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            stored_mapping <= 3'b0;
+        end else begin
+            if (gate_id == 3'd7) begin
+                stored_mapping <= stored_mapping | map_wire_to_line(wire_id, input_count);
+            end else begin
+                stored_mapping <= 3'b0;
+            end
+        end
+    end
                                   
     reg [1:0] g0_gate_type;
     reg [1:0] g1_gate_type;
@@ -57,16 +97,17 @@ module combined_gate_3#(
     
     task init;
     begin
-        g0_gate_type = 2'b00; g1_gate_type = 2'b00; g2_gate_type = 2'b00;
-        g3_gate_type = 2'b00; g4_gate_type = 2'b00; g5_gate_type = 2'b00;
-        g0_input_lines = 3'b000; g1_input_lines = 3'b000; g2_input_lines = 3'b000;
-        g3_input_lines = 3'b000; g4_input_lines = 3'b000; g5_input_lines = 3'b000;
+        g0_gate_type = 2'b0; g1_gate_type = 2'b0; g2_gate_type = 2'b0;
+        g3_gate_type = 2'b0; g4_gate_type = 2'b0; g5_gate_type = 2'b0;
+        g0_input_lines = 3'b0; g1_input_lines = 3'b0; g2_input_lines = 3'b0;
+        g3_input_lines = 3'b0; g4_input_lines = 3'b0; g5_input_lines = 3'b0;
     end
     endtask
     
     
     initial begin
         init;
+        stored_mapping <= 3'b0;
     end
     
     always @ (posedge clk or posedge reset) begin

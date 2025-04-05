@@ -110,6 +110,7 @@ module circuit_control_3_gate(
         .input_count(control_valid ? gate_input_count : 3'd7),
         .gate_type(control_valid ? gate_type : 2'd0),
         .gate_id(control_valid ? gate_id : 3'd7),
+        .wire_id(control_valid ? wire_input_id : 6'd63),
         .var_ready(var_ready),
         .gate_ready(gate_ready));
     //*/
