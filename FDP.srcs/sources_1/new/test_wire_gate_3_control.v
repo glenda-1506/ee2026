@@ -55,7 +55,7 @@ module test_wire_gate_3_control(
           #5;
           rst = 0;
           // Iterate through function IDs from 0 to 255
-          for (i = 149; i < 151; i = i + 1) begin
+          for (i = 162; i < 163; i = i + 1) begin
               func_id = i;
               #1000;
           end

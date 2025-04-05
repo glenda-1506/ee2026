@@ -158,7 +158,7 @@ module wire_gate_3_control#(
                     
                     P1_GATE_OUT: begin // definitely AND gate
                         output_gate(2'b10, 3'd1, product_count[1]);
-                        state <= P2_WIRE_OUT;
+                        state <= (total_products > 2) ? P2_WIRE_OUT : OR_SET_UP;
                     end
                     
                     P2_WIRE_OUT: begin
@@ -175,7 +175,7 @@ module wire_gate_3_control#(
                     
                     P2_GATE_OUT: begin // definitely AND gate
                         output_gate(2'b10, 3'd2, product_count[2]);
-                        state <= P3_WIRE_OUT;
+                        state <= (total_products > 3) ? P3_WIRE_OUT : OR_SET_UP ;
                     end
                     
                     P3_WIRE_OUT: begin
