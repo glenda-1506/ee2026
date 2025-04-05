@@ -34,7 +34,6 @@ module wire_gate_3_control#(
     
     // Wires / Regs / Other modules  
     reg receive_ready;
-    reg [7:0] old_func_id = 8'hFF;
     wire transmit_ready;
     wire [3:0] char;   
     var_3_gen #(IS_MSOP) gen (clk, func_id, receive_ready, transmit_ready, char); 
@@ -81,12 +80,10 @@ module wire_gate_3_control#(
     ////////////////////////////////////////////////////////////////////////////////// 
     always @ (posedge clk or posedge reset) begin
         if (reset) begin
-            old_func_id <= func_id;
             set_default_output();
             init(); // task to re-initialise all
         end else begin
             set_default_output();
-            
             case (state)
                 IDLE:begin state <= READ; receive_ready <= 1'b1; end
                 READ: begin
