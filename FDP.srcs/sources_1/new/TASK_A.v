@@ -27,28 +27,35 @@ module TASK_A(
     input [15:0] sw,
     input reset,
     input btnU, btnD, btnL, btnR, btnC,
-    output reg [15:0] oled_data_reg = 0
+    output reg [15:0] oled_data_reg = 0,
+    output reg [7:0] s3, s2, s1, s0
     );
     
     //////////////////////////////////////////////////////////////////////////////////
     // Instantiate parameters, wires and regs
     //////////////////////////////////////////////////////////////////////////////////
+    parameter SEG_CLEAR = 8'b1_1111111;
+    parameter SEG_LETTER_S = 8'b1_0010010;
+    parameter SEG_LETTER_O = 8'b1_1000000;
+    parameter SEG_LETTER_P = 8'b1_0001100;
        
     // Generate required wires and regs
     wire bU, bD, bL, bR, bC;
     wire [15:0] oled_data_3_gate;
+    wire is_mpos;
     
     // Generate delayed pulse buttons
-    delay s1(clk, btnU, 200_000, bU);
-    delay s2(clk, btnD, 200_000, bD);
-    delay s3(clk, btnL, 200_000, bL);
-    delay s4(clk, btnR, 200_000, bR);
+    delay b1(clk, btnU, 200_000, bU);
+    delay b2(clk, btnD, 200_000, bD);
+    delay b3(clk, btnL, 200_000, bL);
+    delay b4(clk, btnR, 200_000, bR);
     single_pulse_debouncer(clk, btnC, bC);
 
     //////////////////////////////////////////////////////////////////////////////////
     // MAIN CODE LOGIC
     //////////////////////////////////////////////////////////////////////////////////    
     always @(posedge clk) begin
+        handle_segment_display;
         oled_data_reg <= oled_data_3_gate; // use switch cases if there are more
     end
 
@@ -66,17 +73,19 @@ module TASK_A(
         .btnL(bL),
         .btnR(bR),
         .btnC(bC),
-        .oled_data_reg(oled_data_3_gate));
-
-    //*/
-    //////////////////////////////////////////////////////////////////////////////////
-    // TEST CODE
-    ////////////////////////////////////////////////////////////////////////////////// 
+        .oled_data_reg(oled_data_3_gate),
+        .current_req(is_mpos));
         
-    /* Code below is for test LUT usage. Replace * with /   
-    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) a1 (x_index, y_index, 10, 10, 10, 20, 1, var_ready[1]);
-    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) a2 (x_index, y_index, 30, 30, 50, 30, 1, var_ready[0]);
-    line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) a3 (x_index, y_index, 60, 60, 75, 85, 1, var_ready[2]);
-    //*/
+    //////////////////////////////////////////////////////////////////////////////////
+    // TASKS / FUNCTIONS
+    //////////////////////////////////////////////////////////////////////////////////
+    task handle_segment_display;
+    begin
+        s3 <= SEG_CLEAR;
+        s2 <= is_mpos ? SEG_LETTER_P : SEG_LETTER_S;
+        s1 <= SEG_LETTER_O;
+        s0 <= is_mpos ? SEG_LETTER_S : SEG_LETTER_P;
+    end
+    endtask
     
 endmodule

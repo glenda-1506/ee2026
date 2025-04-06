@@ -27,7 +27,8 @@ module circuit_control_3_gate(
     input [15:0] sw,
     input reset,
     input btnU, btnD, btnL, btnR, btnC,
-    output reg [15:0] oled_data_reg = 0
+    output reg [15:0] oled_data_reg = 0,
+    output reg current_req = 0
     );
     
     
@@ -66,7 +67,6 @@ module circuit_control_3_gate(
     wire [2:0] gate_id_MSOP, gate_id_MPOS, gate_id;
     wire control_valid_MSOP, control_valid_MPOS, control_valid;
     wire [$clog2(MODULE_COUNT):0] wire_input_id_MSOP, wire_input_id_MPOS, wire_input_id;
-    reg current_req;
     reg control_reset;
     reg prev_btnC;
     assign gate_input_count = current_req ? gate_input_count_MPOS : gate_input_count_MSOP;
