@@ -49,7 +49,7 @@ module circuit_control_3_gate(
     wire [13:0] y_index;
     
     // Generate the ready flags for items to draw
-    wire [2:0] var_ready;
+    wire [3:0] var_ready; // 3 vars and 1 Final signal
     wire [5:0] gate_ready;
     wire [MODULE_COUNT-1:0] wire_ready;
     

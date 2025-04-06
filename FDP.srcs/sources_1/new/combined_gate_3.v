@@ -36,9 +36,55 @@ module combined_gate_3#(
     input [GATE_TYPE_BIT-1:0] gate_type,
     input [2:0] gate_id,
     input [5:0] wire_id,
-    output [2:0] var_ready,
+    output [3:0] var_ready,
     output [5:0] gate_ready
     );
+    
+    // Counter to place the final signal line
+    wire [10:0] count;
+    reg [2:0] last_valid_gate;
+    wire  [X_BIT:0] f_signal_x = get_f_x(last_valid_gate);
+    wire [Y_BIT:0] f_signal_y = get_f_y(last_valid_gate);
+    reg trigger;
+    reg f_enable;
+    counter #(1000)(clk, 0, trigger && (gate_id == 3'd7), 1, count);
+    always @ (posedge clk or posedge reset) begin
+        if (reset) begin
+            f_enable <= 1'b0;
+            trigger <= 1'b0;
+            last_valid_gate <= 3'd7;
+        end else begin
+            if (gate_id != 3'd7) begin  last_valid_gate <= gate_id; trigger <= 1'b1;end
+            if (count == 1000) f_enable <= 1;
+        end
+    end
+    
+    function [X_BIT:0] get_f_x;
+        input [2:0] last_valid_gate;
+        begin
+            case (last_valid_gate)
+                3'd0, 3'd1, 3'd2: get_f_x = 85;
+                3'd3, 3'd4: get_f_x = 109;
+                3'd5: get_f_x = 133;
+                default: get_f_x = 0;
+            endcase
+        end
+    endfunction
+
+    function [Y_BIT:0] get_f_y;
+        input [2:0] last_valid_gate;
+        begin
+            case (last_valid_gate)
+                3'd0: get_f_y = 25;
+                3'd1: get_f_y = 53;
+                3'd2: get_f_y = 81;
+                3'd3: get_f_y = 39;
+                3'd4: get_f_y = 67;
+                3'd5: get_f_y = 54;
+                default: get_f_y = 0;
+            endcase
+        end
+    endfunction
     
     /*
     A  : [0,6,12,18,24]
@@ -117,6 +163,8 @@ module combined_gate_3#(
     initial begin
         init;
         stored_mapping <= 3'b0;
+        f_enable <= 1'b0;
+        trigger <= 1'b0;
     end
     
     always @ (posedge clk or posedge reset) begin
@@ -137,7 +185,7 @@ module combined_gate_3#(
             g5_input_lines <= (gate_id == 3'd5) ? input_line_value : g5_input_lines;
         end
     end
-
+   
     variable_circuit_segment #(DISPLAY_WIDTH, DISPLAY_HEIGHT) A (
         .x_addr(x_index),
         .y_addr(y_index),
@@ -168,6 +216,14 @@ module combined_gate_3#(
         .not_gate_visability(1),
         .segment_visability(1),
         .draw(var_ready[2]));
+
+    f_signal #(DISPLAY_WIDTH, DISPLAY_HEIGHT) F (
+        .enable(f_enable),
+        .x_addr(x_index),
+        .y_addr(y_index),
+        .x(f_signal_x),
+        .y(f_signal_y),
+        .draw(var_ready[3]));
 
     gate_container #(DISPLAY_WIDTH, DISPLAY_HEIGHT) g0 (
         .clk(clk),
