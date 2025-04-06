@@ -47,26 +47,35 @@ module combined_gate_3#(
     ~A : [3,9,15,21,27]
     ~B : [4,10,16,22,28]
     ~C : [5,11,17,23,29]
+    gate 0 to gate 3: [30,31,32]
+    gate 1 to gate 3: [33,34,35]
+    gate 2 to gate 3: [36,37,38]
+    gate 0 to gate 4: [39,40,41]
+    gate 1 to gate 4: [42,43,44]
+    gate 2 to gate 4: [45,46,47]
+    gate 3 to gate 5: [48]
+    gate 4 to gate 5: [49]
     */
-    // Input Line Mapping Logic
+    // Input Line Mapping Logic -> next time wire_ids should be issued in (% max_gate_input)
     reg [2:0] stored_mapping;
     wire [2:0] input_line_value = (input_count == 3'd3) ? 3'b111 : stored_mapping;
     function [2:0] map_wire_to_line;
         input [5:0] w;
         input [GATE_INPUT_BIT-1:0] input_count;
         begin
-            if ((w == 0) || (w == 3) || (w == 6) || (w == 9) || (w == 12) ||
-                (w == 15) || (w == 18) || (w == 21) || (w == 24) || (w == 27))
-                map_wire_to_line = 3'b010;
-            else if ((w == 1) || (w == 4) || (w == 7) || (w == 10) || (w == 13) ||
-                     (w == 16) || (w == 19) || (w == 22) || (w == 25) || (w == 28))
-                map_wire_to_line = 3'b100;
-            else if ((w == 2) || (w == 5) || (w == 8) || (w == 11) || (w == 14) ||
-                     (w == 17) || (w == 20) || (w == 23) || (w == 26) || (w == 29))
-                map_wire_to_line = 3'b001;
-            else
-                map_wire_to_line = (input_count == 3'd2) ? 3'b110 : 
-                                   (input_count == 3'd1) ? 3'b100 : 3'b0;
+            case(w)
+                6'd0, 6'd3, 6'd6, 6'd9, 6'd12, 6'd15, 6'd18, 6'd21, 6'd24, 6'd27,
+                6'd31, 6'd34, 6'd37, 6'd40, 6'd43, 6'd46, 6'd48:
+                    map_wire_to_line = 3'b010;
+                6'd1, 6'd4, 6'd7, 6'd10, 6'd13, 6'd16, 6'd19, 6'd22, 6'd25, 6'd28,
+                6'd30, 6'd33, 6'd36, 6'd39, 6'd42, 6'd45:
+                    map_wire_to_line = 3'b100;
+                6'd2, 6'd5, 6'd8, 6'd11, 6'd14, 6'd17, 6'd20, 6'd23, 6'd26, 6'd29,
+                6'd32, 6'd35, 6'd38, 6'd41, 6'd44, 6'd47, 6'd49:
+                    map_wire_to_line = 3'b001;
+                default:
+                    map_wire_to_line = 3'b0;
+            endcase
         end
     endfunction
     
