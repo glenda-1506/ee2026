@@ -157,8 +157,49 @@ module circuit_control_3_gate(
     ////////////////////////////////////////////////////////////////////////////////// 
     task set_oled_display;
     begin 
-        oled_data_reg <= (|var_ready || |gate_ready || |wire_ready) 
-                         ? WHITE : BLACK;
+        oled_data_reg <= |wire_ready ? map_wire_color(wire_ready) :
+                         ((|var_ready || |gate_ready) ? WHITE : BLACK);
     end
     endtask
+    
+    parameter RED = 16'hf800;   // A
+    parameter ORANGE = 16'hf300; // B
+    parameter YELLOW = 16'hffe0;  // C
+    parameter GREEN = 16'h07e0;    // ~A
+    parameter BLUE = 16'h001f;  // ~B
+    parameter PURPLE = 16'h701f;   // ~C
+    parameter CYAN = 16'h07ff; // gate 0 outs
+    parameter PINK = 16'hf81f; // gate 1 outs
+    parameter DARK_GREEN = 16'h1a03; // gate 2 outs
+    function [15:0] map_wire_color;
+        input [MODULE_COUNT:0] wires;
+        reg [5:0] wire_id;
+            begin
+                wire_id = current_wire(wire_ready);
+                case (wire_id)
+                    6'd0, 6'd6, 6'd12, 6'd18, 6'd24: map_wire_color = RED;
+                    6'd1, 6'd7, 6'd13, 6'd19, 6'd25: map_wire_color = ORANGE;
+                    6'd2, 6'd8, 6'd14, 6'd20, 6'd26: map_wire_color = YELLOW;
+                    6'd3, 6'd9, 6'd15, 6'd21, 6'd27: map_wire_color = GREEN;
+                    6'd4, 6'd10, 6'd16, 6'd22, 6'd28: map_wire_color = BLUE;
+                    6'd5, 6'd11, 6'd17, 6'd23, 6'd29: map_wire_color = PURPLE;
+                    6'd30, 6'd31, 6'd32, 6'd39, 6'd40, 6'd41: map_wire_color = CYAN;
+                    6'd33, 6'd34, 6'd35, 6'd42, 6'd43, 6'd44: map_wire_color = PINK;
+                    6'd36, 6'd37, 6'd38, 6'd45, 6'd46, 6'd47: map_wire_color = DARK_GREEN;
+                    default: map_wire_color = WHITE;
+                endcase
+            end
+    endfunction
+    
+    function [5:0] current_wire;
+        input [MODULE_COUNT:0] wires;
+        reg [5:0] i;
+        begin
+            current_wire = 50;
+            for (i = 0; i < 50; i = i + 1) begin
+                if (wires[i] == 1'b1 && current_wire == 50)
+                    current_wire = i;
+            end
+        end
+    endfunction
 endmodule
