@@ -28,49 +28,13 @@ module wire_combined_3#(
     parameter MODULE_COUNT_BIT = $clog2(TOTAL_MODULES)
     )(
     input clk,
-    input start,
     input reset,
     input [X_BIT:0] x_index,
     input [Y_BIT:0] y_index,
-    input [MODULE_COUNT_BIT:0] input_id, // only needs 1 since every clk cycle i deal with only 1
-    output [TOTAL_MODULES-1:0] wire_ready,
-    output reg assignment_done // signal to top module to move on (can consider a success/failure check)
+    input [MODULE_COUNT_BIT:0] input_id,
+    output [TOTAL_MODULES-1:0] wire_ready
     );
     
-    localparam IDLE = 2'd0,
-               WAIT = 2'd1,
-               DONE = 2'd2;
-               
-    reg [MODULE_COUNT_BIT:0] wire_id;
-    reg [1:0] state_reg = IDLE;
-    
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
-            state_reg <= IDLE;
-            assignment_done <= 1'b0;
-            wire_id <= 6'hFF;
-        end else begin
-            case (state_reg)
-                IDLE: begin
-                    assignment_done <= 1'b0;
-                    if (start) begin
-                        wire_id <= input_id;
-                        state_reg <= WAIT;
-                    end
-                end
-    
-                WAIT: begin state_reg <= DONE; end // give 1 clock cycle to assign
-                
-                DONE: begin
-                    if (!start) state_reg <= IDLE;
-                    assignment_done <= 1'b1;
-                end
-    
-                default: state_reg <= IDLE;
-            endcase
-        end
-    end
-
     //////////////////////////////////////////////////////////////////////////////////
     // ALL WIRE MODULES
     //////////////////////////////////////////////////////////////////////////////////
@@ -147,11 +111,11 @@ module wire_combined_3#(
             (clk, reset, (input_id == 6'd29), x_index, y_index, 60, 43, wire_ready[29]); 
     
     // Wires from gate 0 to gate 3 (middle, top, bottom inputs)
-    z_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 5, 14, 8)
+    z_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 7, 14, 6)
             (clk, reset, (input_id == 6'd30), x_index, y_index, 85, 27, wire_ready[30]); 
-    z_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 5, 12, 8)
+    z_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 7, 12, 6)
             (clk, reset, (input_id == 6'd31), x_index, y_index, 85, 27, wire_ready[31]); 
-    z_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 5, 16, 8)
+    z_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 7, 16, 6)
             (clk, reset, (input_id == 6'd32), x_index, y_index, 85, 27, wire_ready[32]); 
     
     // Wires from gate 1 to gate 3 (middle, top, bottom inputs)
@@ -163,19 +127,19 @@ module wire_combined_3#(
             (clk, reset, (input_id == 6'd35), x_index, y_index, 85, 55, wire_ready[35]); 
     
     // Wires from gate 2 to gate 3 (middle, top, bottom inputs)
-    s_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 5, 42, 8)
+    s_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 6, 42, 7)
             (clk, reset, (input_id == 6'd36), x_index, y_index, 85, 83, wire_ready[36]); 
-    s_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 5, 44, 8)
+    s_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 6, 44, 7)
             (clk, reset, (input_id == 6'd37), x_index, y_index, 85, 83,  wire_ready[37]); 
-    s_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 5, 40, 8)
+    s_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 6, 40, 7)
             (clk, reset, (input_id == 6'd38), x_index, y_index, 85, 83, wire_ready[38]); 
     
     // Wires from gate 0 to gate 4 (middle, top, bottom inputs)
-    z_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 5, 42, 8)
+    z_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 7, 42, 6)
             (clk, reset, (input_id == 6'd39), x_index, y_index, 85, 27, wire_ready[39]); 
-    z_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 5, 40, 8)
+    z_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 7, 40, 6)
             (clk, reset, (input_id == 6'd40), x_index, y_index, 85, 27, wire_ready[40]); 
-    z_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 5, 44, 8)
+    z_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 7, 44, 6)
             (clk, reset, (input_id == 6'd41), x_index, y_index, 85, 27, wire_ready[41]); 
     
     // Wires from gate 1 to gate 4 (middle, top, bottom inputs)
@@ -187,11 +151,11 @@ module wire_combined_3#(
             (clk, reset, (input_id == 6'd44), x_index, y_index, 85, 55, wire_ready[44]); 
     
     // Wires from gate 2 to gate 4 (middle, top, bottom inputs)
-    s_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 5, 14, 8)
+    s_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 6, 14, 7)
             (clk, reset, (input_id == 6'd45), x_index, y_index, 85, 83, wire_ready[45]); 
-    s_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 5, 16, 8)
+    s_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 6, 16, 7)
             (clk, reset, (input_id == 6'd46), x_index, y_index, 85, 83,  wire_ready[46]); 
-    s_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 5, 12, 8)
+    s_wire #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 6, 12, 7)
             (clk, reset, (input_id == 6'd47), x_index, y_index, 85, 83, wire_ready[47]); 
     
     // Wire from gate 3 to gate 5

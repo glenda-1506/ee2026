@@ -39,6 +39,11 @@ module Top_Student (
     parameter KEY_RBRAC  = 4'b1001;
     parameter KEY_DELETE = 4'b1010;
     parameter KEY_ENTER  = 4'b1011;
+    parameter SEG_DIGIT_5 = 8'b1_0010010;
+    parameter SEG_DIGIT_3_DP = 8'b0_0110000;
+    parameter SEG_DIGIT_0 = 8'b1_1000000;
+    parameter SEG_DIGIT_2 = 8'b1_0100100;
+    
     
     // Generate required wires and regs
     reg [15:0] oled_data_right_reg = BLACK; 
@@ -62,7 +67,41 @@ module Top_Student (
     // Generate clock signals
     clock clk6p25 (clk, 7, clk_6p25M);
     
-    // Instantiate OLED
+    // Segment Display
+    reg [7:0] s_main [0:3]; // main segments
+    wire [7:0] sA [0:3]; // Segments from Task A (c2)
+    segment_display #(4999, 0) display (clk, s_main[3], s_main[2], s_main[1], s_main[0], seg, an);
+    
+    //////////////////////////////////////////////////////////////////////////////////
+    // MAIN CODE LOGIC
+    ////////////////////////////////////////////////////////////////////////////////// 
+    always @(posedge clk_6p25M) begin
+        case (CURRENT_SCREEN)
+            2'b01: begin
+                set_segment_task_A;
+                oled_data_right_reg <= oled_data_A; // c2
+                oled_data_left_reg <= oled_data_D; // Aik Haw
+            end
+            2'b10: begin
+                oled_data_right_reg <= oled_data_C; // Glenda
+                oled_data_left_reg <= oled_data_B; // Louis
+            end
+            default: default_outputs;
+        endcase
+    end
+    
+    // Generate Individual Tasks
+    TASK_A task_a (clk_6p25M, x_addr_right, y_addr_right, sw, !CURRENT_SCREEN[0],
+                   btnU, btnD, btnL, btnR, btnC, oled_data_A, sA[3], sA[2], sA[1], sA[0]);
+    //TASK_B task_b (clk_6p25M, pixel_index_left, sw, !CURRENT_SCREEN[1], oled_data_B);    
+    //TASK_C task_c (clk_6p25M, x_addr_right, y_addr_right, !CURRENT_SCREEN[1], btnU, btnD, btnL, btnR, btnC, oled_data_C, selected_key, key_pressed);
+    
+    assign led [3:0] = selected_key;
+    
+    
+    //////////////////////////////////////////////////////////////////////////////////
+    // OLED MODULES
+    ////////////////////////////////////////////////////////////////////////////////// 
     Oled_Display oled_right (
         .clk(clk_6p25M), 
         .reset(0), 
@@ -94,44 +133,25 @@ module Top_Student (
         .resn(JA[5]), 
         .vccen(JA[6]), 
         .pmoden(JA[7]));
-    
+
     //////////////////////////////////////////////////////////////////////////////////
-    // MAIN CODE LOGIC
+    // Tasks / Functions
     ////////////////////////////////////////////////////////////////////////////////// 
-    always @(posedge clk_6p25M) begin
-        case (CURRENT_SCREEN)
-            2'b01: begin
-                oled_data_right_reg <= oled_data_A; // c2
-                oled_data_left_reg <= oled_data_D; // Aik Haw
-            end
-            2'b10: begin
-                oled_data_right_reg <= oled_data_C; // Glenda
-                oled_data_left_reg <= oled_data_B; // Louis
-            end
-        endcase
+    task default_outputs;
+    begin
+        s_main[3] <= SEG_DIGIT_5;
+        s_main[2] <= SEG_DIGIT_3_DP;
+        s_main[1] <= SEG_DIGIT_0;
+        s_main[0] <= SEG_DIGIT_2;
     end
+    endtask
     
-    // Generate Individual Tasks
-    TASK_A task_a (clk_6p25M, x_addr_right, y_addr_right, sw, !CURRENT_SCREEN[0], btnU, btnD, btnL, btnR, oled_data_A);
-    //TASK_B task_b (clk_6p25M, pixel_index_left, sw, !CURRENT_SCREEN[1], oled_data_B);    
-    //TASK_C task_c (clk_6p25M, x_addr_right, y_addr_right, !CURRENT_SCREEN[1], btnU, btnD, btnL, btnR, btnC, oled_data_C, selected_key, key_pressed);
-    
-    assign led [3:0] = selected_key;
-    
-    
-    //////////////////////////////////////////////////////////////////////////////////
-    // CODES FOR TESTING
-    ////////////////////////////////////////////////////////////////////////////////// 
-    
-    /* TEST BRAM and DECODER
-    wire [7:0] func_id = 8'b10101010;
-    wire[1:0] gate_type;
-    wire[1:0] num_inputs;
-    wire [5:0] output_id;
-    wire [5:0] input_id0;
-    wire [5:0] input_id1;
-    wire[5:0] input_id2;
-    wire valid_gate;
-    netlist_decoder_3 (clk_6p25M,func_id, 1, gate_type, num_inputs, output_id, input_id0, input_id1 , input_id2, valid_gate);
-    //*/
+    task set_segment_task_A;
+    begin
+        s_main[3] <= sA[3];
+        s_main[2] <= sA[2];
+        s_main[1] <= sA[1];
+        s_main[0] <= sA[0];
+    end
+    endtask
 endmodule
