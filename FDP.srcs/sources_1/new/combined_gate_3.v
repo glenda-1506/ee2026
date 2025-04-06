@@ -124,7 +124,7 @@ module combined_gate_3#(
             endcase
         end
     endfunction
-    
+ 
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             stored_mapping <= 3'b0;
@@ -136,19 +136,37 @@ module combined_gate_3#(
             end
         end
     end
-                                  
-    reg [1:0] g0_gate_type;
-    reg [1:0] g1_gate_type;
-    reg [1:0] g2_gate_type;
-    reg [1:0] g3_gate_type;
-    reg [1:0] g4_gate_type;
-    reg [1:0] g5_gate_type;
-    reg [2:0] g0_input_lines;
-    reg [2:0] g1_input_lines;
-    reg [2:0] g2_input_lines;
-    reg [2:0] g3_input_lines;
-    reg [2:0] g4_input_lines;
-    reg [2:0] g5_input_lines;
+    
+    // Segment Visability Logic
+    function wire_in_set(input [5:0] w, a, b, c, d, e);
+    begin
+        wire_in_set = (w == a) || (w == b) || (w == c) || (w == d) || (w == e);
+    end
+    endfunction     
+    
+    reg A_visibility, AB_visibility, B_visibility, BB_visibility, C_visibility, CB_visibility;
+    
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            A_visibility <= 0;
+            B_visibility <= 0;
+            C_visibility <= 0;
+            AB_visibility <= 0;
+            BB_visibility <= 0;
+            CB_visibility <= 0;
+        end else begin
+            if (wire_in_set(wire_id,0,6,12,18,24) || wire_in_set(wire_id,3,9,15,21,27)) A_visibility <= 1;
+            if (wire_in_set(wire_id,1,7,13,19,25) || wire_in_set(wire_id,4,10,16,22,28)) B_visibility <= 1;
+            if (wire_in_set(wire_id,2,8,14,20,26) || wire_in_set(wire_id,5,11,17,23,29)) C_visibility <= 1;
+            if (wire_in_set(wire_id,3,9,15,21,27)) AB_visibility <= 1;
+            if (wire_in_set(wire_id,4,10,16,22,28)) BB_visibility <= 1;
+            if (wire_in_set(wire_id,5,11,17,23,29)) CB_visibility <= 1;
+        end
+    end  
+    
+                               
+    reg [1:0] g0_gate_type, g1_gate_type, g2_gate_type, g3_gate_type, g4_gate_type, g5_gate_type;
+    reg [2:0] g0_input_lines, g1_input_lines, g2_input_lines, g3_input_lines, g4_input_lines, g5_input_lines;
     
     task init;
     begin
@@ -158,13 +176,14 @@ module combined_gate_3#(
         g3_input_lines = 3'b0; g4_input_lines = 3'b0; g5_input_lines = 3'b0;
     end
     endtask
-    
-    
+
     initial begin
         init;
         stored_mapping <= 3'b0;
         f_enable <= 1'b0;
         trigger <= 1'b0;
+        A_visibility <= 0; B_visibility <= 0; C_visibility <= 0;
+        AB_visibility <= 0; BB_visibility <= 0; CB_visibility <= 0;
     end
     
     always @ (posedge clk or posedge reset) begin
@@ -192,8 +211,8 @@ module combined_gate_3#(
         .x(2),
         .y(2),
         .letter_info(0),
-        .not_gate_visability(1), // to-change as needed
-        .segment_visability(1),  // to-change as needed
+        .not_gate_visability(AB_visibility),
+        .segment_visability(A_visibility),  
         .draw(var_ready[0])
     );
 
@@ -203,8 +222,8 @@ module combined_gate_3#(
         .x(23),
         .y(2),
         .letter_info(1),
-        .not_gate_visability(1),
-        .segment_visability(1),
+        .not_gate_visability(BB_visibility),
+        .segment_visability(B_visibility),
         .draw(var_ready[1]));
 
     variable_circuit_segment #(DISPLAY_WIDTH, DISPLAY_HEIGHT) C (
@@ -213,8 +232,8 @@ module combined_gate_3#(
         .x(44),
         .y(2),
         .letter_info(2),
-        .not_gate_visability(1),
-        .segment_visability(1),
+        .not_gate_visability(CB_visibility),
+        .segment_visability(C_visibility),
         .draw(var_ready[2]));
 
     f_signal #(DISPLAY_WIDTH, DISPLAY_HEIGHT) F (
