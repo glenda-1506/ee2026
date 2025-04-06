@@ -80,7 +80,7 @@ module combined_gate_3#(
                 3'd2: get_f_y = 81;
                 3'd3: get_f_y = 39;
                 3'd4: get_f_y = 67;
-                3'd5: get_f_y = 54;
+                3'd5: get_f_y = 53;
                 default: get_f_y = 0;
             endcase
         end

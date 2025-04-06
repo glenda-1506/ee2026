@@ -83,6 +83,7 @@ module circuit_control_3_gate(
     
     // SET THE PIXELS TO BE LIGHTED UP
     always @(posedge clk) begin
+        set_oled_display;
         prev_btnC <= btnC;
         control_reset <= 1'b0;
         if ((old_func_id != function_id) || (btnC && !prev_btnC)) begin
@@ -90,8 +91,6 @@ module circuit_control_3_gate(
             current_req <= btnC ? ~current_req : current_req;
         end
         old_func_id <= function_id;
-        oled_data_reg <= (|var_ready || |gate_ready || |wire_ready)
-                          ? WHITE : BLACK;
     end
     
     //////////////////////////////////////////////////////////////////////////////////
@@ -152,4 +151,14 @@ module circuit_control_3_gate(
         .gate_id(gate_id_MPOS),
         .input_count(gate_input_count_MPOS),
         .valid(control_valid_MPOS));
+        
+    //////////////////////////////////////////////////////////////////////////////////
+    // HELPERS
+    ////////////////////////////////////////////////////////////////////////////////// 
+    task set_oled_display;
+    begin 
+        oled_data_reg <= (|var_ready || |gate_ready || |wire_ready) 
+                         ? WHITE : BLACK;
+    end
+    endtask
 endmodule
