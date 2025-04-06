@@ -33,6 +33,7 @@ module wire_gate_3_control_MSOP#(
     );
     
     // Wires / Regs / Other modules  
+    reg single_literal_product [0:3];
     reg receive_ready;
     wire transmit_ready;
     wire [3:0] char;   
@@ -132,7 +133,12 @@ module wire_gate_3_control_MSOP#(
                 end
                 
                 P0_GATE_OUT: begin // definitely AND gate
-                    output_gate(2'b10, 3'd0, product_count[0]);
+                    if (product_count[0] == 1 && total_products > 1) begin // skip the gate
+                        used_gate[0] <= 1'b1; 
+                        single_literal_product[0] <= 1'b1;
+                    end else begin
+                        output_gate(2'b10, 3'd0, product_count[0]);
+                    end
                     state <= P1_WIRE_OUT;
                 end
                 
@@ -149,7 +155,12 @@ module wire_gate_3_control_MSOP#(
                 end
                 
                 P1_GATE_OUT: begin // definitely AND gate
-                    output_gate(2'b10, 3'd1, product_count[1]);
+                    if (product_count[1] == 1 && total_products > 1) begin // skip the gate
+                        used_gate[1] <= 1'b1; 
+                        single_literal_product[1] <= 1'b1;
+                    end else begin
+                        output_gate(2'b10, 3'd1, product_count[1]);
+                    end
                     state <= (total_products > 2) ? P2_WIRE_OUT : OR_SET_UP;
                 end
                 
@@ -166,7 +177,12 @@ module wire_gate_3_control_MSOP#(
                 end
                 
                 P2_GATE_OUT: begin // definitely AND gate
-                    output_gate(2'b10, 3'd2, product_count[2]);
+                    if (product_count[2] == 1 && total_products > 1) begin // skip the gate
+                        used_gate[2] <= 1'b1; 
+                        single_literal_product[2] <= 1'b1;
+                    end else begin
+                        output_gate(2'b10, 3'd2, product_count[2]);
+                    end
                     state <= (total_products > 3) ? P3_WIRE_OUT : OR_SET_UP ;
                 end
                 
@@ -185,7 +201,12 @@ module wire_gate_3_control_MSOP#(
                 end
                 
                 P3_GATE_OUT: begin // definitely AND gate
-                    output_gate(2'b10, 3'd3, product_count[3]);
+                    if (product_count[3] == 1 && total_products > 1) begin // skip the gate
+                        used_gate[3] <= 1'b1; 
+                        single_literal_product[3] <= 1'b1;
+                    end else begin
+                        output_gate(2'b10, 3'd3, product_count[3]);
+                    end
                     state <= OR_SET_UP;
                 end
                 
@@ -196,13 +217,16 @@ module wire_gate_3_control_MSOP#(
                 
                 OR4_WIRE_OUT: begin
                     if(wire_output_index == 0) begin 
-                        output_wire(map_gate_wire(0,4)); // gate 0 to 4
+                        if (single_literal_product[0]) output_wire(map_var_wire(product_vars[0][0], 4));
+                        else output_wire(map_gate_wire(0, 4)); // gate 0 to 4
                         wire_output_index <= wire_output_index + 1;
                     end else if (wire_output_index == 1 && total_products >= 2) begin
-                        output_wire(map_gate_wire(1,4)); // gate 1 to 4
+                        if (single_literal_product[1]) output_wire(map_var_wire(product_vars[1][0], 4));
+                        else output_wire(map_gate_wire(1, 4)); // gate 1 to 4
                         wire_output_index <= wire_output_index + 1;
                     end else if (wire_output_index == 2 && total_products >= 3) begin
-                        output_wire(map_gate_wire(2,4)); // gate 2 to 4
+                        if (single_literal_product[2]) output_wire(map_var_wire(product_vars[2][0], 4));
+                        else output_wire(map_gate_wire(2, 4)); // gate 2 to 4
                         wire_output_index <= wire_output_index + 1;
                     end else begin
                         wire_output_index <= 0;
@@ -219,7 +243,8 @@ module wire_gate_3_control_MSOP#(
                 
                 OR5_WIRE_OUT: begin
                     if (wire_output_index == 0) begin
-                        output_wire(map_gate_wire(3,5));
+                        if (single_literal_product[3]) output_wire(map_var_wire(product_vars[3][0], 4));
+                        else output_wire(map_gate_wire(3, 5));
                         wire_output_index <= wire_output_index + 1;
                     end else if (wire_output_index == 1) begin
                         output_wire(map_gate_wire(4,5));
@@ -246,6 +271,7 @@ module wire_gate_3_control_MSOP#(
     begin
         for(i = 0; i < 4; i = i + 1) begin
             product_count[i] = 0;
+            single_literal_product[i] = 1'b0;
             for(j = 0; j < 3; j = j + 1) product_vars[i][j] = 4'hF;
         end
         
