@@ -29,21 +29,21 @@ module Top_Student (
     // Set parameters
     parameter BLACK = 16'h0000;
     parameter WHITE = 16'hFFFF;
-    parameter KEY_A      = 4'b0000;
-    parameter KEY_B      = 4'b0001;
-    parameter KEY_C      = 4'b0010;
-    parameter KEY_NOT    = 4'b0100;
-    parameter KEY_OR     = 4'b0101;
-    parameter KEY_AND    = 4'b0110;
-    parameter KEY_LBRAC  = 4'b1000;
-    parameter KEY_RBRAC  = 4'b1001;
+
+    parameter KEY_A = 4'b0000;
+    parameter KEY_B = 4'b0001;
+    parameter KEY_C = 4'b0010;
+    parameter KEY_NOT = 4'b0100;
+    parameter KEY_OR = 4'b0101;
+    parameter KEY_AND = 4'b0110;
+    parameter KEY_LBRAC = 4'b1000;
+    parameter KEY_RBRAC = 4'b1001;
     parameter KEY_DELETE = 4'b1010;
-    parameter KEY_ENTER  = 4'b1011;
+    parameter KEY_ENTER = 4'b1011;
     parameter SEG_DIGIT_5 = 8'b1_0010010;
     parameter SEG_DIGIT_3_DP = 8'b0_0110000;
     parameter SEG_DIGIT_0 = 8'b1_1000000;
     parameter SEG_DIGIT_2 = 8'b1_0100100;
-    
     
     // Generate required wires and regs
     reg [15:0] oled_data_right_reg = BLACK; 
@@ -55,6 +55,8 @@ module Top_Student (
     wire [12:0] pixel_index_right;
     wire [6:0] x_addr_right =  pixel_index_right % 96;
     wire [5:0] y_addr_right = pixel_index_right / 96;
+    wire [6:0] x_addr_left =  pixel_index_right % 96;
+    wire [5:0] y_addr_left = pixel_index_right / 96;
     wire [15:0] oled_data_A;
     wire [15:0] oled_data_B;
     wire [15:0] oled_data_C;
@@ -63,6 +65,9 @@ module Top_Student (
     wire [1:0] CURRENT_SCREEN = sw[1:0];
     wire [3:0] selected_key;
     wire key_pressed;
+    wire [63:0] buffer_out;
+    wire keyboard_locked;
+    wire locked;
     
     // Generate clock signals
     clock clk6p25 (clk, 7, clk_6p25M);
@@ -93,11 +98,12 @@ module Top_Student (
     // Generate Individual Tasks
     TASK_A task_a (clk_6p25M, x_addr_right, y_addr_right, sw, !CURRENT_SCREEN[0],
                    btnU, btnD, btnL, btnR, btnC, oled_data_A, sA[3], sA[2], sA[1], sA[0]);
-    //TASK_B task_b (clk_6p25M, pixel_index_left, sw, !CURRENT_SCREEN[1], oled_data_B);    
-    //TASK_C task_c (clk_6p25M, x_addr_right, y_addr_right, !CURRENT_SCREEN[1], btnU, btnD, btnL, btnR, btnC, oled_data_C, selected_key, key_pressed);
+    TASK_B task_b (clk_6p25M, x_addr_left, y_addr_left, sw, !CURRENT_SCREEN[1], fb, selected_key, key_pressed, led[15], led[14], oled_data_B, keyboard_locked);   
+    TASK_C task_c (clk_6p25M, x_addr_right, y_addr_right, !CURRENT_SCREEN[1], btnU, btnD, btnL, btnR, btnC, oled_data_C, selected_key, key_pressed, buffer_out, locked);
     
     assign led [3:0] = selected_key;
-    
+    assign led [4] = keyboard_locked;
+    assign led [5] = locked;
     
     //////////////////////////////////////////////////////////////////////////////////
     // OLED MODULES
@@ -145,7 +151,7 @@ module Top_Student (
         s_main[0] <= SEG_DIGIT_2;
     end
     endtask
-    
+   
     task set_segment_task_A;
     begin
         s_main[3] <= sA[3];

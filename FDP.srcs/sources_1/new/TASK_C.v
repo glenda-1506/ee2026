@@ -28,7 +28,9 @@ module TASK_C(
     input btnU, btnD, btnL, btnR, btnC,
     output [15:0] oled_data,
     output [3:0] selected_key,
-    output key_pressed
+    output key_pressed,
+    output [63:0] buffer_out,
+    output locked
     );
     
     wire btnC_debounced;
@@ -75,15 +77,24 @@ module TASK_C(
     keyboard_display display (
         .clk(clk),
         .reset(reset),
-        .x_addr(x_addr),
-        .y_addr(y_addr),
+        .x(x_addr),
+        .y(y_addr),
         .btnU(btnU_debounced), 
         .btnD(btnD_debounced),
         .btnL(btnL_debounced), 
         .btnR(btnR_debounced), 
         .btnC(btnC_debounced),
-        .oled_data(oled_data),
-        .selected_key(selected_key),
+        .pixel_data(oled_data),
+        .key_value(selected_key),
         .key_pressed(key_pressed)
+    );
+    
+    input_manager manager (
+        .clk(clk),
+        .reset(reset),
+        .selected_key(selected_key),
+        .key_pressed(key_pressed),
+        .buffer_out(buffer_out),
+        .locked(locked)
     );
 endmodule

@@ -1,0 +1,106 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 04/02/2025 10:17:30 PM
+// Design Name: 
+// Module Name: input_manager
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module input_manager(
+    input clk,
+    input reset,
+    input [3:0] selected_key,
+    input key_pressed,
+    output reg [63:0] buffer_out,
+    output reg locked
+    );
+    
+    reg [3:0] input_buffer [0:15];
+    reg [4:0] write_ptr;
+    reg [3:0] last_selected_key;
+    reg [4:0] open_brac_count;
+    reg [4:0] close_brac_count;
+
+    wire is_valid;
+
+    integer i;
+
+    always @(*) begin
+        buffer_out = {input_buffer[0], input_buffer[1], input_buffer[2], input_buffer[3],
+                      input_buffer[4], input_buffer[5], input_buffer[6], input_buffer[7],
+                      input_buffer[8], input_buffer[9], input_buffer[10], input_buffer[11],
+                      input_buffer[12], input_buffer[13], input_buffer[14], input_buffer[15]};
+    end
+
+    check_validity validity_check (
+        .selected_key(selected_key),
+        .last_selected_key(last_selected_key),
+        .cursor_pos(write_ptr),
+        .open_brac_count(open_brac_count),
+        .prev_brac_count(close_brac_count),
+        .check_validity(is_valid)
+    );
+
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+                for (i = 0; i < 16; i = i + 1) begin
+                    input_buffer[i] <= 4'b1111;
+                end
+                write_ptr <= 0;
+                locked <= 0;
+                last_selected_key <= 4'b1111;
+                open_brac_count <= 0;
+                close_brac_count <= 0;
+            end else if (!locked) begin
+                if (key_pressed) begin
+                    case (selected_key)
+                        4'b1010: begin // DELETE
+                            if (write_ptr > 0) begin
+                                case (input_buffer[write_ptr-1])
+                                    4'b1000: open_brac_count <= open_brac_count - 1;  // LBRAC
+                                    4'b1001: close_brac_count <= close_brac_count - 1; // RBRAC
+                                endcase
+                                
+                                input_buffer[write_ptr-1] <= 4'b1111;
+                                write_ptr <= write_ptr - 1;
+                                
+                                last_selected_key <= (write_ptr > 1) ? 
+                                    input_buffer[write_ptr-2] : 4'b1111;
+                            end
+                        end
+                        4'b1011: begin // KEY_ENTER
+                            locked <= (is_valid && (open_brac_count == close_brac_count));
+                        end
+                        default: begin
+                            if (is_valid && write_ptr < 16) begin
+                                if (selected_key == 4'b1000) begin       // LBRAC
+                                    open_brac_count <= open_brac_count + 1;
+                                end
+                                else if (selected_key == 4'b1001) begin  // RBRAC
+                                    close_brac_count <= close_brac_count + 1;
+                                end
+                                
+                                input_buffer[write_ptr] <= selected_key;
+                                write_ptr <= write_ptr + 1;
+                                last_selected_key <= selected_key;
+                            end
+                        end
+                    endcase
+                end
+            end
+        end
+endmodule
