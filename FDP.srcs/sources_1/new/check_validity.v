@@ -86,7 +86,7 @@ module check_validity(
             check_validity = 1;
         end
 
-        if (cursor_pos == 15) begin
+        if (cursor_pos == 16) begin
             if (selected_key == KEY_AND || selected_key == KEY_OR || selected_key == KEY_NOT || selected_key == KEY_LBRAC) begin
                 check_validity = 0;
             end

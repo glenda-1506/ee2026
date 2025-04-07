@@ -267,7 +267,6 @@ module Display_Typing(
 
     // Update the character buffer with the selected key
     //always @(posedge clk or posedge reset) begin
-    always @(posedge clk) begin
 //          if (key_pressed && selected_key != last_selected_key) begin 
 //               if (selected_key == KEY_DELETE) begin
 //                   //last_selected_key == sec_last_selected_key;
@@ -314,17 +313,18 @@ module Display_Typing(
 //                  end
 //              end
               
-            if (key_pressed && selected_key != last_selected_key) begin
-              if (!keyboard_lock) begin
+    always @(posedge clk) begin
+            if (key_pressed && selected_key != last_selected_key && !keyboard_lock) begin
+//              if (!keyboard_lock) begin
                   if (selected_key == KEY_ENTER && is_valid && (open_brac_count == close_brac_count)) begin
                       keyboard_lock <= 1;  // Lock keyboard
                   end
-                  else if (selected_key == KEY_DELETE) begin
+                    else if (selected_key == KEY_DELETE) begin
                         if (cursor_pos > 0) begin
-                            cursor_pos <= cursor_pos - 1;
-                            char_buffer[cursor_pos] <= " ";
+                            char_buffer[cursor_pos - 1] <= " ";
+                            cursor_pos <= cursor_pos - 1; 
                         end
-                    end 
+                    end
                   else if (is_valid) begin
                     led <= 1'b0;
                     if (selected_key == KEY_LBRAC) begin
@@ -355,7 +355,7 @@ module Display_Typing(
                           keyboard_lock <= 1;
                       end
                   end
-              end
+//              end
           
                 // Update the last selected key
               if (selected_key == KEY_DELETE || is_valid) begin
