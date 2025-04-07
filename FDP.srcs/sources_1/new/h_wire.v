@@ -36,10 +36,10 @@ module h_wire#(
     input [Y_BIT:0] y_addr,
     input [X_BIT:0] x,      
     input [Y_BIT:0] y, 
-    output reg draw,
-    output reg is_used
+    output reg draw
     );
     wire draw_wire;
+    reg is_used;
     h_line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT, LENGTH)  (x_addr, y_addr, x, y, draw_wire);
     
     always @(posedge clk) begin

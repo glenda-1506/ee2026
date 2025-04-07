@@ -26,8 +26,9 @@ module circuit_control_3_gate(
     input [5:0] y_addr,
     input [15:0] sw,
     input reset,
-    input btnU, btnD, btnL, btnR,
-    output reg [15:0] oled_data_reg = 0
+    input btnU, btnD, btnL, btnR, btnC,
+    output reg [15:0] oled_data_reg = 0,
+    output reg current_req = 0
     );
     
     
@@ -40,7 +41,7 @@ module circuit_control_3_gate(
     parameter WHITE = 16'hFFFF;
     parameter DISPLAY_WIDTH = 142; // Change this if require a different dimension
     parameter DISPLAY_HEIGHT = 96; // Change this if require a different dimension
-    parameter MODULE_COUNT = 5;
+    parameter MODULE_COUNT = 50;
     
     // Generate required wires and regs
     wire [3:0] pb = {btnU, btnD, btnL, btnR};
@@ -48,7 +49,7 @@ module circuit_control_3_gate(
     wire [13:0] y_index;
     
     // Generate the ready flags for items to draw
-    wire [2:0] var_ready;
+    wire [3:0] var_ready; // 3 vars and 1 Final signal
     wire [5:0] gate_ready;
     wire [MODULE_COUNT-1:0] wire_ready;
     
@@ -59,130 +60,146 @@ module circuit_control_3_gate(
     //////////////////////////////////////////////////////////////////////////////////
     // GATE VARIABLES / WIRES / REGS
     //////////////////////////////////////////////////////////////////////////////////  
+    wire [7:0] function_id = sw[15:8];
+    reg [7:0] old_func_id;
+    wire [2:0] gate_input_count_MSOP, gate_input_count_MPOS, gate_input_count;
+    wire [1:0] gate_type_MSOP, gate_type_MPOS, gate_type;
+    wire [2:0] gate_id_MSOP, gate_id_MPOS, gate_id;
+    wire control_valid_MSOP, control_valid_MPOS, control_valid;
+    wire [$clog2(MODULE_COUNT):0] wire_input_id_MSOP, wire_input_id_MPOS, wire_input_id;
+    reg control_reset;
+    reg prev_btnC;
+    assign gate_input_count = current_req ? gate_input_count_MPOS : gate_input_count_MSOP;
+    assign gate_type = current_req ? gate_type_MPOS : gate_type_MSOP;
+    assign gate_id = current_req ? gate_id_MPOS : gate_id_MSOP;
+    assign control_valid = current_req ? control_valid_MPOS : control_valid_MSOP;
+    assign wire_input_id = current_req ? wire_input_id_MPOS : wire_input_id_MSOP;
     
-    // Set parameters
-    localparam GATE_TYPE_BIT = 2;
-    localparam GATE_OUTPUT_ID_BIT = 6;
-    localparam GATE_INPUT_BIT = 3;
-    localparam DATA_PACKET_BIT = GATE_TYPE_BIT + GATE_OUTPUT_ID_BIT + GATE_INPUT_BIT;
-    
-    // Individual regs and wires
-    reg [GATE_TYPE_BIT-1:0] g0_gate_type, g1_gate_type, g2_gate_type, g3_gate_type, g4_gate_type, g5_gate_type;
-    reg [GATE_OUTPUT_ID_BIT-1:0] g0_out_id_in, g1_out_id_in, g2_out_id_in, g3_out_id_in, g4_out_id_in, g5_out_id_in;
-    reg [GATE_INPUT_BIT-1:0] g0_input_lines, g1_input_lines, g2_input_lines, g3_input_lines, g4_input_lines, g5_input_lines;
-    wire [GATE_OUTPUT_ID_BIT-1:0] g0_out_id, g1_out_id, g2_out_id, g3_out_id, g4_out_id, g5_out_id;
-    
-    // Data Packets (for lookup)
-    wire [DATA_PACKET_BIT-1:0] g0_packet = {g0_out_id, g0_input_lines, g0_gate_type};
-    wire [DATA_PACKET_BIT-1:0] g1_packet = {g1_out_id, g1_input_lines, g1_gate_type};
-    wire [DATA_PACKET_BIT-1:0] g2_packet = {g2_out_id, g2_input_lines, g2_gate_type};
-    wire [DATA_PACKET_BIT-1:0] g3_packet = {g3_out_id, g3_input_lines, g3_gate_type};
-    wire [DATA_PACKET_BIT-1:0] g4_packet = {g4_out_id, g4_input_lines, g4_gate_type};
-    wire [DATA_PACKET_BIT-1:0] g5_packet = {g5_out_id, g5_input_lines, g5_gate_type};
     
     //////////////////////////////////////////////////////////////////////////////////
     // MAIN CODE LOGIC
     //////////////////////////////////////////////////////////////////////////////////    
-    integer i;
-    always @(posedge clk) begin
-        g0_out_id_in = 6'hFF; // not possible to reach this number for id
-        g1_out_id_in = 6'hFF;
-        g2_out_id_in = 6'hFF;
-        g3_out_id_in = 6'hFF;
-        g4_out_id_in = 6'hFF;
-        g5_out_id_in = 6'hFF;
-        for (i = 0; i < 6; i = i + 1) begin
-            case (i)
-                0: begin g0_input_lines = 3'b1; g0_gate_type = 2'b1; end
-                1: begin g1_input_lines = 3'b1; g1_gate_type = 2'b1; end
-                2: begin g2_input_lines = 3'b1; g2_gate_type = 2'b1; end
-                3: begin g3_input_lines = 3'b1; g3_gate_type = 2'b1; end
-                4: begin g4_input_lines = 3'b1; g4_gate_type = 2'b1; end
-                5: begin g5_input_lines = 3'b1; g5_gate_type = 2'b1; end
-            endcase
-        end  
-    end
+    
     
     // SET THE PIXELS TO BE LIGHTED UP
     always @(posedge clk) begin
-        oled_data_reg <= (|var_ready || |gate_ready || |wire_ready)
-                          ? WHITE : BLACK;
+        set_oled_display;
+        prev_btnC <= btnC;
+        control_reset <= 1'b0;
+        if ((old_func_id != function_id) || (btnC && !prev_btnC)) begin
+            control_reset <= 1'b1;
+            current_req <= btnC ? ~current_req : current_req;
+        end
+        old_func_id <= function_id;
     end
     
     //////////////////////////////////////////////////////////////////////////////////
     // WIRE MODULES
-    //////////////////////////////////////////////////////////////////////////////////      
-//    var_wire_3 #(DISPLAY_WIDTH, DISPLAY_HEIGHT)(x_addr, y_addr, 4, 25, 1'b0);
+    //////////////////////////////////////////////////////////////////////////////////        
 
-    wire assignment_done;
-    reg start_reg = 0;  
-    reg [GATE_TYPE_BIT:0] wire_gate_type = 0;
-    reg [5:0] wire_input_id = 0;
-    
-    wire_combined #(
+    wire_combined_3 #(
         .DISPLAY_WIDTH(DISPLAY_WIDTH),
         .DISPLAY_HEIGHT(DISPLAY_HEIGHT)
-    ) wire_test (
+        )(
         .clk(clk),
-        .start(start_reg),
-        .reset(sw[2]),
+        .reset(control_reset), 
         .x_index(x_index),
         .y_index(y_index),
-        .available_gates(6'b111111), // to change => use output ID as a way to check if the gate is available. if there is an id, we know that the gate is used
-        .gate_type(wire_gate_type),
-        .input_id(wire_input_id),
-        .wire_ready(wire_ready),
-        .assignment_done(assignment_done)
-    );
-    wire trigger;
-    single_pulse_debouncer (clk, sw[15], trigger);
-    always @(posedge clk) begin
-        if (!assignment_done)begin
-            wire_gate_type <= sw[14:13];
-            wire_input_id  <= sw[12:7];
-        end
-        start_reg <= trigger; 
-    end
+        .input_id(control_valid ? wire_input_id : 6'd63),
+        .wire_ready(wire_ready));
 
     //////////////////////////////////////////////////////////////////////////////////
     // GATE MODULES
     //////////////////////////////////////////////////////////////////////////////////       
     //*
-    combined_gate #(
+    combined_gate_3 #(
         .DISPLAY_WIDTH(DISPLAY_WIDTH),
-        .DISPLAY_HEIGHT(DISPLAY_HEIGHT),
-        .GATE_TYPE_BIT(GATE_TYPE_BIT),
-        .GATE_OUTPUT_ID_BIT(GATE_OUTPUT_ID_BIT),
-        .GATE_INPUT_BIT(GATE_INPUT_BIT)
+        .DISPLAY_HEIGHT(DISPLAY_HEIGHT)
         )(
         .clk(clk),
+        .reset(control_reset),
         .x_index(x_index),
         .y_index(y_index),
-        .g0_input_lines(g0_input_lines),
-        .g0_gate_type(g0_gate_type),
-        .g0_out_id_in(g0_out_id_in),
-        .g1_input_lines(g1_input_lines),
-        .g1_gate_type(g1_gate_type),
-        .g1_out_id_in(g1_out_id_in),
-        .g2_input_lines(g2_input_lines),
-        .g2_gate_type(g2_gate_type),
-        .g2_out_id_in(g2_out_id_in),
-        .g3_input_lines(g3_input_lines),
-        .g3_gate_type(g3_gate_type),
-        .g3_out_id_in(g3_out_id_in),
-        .g4_input_lines(g4_input_lines),
-        .g4_gate_type(g4_gate_type),
-        .g4_out_id_in(g4_out_id_in),
-        .g5_input_lines(g5_input_lines),
-        .g5_gate_type(g5_gate_type),
-        .g5_out_id_in(g5_out_id_in),
+        .input_count(control_valid ? gate_input_count : 3'd7),
+        .gate_type(control_valid ? gate_type : 2'd0),
+        .gate_id(control_valid ? gate_id : 3'd7),
+        .wire_id(control_valid ? wire_input_id : 6'd63),
         .var_ready(var_ready),
-        .gate_ready(gate_ready),
-        .g0_out_id(g0_out_id),
-        .g1_out_id(g1_out_id),
-        .g2_out_id(g2_out_id),
-        .g3_out_id(g3_out_id),
-        .g4_out_id(g4_out_id),
-        .g5_out_id(g5_out_id));
+        .gate_ready(gate_ready));
     //*/
+    
+    //////////////////////////////////////////////////////////////////////////////////
+    // CONTROL MODULE
+    ////////////////////////////////////////////////////////////////////////////////// 
+    
+    wire_gate_3_control_MSOP ctrl (
+        .clk(clk),
+        .reset(control_reset),
+        .func_id(function_id),
+        .wire_id(wire_input_id_MSOP),
+        .gate_type(gate_type_MSOP),
+        .gate_id(gate_id_MSOP),
+        .input_count(gate_input_count_MSOP),
+        .valid(control_valid_MSOP));
+        
+    wire_gate_3_control_MPOS ctrl2 (
+        .clk(clk),
+        .reset(control_reset),
+        .func_id(function_id),
+        .wire_id(wire_input_id_MPOS),
+        .gate_type(gate_type_MPOS),
+        .gate_id(gate_id_MPOS),
+        .input_count(gate_input_count_MPOS),
+        .valid(control_valid_MPOS));
+        
+    //////////////////////////////////////////////////////////////////////////////////
+    // HELPERS
+    ////////////////////////////////////////////////////////////////////////////////// 
+    task set_oled_display;
+    begin 
+        oled_data_reg <= |wire_ready ? map_wire_color(wire_ready) :
+                         ((|var_ready || |gate_ready) ? WHITE : BLACK);
+    end
+    endtask
+    
+    parameter RED = 16'hf800;   // A
+    parameter ORANGE = 16'hf300; // B
+    parameter YELLOW = 16'hffe0;  // C
+    parameter GREEN = 16'h07e0;    // ~A
+    parameter BLUE = 16'h001f;  // ~B
+    parameter PURPLE = 16'h701f;   // ~C
+    parameter CYAN = 16'h07ff; // gate 0 outs
+    parameter PINK = 16'hf81f; // gate 1 outs
+    parameter DARK_GREEN = 16'h1a03; // gate 2 outs
+    function [15:0] map_wire_color;
+        input [MODULE_COUNT:0] wires;
+        reg [5:0] wire_id;
+            begin
+                wire_id = current_wire(wire_ready);
+                case (wire_id)
+                    6'd0, 6'd6, 6'd12, 6'd18, 6'd24: map_wire_color = RED;
+                    6'd1, 6'd7, 6'd13, 6'd19, 6'd25: map_wire_color = ORANGE;
+                    6'd2, 6'd8, 6'd14, 6'd20, 6'd26: map_wire_color = YELLOW;
+                    6'd3, 6'd9, 6'd15, 6'd21, 6'd27: map_wire_color = GREEN;
+                    6'd4, 6'd10, 6'd16, 6'd22, 6'd28: map_wire_color = BLUE;
+                    6'd5, 6'd11, 6'd17, 6'd23, 6'd29: map_wire_color = PURPLE;
+                    6'd30, 6'd31, 6'd32, 6'd39, 6'd40, 6'd41: map_wire_color = CYAN;
+                    6'd33, 6'd34, 6'd35, 6'd42, 6'd43, 6'd44: map_wire_color = PINK;
+                    6'd36, 6'd37, 6'd38, 6'd45, 6'd46, 6'd47: map_wire_color = DARK_GREEN;
+                    default: map_wire_color = WHITE;
+                endcase
+            end
+    endfunction
+    
+    function [5:0] current_wire;
+        input [MODULE_COUNT:0] wires;
+        reg [5:0] i;
+        begin
+            current_wire = 50;
+            for (i = 0; i < 50; i = i + 1) begin
+                if (wires[i] == 1'b1 && current_wire == 50)
+                    current_wire = i;
+            end
+        end
+    endfunction
 endmodule
