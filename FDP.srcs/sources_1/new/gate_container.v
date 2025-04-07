@@ -38,12 +38,27 @@ module gate_container#(
     input [1:0] gate_select, // 2'b01 : AND , 2'b10: OR
     output draw
     );
+    
+    function buffer_override_check;
+        input [GATE_INPUTS-1:0] input_lines;
+        reg [2:0] i;
+        reg [2:0] count;
+        begin
+            count = 0;
+            for (i = 0; i < 3; i = i + 1) begin
+                if (input_lines[i] == 1'b1) count = count + 1;
+            end
+            buffer_override_check = (count == 1);
+        end
+    endfunction
 
-    wire draw_and;
-    wire draw_or;
+    wire draw_and, draw_or, draw_buffer;
     reg is_used;
     reg buffer;
-    assign draw = is_used && ((gate_select == 2'b1) ? draw_and : (gate_select == 2'b10) ? (draw_or || buffer) : 0);
+    reg buffer_gate_override;
+    assign draw = is_used && (buffer_override_check(input_lines) ? draw_buffer : 
+                             ((gate_select == 2'b1) ? draw_and : 
+                             (gate_select == 2'b10) ? (draw_or || buffer) : 0));
     
     // GATES 
     AND_gate #(DISPLAY_WIDTH, DISPLAY_HEIGHT)
@@ -51,7 +66,10 @@ module gate_container#(
    
     OR_gate #(DISPLAY_WIDTH, DISPLAY_HEIGHT)
              (x_addr, y_addr, x, y, draw_or);
-             
+    
+    gate_buffer #(DISPLAY_WIDTH, DISPLAY_HEIGHT)
+                 (x_addr, y_addr, x, y, draw_buffer);
+                 
     // Assign buffers
     always @ (posedge clk) begin
         if (GATE_INPUTS == 3) begin

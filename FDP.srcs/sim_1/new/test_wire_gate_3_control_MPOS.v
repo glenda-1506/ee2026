@@ -64,7 +64,7 @@ module test_wire_gate_3_control_MPOS(
      end
      
      always @(posedge clk) begin
-         if (valid_out)
+//         if (valid_out)
              $display("Time %t: func_id=%0d, gate_type=%h, gate_id=%h, num_inputs=%h, wire_id=%0d", 
                       $time, func_id, gate_type, gate_id, num_inputs, wire_id);
      end

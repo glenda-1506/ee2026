@@ -54,7 +54,7 @@ module variable_circuit_segment#(
     
     // Generate Lines
     v_line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 84) (x_addr, y_addr, x + 2, y + 6, line_ready[0]);
-    v_line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 78) (x_addr, y_addr, x + 16, y + 12, line_ready[1]);
+    v_line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 76) (x_addr, y_addr, x + 16, y + 14, line_ready[1]);
     h_line_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT, 1)  (x_addr, y_addr, x + 3, y + 12, line_ready[2]);
 
     // Generate NOT Gate
