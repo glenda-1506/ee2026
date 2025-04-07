@@ -66,6 +66,7 @@ module keyboard_display(
     wire symbol_on_RBrac;
     wire symbol_on_Delete;
     wire symbol_on_Enter;
+    wire grid_on;
     
     reg btnL_prev, btnR_prev, btnU_prev, btnD_prev, btnC_prev;
     wire btnL_edge = btnL && !btnL_prev;
@@ -259,12 +260,20 @@ module keyboard_display(
         .pixel_on(symbol_on_Enter)
     );
     
+    grid_display grid (
+        .x(x),
+        .y(y),
+        .grid(grid_on)
+    );
+    
     always @(posedge clk or posedge reset) begin
         if (reset)
             pixel_data <= BLACK;
         else begin
             if (symbol_on_A || symbol_on_B || symbol_on_C || symbol_on_Tilda || symbol_on_And || symbol_on_Or || symbol_on_LBrac || symbol_on_RBrac || symbol_on_Delete || symbol_on_Enter)
                 pixel_data <= (selected_key) ? GREEN : WHITE;
+            else if (grid_on)
+                pixel_data <= WHITE;
             else
                 pixel_data <= BLACK;
         end
