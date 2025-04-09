@@ -165,18 +165,32 @@ module keyboard_display(
     wire selected_key = (x >= selected_x_pos && x < selected_x_pos + 20) &&
                         (y >= selected_y_pos && y < selected_y_pos + 20);
     
+//    always @(posedge clk) begin
+//        if (!reset) begin
+//            if (btnC_edge) begin
+//                key_value <= key_map[selected_y][selected_x];
+//                key_pressed <= 1;
+//            end else if (key_pressed) begin
+//                key_pressed <= 1;
+//            end else begin
+//                key_pressed <= 0;
+//            end     
+//        end else begin
+//            key_value <= 4'b1111;
+//        end
+//    end
+
     always @(posedge clk) begin
-        if (!reset) begin
-            if (btnC_edge) begin
-                key_value <= key_map[selected_y][selected_x];
-                key_pressed <= 1;
-            end else if (key_pressed) begin
-                key_pressed <= 1;
-            end else begin
-                key_pressed <= 0;
-            end     
+        if (reset) begin
+            key_value   <= 4'b1111;
+            key_pressed <= 0;
         end else begin
-            key_value <= 4'b1111;
+            if (btnC_edge) begin
+                key_value   <= key_map[selected_y][selected_x];
+                key_pressed <= 1;  // pulse high for 1 clock cycle
+            end else begin
+                key_pressed <= 0;  // back to 0 after 1 cycle
+            end
         end
     end
     
