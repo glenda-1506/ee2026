@@ -54,6 +54,9 @@ module input_manager(
         .prev_brac_count(close_brac_count),
         .check_validity(is_valid)
     );
+    
+    wire trigger;
+    single_pulse_debouncer(clk, key_pressed, trigger);
 
     always @(posedge clk or posedge reset) begin
         if (reset) begin
@@ -66,7 +69,7 @@ module input_manager(
                 open_brac_count <= 0;
                 close_brac_count <= 0;
             end else if (!locked) begin
-                if (key_pressed) begin
+                if (trigger) begin
                     case (selected_key)
                         4'b1010: begin // DELETE
                             if (write_ptr > 0) begin
