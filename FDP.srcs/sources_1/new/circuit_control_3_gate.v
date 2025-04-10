@@ -24,7 +24,7 @@ module circuit_control_3_gate(
     input clk,
     input [6:0] x_addr,
     input [5:0] y_addr,
-    input [15:0] sw,
+    input [7:0] function_id,
     input reset,
     input btnU, btnD, btnL, btnR, btnC,
     output reg [15:0] oled_data_reg = 0,
@@ -60,7 +60,6 @@ module circuit_control_3_gate(
     //////////////////////////////////////////////////////////////////////////////////
     // GATE VARIABLES / WIRES / REGS
     //////////////////////////////////////////////////////////////////////////////////  
-    wire [7:0] function_id = sw[15:8];
     reg [7:0] old_func_id;
     wire [2:0] gate_input_count_MSOP, gate_input_count_MPOS, gate_input_count;
     wire [1:0] gate_type_MSOP, gate_type_MPOS, gate_type;
