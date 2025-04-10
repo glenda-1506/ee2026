@@ -23,6 +23,7 @@
 module input_manager(
     input clk,
     input reset,
+    input manual_reset,
     input [3:0] selected_key,
     input key_pressed,
     output reg [63:0] buffer_out,
@@ -56,54 +57,58 @@ module input_manager(
     );
     
     wire trigger;
-    single_pulse_debouncer(clk, key_pressed, trigger);
+    single_pulse_debouncer d (clk, key_pressed, trigger);
 
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
-                for (i = 0; i < 16; i = i + 1) begin
-                    input_buffer[i] <= 4'b1111;
-                end
-                write_ptr <= 0;
-                locked <= 0;
-                last_selected_key <= 4'b1111;
-                open_brac_count <= 0;
-                close_brac_count <= 0;
-            end else if (!locked) begin
-                if (trigger) begin
-                    case (selected_key)
-                        4'b1010: begin // DELETE
-                            if (write_ptr > 0) begin
-                                case (input_buffer[write_ptr-1])
-                                    4'b1000: open_brac_count <= open_brac_count - 1;  // LBRAC
-                                    4'b1001: close_brac_count <= close_brac_count - 1; // RBRAC
-                                endcase
-                                
-                                input_buffer[write_ptr-1] <= 4'b1111;
-                                write_ptr <= write_ptr - 1;
-                                
-                                last_selected_key <= (write_ptr > 1) ? 
-                                    input_buffer[write_ptr-2] : 4'b1111;
+    always @(posedge clk or posedge manual_reset or posedge reset) begin
+        if (manual_reset) begin
+            for (i = 0; i < 16; i = i + 1) begin
+                input_buffer[i] <= 4'b1111;
+            end
+            write_ptr <= 0;
+            locked <= 0;
+            last_selected_key <= 4'b1111;
+            open_brac_count <= 0;
+            close_brac_count <= 0;
+        end 
+        else if (reset) begin
+            locked <= 0;
+        end
+        else if (!locked) begin
+            if (trigger) begin
+                case (selected_key)
+                    4'b1010: begin
+                        if (write_ptr > 0) begin
+                            case (input_buffer[write_ptr-1])
+                                4'b1000: open_brac_count <= open_brac_count - 1;
+                                4'b1001: close_brac_count <= close_brac_count - 1;
+                            endcase
+                            
+                            input_buffer[write_ptr-1] <= 4'b1111;
+                            write_ptr <= write_ptr - 1;
+                            
+                            last_selected_key <= (write_ptr > 1) ? input_buffer[write_ptr-2] : 4'b1111;
+                        end
+                    end
+                    4'b1011: begin // KEY_ENTER
+                        locked <= (is_valid && (open_brac_count == close_brac_count));
+                    end
+                    default: begin
+                        if (is_valid && write_ptr < 16) begin
+                            if (selected_key == 4'b1000) begin 
+                                open_brac_count <= open_brac_count + 1;
                             end
-                        end
-                        4'b1011: begin // KEY_ENTER
-                            locked <= (is_valid && (open_brac_count == close_brac_count));
-                        end
-                        default: begin
-                            if (is_valid && write_ptr < 16) begin
-                                if (selected_key == 4'b1000) begin       // LBRAC
-                                    open_brac_count <= open_brac_count + 1;
-                                end
-                                else if (selected_key == 4'b1001) begin  // RBRAC
-                                    close_brac_count <= close_brac_count + 1;
-                                end
-                                
-                                input_buffer[write_ptr] <= selected_key;
-                                write_ptr <= write_ptr + 1;
-                                last_selected_key <= selected_key;
+                            else if (selected_key == 4'b1001) begin
+                                close_brac_count <= close_brac_count + 1;
                             end
+                            
+                            input_buffer[write_ptr] <= selected_key;
+                            write_ptr <= write_ptr + 1;
+                            last_selected_key <= selected_key;
                         end
-                    endcase
-                end
+                    end
+                endcase
             end
         end
+    end
 endmodule
+

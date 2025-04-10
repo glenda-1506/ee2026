@@ -28,6 +28,6 @@ module single_pulse_debouncer#(
     output debounced_pb
     );
     wire d_pb;
-    debouncer (clk, pb, COUNT, d_pb); 
-    edge_detector #(EDGE)(clk, d_pb, debounced_pb);
+    debouncer de (clk, pb, COUNT, d_pb); 
+    edge_detector #(EDGE) ed (clk, d_pb, debounced_pb);
 endmodule
