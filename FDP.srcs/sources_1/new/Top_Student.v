@@ -70,7 +70,7 @@ module Top_Student (
     wire locked;
     wire [7:0] truth_table;
     wire tt_done;
-    wire [7:0] func_id = sw[15:8]; // This value needs to be changed once integrated with the other 3
+    reg [7:0] func_id;
     
     // Generate clock signals
     clock clk6p25 (clk, 7, clk_6p25M);
@@ -84,9 +84,11 @@ module Top_Student (
     // MAIN CODE LOGIC
     ////////////////////////////////////////////////////////////////////////////////// 
     always @(posedge clk_6p25M) begin
+        manage_func_id;
         case (CURRENT_SCREEN)
             2'b01: begin
                 set_segment_task_A;
+                
                 oled_data_right_reg <= oled_data_A; // c2
                 oled_data_left_reg <= oled_data_D; // Aik Haw
             end
@@ -97,6 +99,10 @@ module Top_Student (
             end
             default: default_outputs;
         endcase
+    end
+    
+    initial begin
+        func_id <= 8'd255;
     end
     
     // Generate Individual Tasks
@@ -177,6 +183,14 @@ module Top_Student (
         s_main[2] <= sA[2];
         s_main[1] <= sA[1];
         s_main[0] <= sA[0];
+    end
+    endtask
+    
+    task manage_func_id;
+    begin
+        // Latch to valid ids
+        if (locked) func_id <= truth_table;
+//        else func_id <= func_id;
     end
     endtask
 endmodule
