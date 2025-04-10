@@ -70,6 +70,7 @@ module Top_Student (
     wire locked;
     wire [7:0] truth_table;
     wire tt_done;
+    reg [7:0] func_id;
     
     // Generate clock signals
     clock clk6p25 (clk, 7, clk_6p25M);
@@ -83,13 +84,16 @@ module Top_Student (
     // MAIN CODE LOGIC
     ////////////////////////////////////////////////////////////////////////////////// 
     always @(posedge clk_6p25M) begin
+        manage_func_id;
         case (CURRENT_SCREEN)
             2'b01: begin
                 set_segment_task_A;
+                
                 oled_data_right_reg <= oled_data_A; // c2
                 oled_data_left_reg <= oled_data_D; // Aik Haw
             end
             2'b10: begin
+                default_segment_outputs;
                 oled_data_right_reg <= oled_data_C; // Glenda
                 oled_data_left_reg <= oled_data_B; // Louis
             end
@@ -97,9 +101,13 @@ module Top_Student (
         endcase
     end
     
+    initial begin
+        func_id <= 8'd255;
+    end
+    
     // Generate Individual Tasks
-//    TASK_A task_a (clk_6p25M, x_addr_right, y_addr_right, sw, !CURRENT_SCREEN[0],
-//                   btnU, btnD, btnL, btnR, btnC, oled_data_A, sA[3], sA[2], sA[1], sA[0]);
+    TASK_A task_a (clk_6p25M, x_addr_right, y_addr_right, func_id, !CURRENT_SCREEN[0],
+                   btnU, btnD, btnL, btnR, btnC, oled_data_A, sA[3], sA[2], sA[1], sA[0]);
     TASK_B task_b (clk_6p25M, x_addr_left, y_addr_left, sw, !CURRENT_SCREEN[1], fb, selected_key, key_pressed, led[15], led[14], oled_data_B, keyboard_locked);   
     TASK_C task_c (clk_6p25M, x_addr_right, y_addr_right, !CURRENT_SCREEN[1], btnU, btnD, btnL, btnR, btnC, oled_data_C, selected_key, key_pressed, buffer_out, locked);
     TASK_D task_d (
@@ -156,6 +164,12 @@ module Top_Student (
     ////////////////////////////////////////////////////////////////////////////////// 
     task default_outputs;
     begin
+        default_segment_outputs;
+    end
+    endtask
+    
+    task default_segment_outputs;
+    begin
         s_main[3] <= SEG_DIGIT_5;
         s_main[2] <= SEG_DIGIT_3_DP;
         s_main[1] <= SEG_DIGIT_0;
@@ -169,6 +183,14 @@ module Top_Student (
         s_main[2] <= sA[2];
         s_main[1] <= sA[1];
         s_main[0] <= sA[0];
+    end
+    endtask
+    
+    task manage_func_id;
+    begin
+        // Latch to valid ids
+        if (locked) func_id <= truth_table;
+//        else func_id <= func_id;
     end
     endtask
 endmodule
