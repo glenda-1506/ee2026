@@ -51,6 +51,7 @@ module circuit_control_3_gate(
     // Generate the ready flags for items to draw
     wire [3:0] var_ready; // 3 vars and 1 Final signal
     wire [5:0] gate_ready;
+    wire invalid_ready;
     wire [MODULE_COUNT-1:0] wire_ready;
     
     // Generate virtual oled
@@ -150,17 +151,21 @@ module circuit_control_3_gate(
         .gate_id(gate_id_MPOS),
         .input_count(gate_input_count_MPOS),
         .valid(control_valid_MPOS));
+    
+    //////////////////////////////////////////////////////////////////////////////////
+    // INVALID SCREEN MODULE
+    ////////////////////////////////////////////////////////////////////////////////// 
+    invalid_screen_generator #(
+        .DISPLAY_WIDTH(96),
+        .DISPLAY_HEIGHT(64)
+        )(
+        .x_addr((x_index < 96) ? x_index : 95),
+        .y_addr((y_index < 64) ? y_index : 64),
+        .draw(invalid_ready));
         
     //////////////////////////////////////////////////////////////////////////////////
     // HELPERS
     ////////////////////////////////////////////////////////////////////////////////// 
-    task set_oled_display;
-    begin 
-        oled_data_reg <= |wire_ready ? map_wire_color(wire_ready) :
-                         ((|var_ready || |gate_ready) ? WHITE : BLACK);
-    end
-    endtask
-    
     parameter RED = 16'hf800;   // A
     parameter ORANGE = 16'hf300; // B
     parameter YELLOW = 16'hffe0;  // C
@@ -170,6 +175,18 @@ module circuit_control_3_gate(
     parameter CYAN = 16'h07ff; // gate 0 outs
     parameter PINK = 16'hf81f; // gate 1 outs
     parameter DARK_GREEN = 16'h1a03; // gate 2 outs
+    
+    task set_oled_display;
+    begin 
+        if (function_id == 8'd0 || function_id == 8'd255) begin
+            oled_data_reg <= invalid_ready ? ORANGE : BLACK;
+        end else begin
+            oled_data_reg <= |wire_ready ? map_wire_color(wire_ready) :
+                             ((|var_ready || |gate_ready) ? WHITE : BLACK);
+        end
+    end
+    endtask
+
     function [15:0] map_wire_color;
         input [MODULE_COUNT:0] wires;
         reg [5:0] wire_id;
