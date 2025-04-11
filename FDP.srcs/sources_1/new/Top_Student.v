@@ -196,8 +196,8 @@ module Top_Student (
     task manage_func_id;
     begin
         // Latch to valid ids
-       // func_id <= sw[15:8];
-        if (locked) func_id <= truth_table;
+        func_id <= sw[15:8];
+        //if (locked) func_id <= truth_table;
     end
     endtask
 endmodule

@@ -35,12 +35,12 @@ module virtual_oled_generator #(
     input reset,
     input [3:0] pb, // btnU, btnD, btnL, btnR
     input [PIXEL_INDEX_BIT:0] x_addr, y_addr,
-    output [VIRTUAL_ADDR_BIT:0] adjusted_x, adjusted_y
+    output [VIRTUAL_ADDR_BIT:0] adjusted_x, adjusted_y,
+    output reg [VIRTUAL_ADDR_BIT:0] x_offset, y_offset
     );
     //////////////////////////////////////////////////////////////////////////////////
     // Generate required wires and regs
     //////////////////////////////////////////////////////////////////////////////////
-    reg [VIRTUAL_ADDR_BIT:0] x_offset, y_offset;
     assign adjusted_x = x_addr + x_offset;
     assign adjusted_y = y_addr + y_offset;
     
