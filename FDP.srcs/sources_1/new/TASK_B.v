@@ -7,7 +7,7 @@ module TASK_B(
     input reset,    
     output reg [15:0] oled_data_reg = 0,
     input locked,
-    input [63:0] buffer
+    input [127:0] buffer
 ); 
     wire [15:0] out;
    

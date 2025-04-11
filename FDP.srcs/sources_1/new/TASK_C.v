@@ -30,7 +30,7 @@ module TASK_C(
     output [15:0] oled_data,
     output [3:0] selected_key,
     output key_pressed,
-    output [63:0] buffer_out,
+    output [127:0] buffer_out,
     output locked
     );
     
