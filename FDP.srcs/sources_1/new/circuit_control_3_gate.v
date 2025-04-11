@@ -51,6 +51,7 @@ module circuit_control_3_gate(
     // Generate the ready flags for items to draw
     wire [3:0] var_ready; // 3 vars and 1 Final signal
     wire [5:0] gate_ready;
+    wire legend_ready;
     wire invalid_ready;
     wire [MODULE_COUNT-1:0] wire_ready;
     
@@ -79,7 +80,6 @@ module circuit_control_3_gate(
     //////////////////////////////////////////////////////////////////////////////////
     // MAIN CODE LOGIC
     //////////////////////////////////////////////////////////////////////////////////    
-    
     
     // SET THE PIXELS TO BE LIGHTED UP
     always @(posedge clk) begin
@@ -164,6 +164,19 @@ module circuit_control_3_gate(
         .draw(invalid_ready));
         
     //////////////////////////////////////////////////////////////////////////////////
+    // LEGEND MODULE
+    ////////////////////////////////////////////////////////////////////////////////// 
+    legend_gen #(
+        .DISPLAY_WIDTH(DISPLAY_WIDTH),
+        .DISPLAY_HEIGHT(DISPLAY_HEIGHT)
+        )(
+        .x_addr(x_index),
+        .y_addr(y_index),
+        .x(98),
+        .y(2),
+        .draw(legend_ready));
+    
+    //////////////////////////////////////////////////////////////////////////////////
     // HELPERS
     ////////////////////////////////////////////////////////////////////////////////// 
     parameter RED = 16'hf800;   // A
@@ -182,7 +195,7 @@ module circuit_control_3_gate(
             oled_data_reg <= invalid_ready ? ORANGE : BLACK;
         end else begin
             oled_data_reg <= |wire_ready ? map_wire_color(wire_ready) :
-                             ((|var_ready || |gate_ready) ? WHITE : BLACK);
+                             ((|var_ready || |gate_ready || legend_ready) ? WHITE : BLACK);
         end
     end
     endtask
