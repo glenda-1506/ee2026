@@ -2,13 +2,11 @@
 
 module Display_Typing(
     input clk,
-    input fb,
     input program_locked,
     input [6:0] x_addr,
     input [5:0] y_addr,
     input [63:0] buffer,
-    output [15:0] pixel_data,
-    output reg keyboard_lock
+    output [15:0] pixel_data
 );
 
     // Registers and wires
@@ -60,8 +58,6 @@ module Display_Typing(
         .get_character_bitmap(bitmap_output)
     );
     
-  
-
     // Updating the next state and output
     always @(posedge clk) begin
         if (buffer != prev_buffer) begin
@@ -69,7 +65,6 @@ module Display_Typing(
             bit_index <= 0;
             end_flag <= 0;
             should_store <= 0;
-            keyboard_lock <= 0;
 
             for (i = 0; i < 16; i = i + 1)
                 char_buffer[i] <= " ";
@@ -86,9 +81,6 @@ module Display_Typing(
             else
                 should_store <= 1;
         end 
-        else if (!keyboard_lock) begin
-            keyboard_lock <= 1;
-        end
     end
 
 endmodule
