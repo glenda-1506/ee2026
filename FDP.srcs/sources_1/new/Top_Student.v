@@ -111,7 +111,7 @@ module Top_Student (
     // Generate Individual Tasks
     TASK_A task_a (clk_6p25M, x_addr_right, y_addr_right, func_id, !CURRENT_SCREEN[0],
                    btnU, btnD, btnL, btnR, btnC, oled_data_A, sA[3], sA[2], sA[1], sA[0]);
-//    TASK_B task_b (clk_6p25M, x_addr_left, y_addr_left, sw, !CURRENT_SCREEN[1], fb, selected_key, key_pressed, led[15], led[14], oled_data_B, keyboard_locked);   
+    TASK_B task_b (clk_6p25M, x_addr_left, y_addr_left, sw, !CURRENT_SCREEN[1], fb, selected_key, key_pressed, led[15], led[14], oled_data_B, keyboard_locked);   
     TASK_C task_c (clk_6p25M, x_addr_right, y_addr_right, !CURRENT_SCREEN[1], manual_reset, btnU, btnD, btnL, btnR, btnC, oled_data_C, selected_key, key_pressed, buffer_out, locked);
     TASK_D task_d (
         .clk         (clk_6p25M),
@@ -192,8 +192,8 @@ module Top_Student (
     task manage_func_id;
     begin
         // Latch to valid ids
-        if (locked) func_id <= truth_table;
-//        else func_id <= func_id;
+        func_id <= sw[15:8];
+        //if (locked) func_id <= truth_table;
     end
     endtask
 endmodule
