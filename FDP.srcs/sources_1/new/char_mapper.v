@@ -1,12 +1,12 @@
 `timescale 1ns / 1ps
 
 module char_mapper(
-    input [3:0] nib,
+    input [3:0] bit_chunk,
     output reg [7:0] ascii_char
 );
 
     always @(*) begin
-        case (nib)
+        case (bit_chunk)
             4'h0: ascii_char = "A";
             4'h1: ascii_char = "B";
             4'h2: ascii_char = "C";

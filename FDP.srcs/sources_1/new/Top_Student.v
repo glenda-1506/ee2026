@@ -113,7 +113,8 @@ module Top_Student (
    // TASK_A task_a (clk_6p25M, x_addr_right, y_addr_right, func_id, !CURRENT_SCREEN[0],
   //                 btnU, btnD, btnL, btnR, btnC, oled_data_A, sA[3], sA[2], sA[1], sA[0]);
     TASK_B task_b (clk_6p25M, x_addr_left, y_addr_left, !CURRENT_SCREEN[1], oled_data_B, locked, buffer_out);   
-    TASK_C task_c (clk_6p25M, x_addr_right, y_addr_right, !CURRENT_SCREEN[1], manual_reset, btnU, btnD, btnL, btnR, btnC, oled_data_C, selected_key, key_pressed, buffer_out, locked);
+    TASK_C task_c (clk_6p25M, x_addr_right, y_addr_right, !CURRENT_SCREEN[1], manual_reset, btnU, btnD, btnL, 
+                   btnR, btnC, oled_data_C, selected_key, key_pressed, buffer_out, locked);
 //    TASK_D task_d (
 //        .clk         (clk_6p25M),
 //        .rst         (!locked),

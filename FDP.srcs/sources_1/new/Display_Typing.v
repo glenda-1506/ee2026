@@ -9,7 +9,6 @@ module Display_Typing(
     output [15:0] pixel_data
 );
 
-    // Registers and wires
     reg [4:0] bit_index;
     reg end_flag;
     reg [3:0] bit_chunk;
@@ -21,10 +20,8 @@ module Display_Typing(
     wire [2:0] current_row;
     wire [7:0] ascii_output;
     wire [7:0] bitmap_output;
-
     integer i;
 
-    // Flattened char_buffer for renderer
     assign char_buffer_flat = {
         char_buffer[15], char_buffer[14], char_buffer[13], char_buffer[12],
         char_buffer[11], char_buffer[10], char_buffer[9],  char_buffer[8],
@@ -32,9 +29,9 @@ module Display_Typing(
         char_buffer[3],  char_buffer[2],  char_buffer[1],  char_buffer[0]
     };
 
-    // Map 4-bit chunk to ASCII
+    // Map 4-bit chunk to each char
     char_mapper map_chars (
-        .nib(bit_chunk),
+        .bit_chunk(bit_chunk),
         .ascii_char(mapped_char)
     );
 

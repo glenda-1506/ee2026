@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-// DisplayRenderer.v
+
 module printing_display(
     input clk,
     input [6:0] x_addr,
