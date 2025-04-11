@@ -47,17 +47,20 @@ module circuit_control_3_gate(
     wire [3:0] pb = {btnU, btnD, btnL, btnR};
     wire [13:0] x_index;
     wire [13:0] y_index;
+    wire [13:0] x_offset;
+    wire [13:0] y_offset;
     
     // Generate the ready flags for items to draw
     wire [3:0] var_ready; // 3 vars and 1 Final signal
     wire [5:0] gate_ready;
     wire legend_ready;
+    wire legend_black_ready;
     wire invalid_ready;
     wire [MODULE_COUNT-1:0] wire_ready;
     
     // Generate virtual oled
     virtual_oled_generator #(DISPLAY_WIDTH, DISPLAY_HEIGHT) v_oled 
-                            (clk, reset, pb, x_addr, y_addr, x_index, y_index);
+                            (clk, reset, pb, x_addr, y_addr, x_index, y_index, x_offset, y_offset);
                             
     //////////////////////////////////////////////////////////////////////////////////
     // GATE VARIABLES / WIRES / REGS
@@ -171,10 +174,11 @@ module circuit_control_3_gate(
         .DISPLAY_HEIGHT(DISPLAY_HEIGHT)
         )(
         .x_addr(x_index),
-        .y_addr(y_index),
+        .y_addr(y_index - y_offset),
         .x(98),
         .y(2),
-        .draw(legend_ready));
+        .draw(legend_ready),
+        .draw_black(legend_black_ready));
     
     //////////////////////////////////////////////////////////////////////////////////
     // HELPERS
@@ -194,8 +198,9 @@ module circuit_control_3_gate(
         if (function_id == 8'd0 || function_id == 8'd255) begin
             oled_data_reg <= invalid_ready ? ORANGE : BLACK;
         end else begin
-            oled_data_reg <= |wire_ready ? map_wire_color(wire_ready) :
-                             legend_ready ? map_legend_color(x_index, y_index) : 
+            oled_data_reg <= legend_ready ? map_legend_color(x_index, (y_index - y_offset)) :
+                             legend_black_ready ? BLACK :  
+                             |wire_ready ? map_wire_color(wire_ready) :
                              (|var_ready || |gate_ready) ? WHITE : BLACK;
         end
     end
