@@ -24,19 +24,32 @@ module TASK_D(
     input         clk,
     input         rst,
     input         start,
-    input [63:0] equation_in, 
+    input [6:0] x_addr,
+    input [5:0] y_addr,
+    input [127:0] equation_in,
+    input         is_msop, 
     output        done,
-    output [7:0]  truth_table
+    output [7:0]  truth_table,
+    output reg [15:0] oled_data_reg_D
 );
 
-     parser_module parser_inst(
-    .equation_in (equation_in),
-    .clk         (clk),
-    .rst         (rst),
-    .start       (start),
-    .truth_table (truth_table),
-    .done        (done)
-);
+    wire parser_done;
+    reg old_in;              
+    wire start_parser;   
+    
+    always @(posedge clk) begin
+        old_in <= start; 
+    end
+    
+    assign start_parser = start & ~old_in;
 
+    parser_module parser_inst(
+        .equation_in (equation_in),
+        .clk         (clk),
+        .rst         (rst),
+        .start       (start_parser),
+        .truth_table (truth_table),
+        .done        (parser_done)
+    );
 
 endmodule

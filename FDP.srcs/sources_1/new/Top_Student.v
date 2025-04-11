@@ -113,20 +113,22 @@ module Top_Student (
     // Generate Individual Tasks
     title_screen title (clk, x_addr_left, y_addr_left, oled_data_menu_left);
     switches_screen switched (clk, x_addr_right, y_addr_right, oled_data_menu_right);
-   TASK_A task_a (clk_6p25M, sw, x_addr_right, y_addr_right, func_id, !CURRENT_SCREEN[0],
+    TASK_A task_a (clk_6p25M, sw, x_addr_right, y_addr_right, func_id, !CURRENT_SCREEN[0],
                   btnU, btnD, btnL, btnR, btnC, oled_data_A, sA[3], sA[2], sA[1], sA[0]);
     TASK_B task_b (clk_6p25M, x_addr_left, y_addr_left, !CURRENT_SCREEN[1], oled_data_B, locked, buffer_out);   
     TASK_C task_c (clk_6p25M, x_addr_right, y_addr_right, !CURRENT_SCREEN[1], manual_reset, btnU, btnD, btnL, 
                    btnR, btnC, oled_data_C, selected_key, key_pressed, buffer_out, locked);
-//    TASK_D task_d (
-//        .clk         (clk_6p25M),
-//        .rst         (!locked),
-//        .start       (locked),
-//        .equation_in (buffer_out), 
-//        .done        (tt_done),
-//        .truth_table (truth_table)
-//    );
-
+    TASK_D task_d (        
+        .clk(clk_6p25M),
+        .rst(0),
+        .start(locked),
+        .x_addr(x_addr_left),
+        .y_addr(y_addr_left),
+        .equation_in (buffer_out),         
+        .is_msop(1), // to-change
+        .done(tt_done),
+        .truth_table(truth_table),
+        .oled_data_reg_D(oled_data_D));
     
     assign led [3:0] = selected_key;
     assign led [4] = keyboard_locked;
@@ -199,8 +201,8 @@ module Top_Student (
     task manage_func_id;
     begin
         // Latch to valid ids
-        func_id <= sw[15:8];
-        //if (locked) func_id <= truth_table;
+        //func_id <= sw[15:8];
+        if (locked) func_id <= truth_table;
     end
     endtask
 endmodule
