@@ -22,6 +22,7 @@
 
 module TASK_A(
     input clk,
+    input [15:0] sw,
     input [6:0] x_addr,
     input [5:0] y_addr,
     input [7:0] id,
@@ -50,13 +51,19 @@ module TASK_A(
     delay b3(clk, btnL, 200_000, bL);
     delay b4(clk, btnR, 200_000, bR);
     single_pulse_debouncer(clk, btnC, bC);
-
+    
+//    // Test Code
+//    wire ready;
+//    wire [6:0] number = sw[15:9];
+//    double_digit_generator(x_addr, y_addr, 40, 40, number, ready);
+    
     //////////////////////////////////////////////////////////////////////////////////
     // MAIN CODE LOGIC
     //////////////////////////////////////////////////////////////////////////////////    
     always @(posedge clk) begin
         handle_segment_display;
         oled_data_reg <= oled_data_3_gate; // use switch cases if there are more
+        //oled_data_reg <= ready ? 16'hffff : 16'h0;
     end
 
     //////////////////////////////////////////////////////////////////////////////////
