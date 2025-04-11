@@ -46,7 +46,7 @@ module test_var_3_gen(
           for (i = 0; i < 256; i = i + 1) begin
               func_id = i;
               receive_ready = 1;
-              #2;
+              #10;
               receive_ready = 0;
               #100;
           end
@@ -55,7 +55,6 @@ module test_var_3_gen(
      end
      
      always @(posedge clk) begin
-         if (transmit_ready)
              $display("Time %t: func_id=%0d, char_out=%h", 
                       $time, func_id, char_out);
      end

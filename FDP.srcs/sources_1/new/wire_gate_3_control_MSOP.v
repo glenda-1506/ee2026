@@ -132,7 +132,7 @@ module wire_gate_3_control_MSOP#(
                 end
                 
                 P0_GATE_OUT: begin // definitely AND gate
-                    output_gate(2'b10, 3'd0, product_count[0]);
+                    output_gate(2'b1, 3'd0, product_count[0]);
                     state <= P1_WIRE_OUT;
                 end
                 
@@ -149,7 +149,7 @@ module wire_gate_3_control_MSOP#(
                 end
                 
                 P1_GATE_OUT: begin // definitely AND gate
-                    output_gate(2'b10, 3'd1, product_count[1]);
+                    output_gate(2'b1, 3'd1, product_count[1]);
                     state <= (total_products > 2) ? P2_WIRE_OUT : OR_SET_UP;
                 end
                 
@@ -166,7 +166,7 @@ module wire_gate_3_control_MSOP#(
                 end
                 
                 P2_GATE_OUT: begin // definitely AND gate
-                    output_gate(2'b10, 3'd2, product_count[2]);
+                    output_gate(2'b1, 3'd2, product_count[2]);
                     state <= (total_products > 3) ? P3_WIRE_OUT : OR_SET_UP ;
                 end
                 
@@ -185,7 +185,7 @@ module wire_gate_3_control_MSOP#(
                 end
                 
                 P3_GATE_OUT: begin // definitely AND gate
-                    output_gate(2'b10, 3'd3, product_count[3]);
+                    output_gate(2'b1, 3'd3, product_count[3]);
                     state <= OR_SET_UP;
                 end
                 
@@ -212,8 +212,8 @@ module wire_gate_3_control_MSOP#(
                 
                 OR4_GATE_OUT: begin
                     // Can either have an OR with 2 or 3 inputs
-                    if(total_products == 2) output_gate(2'b01, 3'd4, 3'd2);
-                    else if(total_products == 3 || total_products == 4) output_gate(2'b01, 3'd4, 3'd3);
+                    if(total_products == 2) output_gate(2'b10, 3'd4, 3'd2);
+                    else if(total_products == 3 || total_products == 4) output_gate(2'b10, 3'd4, 3'd3);
                     state <= (total_products == 4) ? OR5_WIRE_OUT : DONE; // need another OR gate if there are more than 3 products
                 end
                 
@@ -229,7 +229,7 @@ module wire_gate_3_control_MSOP#(
                 end
                 
                 OR5_GATE_OUT: begin
-                    output_gate(2'b01, 3'd5, 3'd2);
+                    output_gate(2'b10, 3'd5, 3'd2);
                     state <= DONE;
                 end
                 

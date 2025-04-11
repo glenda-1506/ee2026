@@ -30,7 +30,8 @@ module legend_gen#(
     input [Y_BIT:0] y_addr,
     input [X_BIT:0]  x,                     
     input [Y_BIT:0]  y,  
-    output draw
+    output draw,
+    output draw_black
     );
     
     localparam integer WIDTH  = 39;
@@ -86,4 +87,6 @@ module legend_gen#(
     wire pixel_on = in_range ? row[column_index] : 1'b0;
 
     assign draw = pixel_on;
+    assign draw_black = in_range ? ~row[column_index] : 1'b0;
+    
 endmodule
