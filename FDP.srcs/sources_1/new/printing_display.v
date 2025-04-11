@@ -6,6 +6,7 @@ module printing_display(
     input [5:0] y_addr,
     input [127:0] ascii_array_flat,
     input [7:0] char_bitmap_wire,
+    input program_locked,
     output reg [15:0] pixel_data,
     output reg [2:0] current_row,
     output reg [7:0] ascii_char
@@ -19,11 +20,12 @@ module printing_display(
         ascii_char     <= " ";
         pixel_data     <= 16'h0000;
     end
+    
 
-    // Unpack the flat vector into the array in reverse order
+    // Unpack the flat vector into the array to be printed
     always @(*) begin
         for (i = 0; i < 16; i = i + 1) begin
-            ascii_array[i] = ascii_array_flat[i*8 +: 8];  // Fetching the bits starting from the lower bits
+            ascii_array[i] = ascii_array_flat[i*8 +: 8];  
         end
     end
 
@@ -37,7 +39,7 @@ module printing_display(
                     current_row <= y_addr - 30;
                     ascii_char <= ascii_array[idx];
                     if (char_bitmap_wire[7 - (x_addr - (86 - idx*8))])
-                        pixel_data <= 16'hFFFF;  // White pixel
+                        pixel_data <= (program_locked) ? 16'h07e0: 16'hFFFF;  // White pixel
                 end
             end else begin
                 // Bottom row of characters (6 remaining)
@@ -46,7 +48,7 @@ module printing_display(
                     current_row <= y_addr - 22;
                     ascii_char <= ascii_array[idx];
                     if (char_bitmap_wire[7 - (x_addr - (86 - (idx - 8)*8))])
-                        pixel_data <= 16'hFFFF;  // White pixel
+                        pixel_data <= (program_locked) ? 16'h07e0: 16'hFFFF;  // White pixel
                 end
             end
         end

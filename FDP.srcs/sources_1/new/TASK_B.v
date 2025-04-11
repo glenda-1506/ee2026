@@ -13,6 +13,7 @@ module TASK_B(
     output signal,
     output reg [15:0] oled_data_reg = 0,
     output keyboard_lock,
+    input locked,
     input [63:0] buffer,
     output [3:0] last_selected_reg
 ); 
@@ -26,6 +27,7 @@ module TASK_B(
         .fb(fb),
         .x_addr(x_addr),
         .y_addr(y_addr),
+        .program_locked(locked),
         //.led(led),
         //.signal(signal),
         .pixel_data(out),

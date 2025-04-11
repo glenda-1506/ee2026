@@ -3,147 +3,92 @@
 module Display_Typing(
     input clk,
     input fb,
+    input program_locked,
     input [6:0] x_addr,
     input [5:0] y_addr,
     input [63:0] buffer,
     output [15:0] pixel_data,
     output reg keyboard_lock
 );
-    // System States
-    parameter S_INIT = 2'd0;
-    parameter S_RUN  = 2'd1;
-    parameter S_DRAW = 2'd2;
-    parameter S_DONE = 2'd3;
 
-    reg [1:0] current_state, next_state;
-    reg [4:0] pointer;
-    reg found_end;
-    reg [3:0] nib_in;
-    wire [7:0] ascii_char;  
-    wire [2:0] current_row;
-    reg  [7:0] ascii_array [0:15];
-    reg  [63:0] last_buffer;
-    wire [7:0] char_bitmap_wire;
+    // Registers and wires
+    reg [4:0] bit_index;
+    reg end_flag;
+    reg [3:0] bit_chunk;
+    reg [7:0] char_buffer [0:15];
+    reg [63:0] prev_buffer;
+    reg should_store;
     wire [7:0] mapped_char;
-    wire [127:0] ascii_array_flat;
-    integer idx;
-    
-    assign ascii_array_flat = {
-        ascii_array[15], ascii_array[14], ascii_array[13], ascii_array[12],
-        ascii_array[11], ascii_array[10], ascii_array[9], ascii_array[8],
-        ascii_array[7], ascii_array[6], ascii_array[5], ascii_array[4],
-        ascii_array[3], ascii_array[2], ascii_array[1], ascii_array[0]
+    wire [127:0] char_buffer_flat;
+    wire [2:0] current_row;
+    wire [7:0] ascii_output;
+    wire [7:0] bitmap_output;
+
+    integer i;
+
+    // Flattened char_buffer for renderer
+    assign char_buffer_flat = {
+        char_buffer[15], char_buffer[14], char_buffer[13], char_buffer[12],
+        char_buffer[11], char_buffer[10], char_buffer[9],  char_buffer[8],
+        char_buffer[7],  char_buffer[6],  char_buffer[5],  char_buffer[4],
+        char_buffer[3],  char_buffer[2],  char_buffer[1],  char_buffer[0]
     };
-    
-    // This is a map which maps out what pointer maps to what character
-    char_mapper char_mapper_inst (
-        .nib(nib_in),
+
+    // Map 4-bit chunk to ASCII
+    char_mapper map_chars (
+        .nib(bit_chunk),
         .ascii_char(mapped_char)
     );
-    
-    // This is printing out the buffer data
-    printing_display display_renderer_inst (
+
+    // Display rendering
+    printing_display print_logic (
         .clk(clk),
         .x_addr(x_addr),
         .y_addr(y_addr),
-        .ascii_array_flat(ascii_array_flat),
+        .ascii_array_flat(char_buffer_flat),
         .pixel_data(pixel_data),
         .current_row(current_row),
-        .ascii_char(ascii_char),
-        .char_bitmap_wire(char_bitmap_wire)
+        .ascii_char(ascii_output),
+        .char_bitmap_wire(bitmap_output),
+        .program_locked(program_locked)
     );
 
-    // This is the standard output of a character on a 8 by 8 grid
-    character_bitmap char_bit_map (
-        .char(ascii_char),
+    // Bitmap lookup
+    character_bitmap bitmap_lut (
+        .char(ascii_output),
         .row(current_row),
-        .get_character_bitmap(char_bitmap_wire)
+        .get_character_bitmap(bitmap_output)
     );
-
-    // Initial Readings
-    initial begin
-        current_state  <= S_INIT;
-        next_state     <= S_INIT;
-        pointer        <= 0;
-        found_end      <= 0;
-        nib_in         <= 4'h0;
-        keyboard_lock  <= 1'b0;
-        last_buffer    <= 64'h0;
-    end
     
-    // Update for the clk cycles
+  
+
+    // Updating the next state and output
     always @(posedge clk) begin
-        current_state <= next_state;
-        last_buffer   <= buffer;
+        if (buffer != prev_buffer) begin
+            prev_buffer <= buffer;
+            bit_index <= 0;
+            end_flag <= 0;
+            should_store <= 0;
+            keyboard_lock <= 0;
+
+            for (i = 0; i < 16; i = i + 1)
+                char_buffer[i] <= " ";
+        end 
+        else if (should_store) begin
+            char_buffer[bit_index] <= mapped_char;
+            bit_index <= bit_index + 1;
+            should_store <= 0;
+        end 
+        else if (!end_flag && bit_index < 16) begin
+            bit_chunk <= buffer[(63 - bit_index * 4) -: 4];
+            if (buffer[(63 - bit_index * 4) -: 4] == 4'hF)
+                end_flag <= 1;
+            else
+                should_store <= 1;
+        end 
+        else if (!keyboard_lock) begin
+            keyboard_lock <= 1;
+        end
     end
 
-    always @(*) begin
-        next_state = current_state;
-        case (current_state)
-            S_INIT: begin
-                // After init, start reading nibbles
-                next_state = S_RUN;
-            end
-
-            S_RUN: begin
-                // If 'F' is encountered or all 16 nibbles have been read, finish
-                if (found_end || (pointer >= 16))
-                    next_state = S_DONE;
-                else
-                    next_state = S_DRAW;
-            end
-
-            S_DRAW: begin
-                // After storing one nibble, go back to S_RUN
-                next_state = S_RUN;
-            end
-
-            S_DONE: begin
-                // Stay in DONE unless the buffer has changed
-                if (buffer != last_buffer)
-                    next_state = S_INIT;
-                else
-                    next_state = S_DONE;
-            end
-        endcase
-    end
-
-    //==========================================================================
-    // 3) FSM: Output/Sequential Logic (Read from Buffer into ascii_array)
-    //==========================================================================
-    
-    always @(posedge clk) begin
-        case (current_state)
-            // S_INIT: Clear pointer, flags, and ascii_array
-            S_INIT: begin
-                pointer       <= 0;
-                found_end     <= 0;
-                keyboard_lock <= 1'b0;
-                for (idx = 0; idx < 16; idx = idx + 1) begin
-                    ascii_array[idx] <= " ";
-                end
-            end
-
-            // S_RUN: Load next nibble from buffer into nib_in.
-            // Do not drive ascii_char here to avoid multiple drivers.
-            S_RUN: begin
-                nib_in <= buffer[(63 - pointer*4) -: 4];
-                if (buffer[(63 - pointer*4) -: 4] == 4'hF)
-                    found_end <= 1;
-            end
-
-            // S_DRAW: Convert nibble (nib_in) to an ASCII character and store it.
-            S_DRAW: begin
-                if (!found_end && pointer < 16) begin
-                    ascii_array[pointer] <= mapped_char;
-                    pointer <= pointer + 1;
-                end
-            end
-
-            // S_DONE: Lock keyboard; remain until buffer changes.
-            S_DONE: begin
-                keyboard_lock <= 1'b1;
-            end
-        endcase
-    end
 endmodule
