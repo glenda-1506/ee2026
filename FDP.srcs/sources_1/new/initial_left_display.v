@@ -150,7 +150,7 @@ module initial_left_display(
             (y_addr == 50 && (x_addr == 73 || x_addr == 74)) ||
             ((y_addr == 48 || y_addr == 63) && (x_addr >= 0 && x_addr <= 95))
         ) begin
-            pixel_data = 16'hFFFF; 
+            pixel_data = 16'hF300; 
         end
         else begin
             pixel_data = 16'h0000;
