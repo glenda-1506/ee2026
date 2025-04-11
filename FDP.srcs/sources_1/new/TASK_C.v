@@ -25,6 +25,7 @@ module TASK_C(
     input [6:0] x_addr,
     input [5:0] y_addr,
     input reset,
+    input manual_reset,
     input btnU, btnD, btnL, btnR, btnC,
     output [15:0] oled_data,
     output [3:0] selected_key,
@@ -92,6 +93,7 @@ module TASK_C(
     input_manager manager (
         .clk(clk),
         .reset(reset),
+        .manual_reset(manual_reset),
         .selected_key(selected_key),
         .key_pressed(key_pressed),
         .buffer_out(buffer_out),

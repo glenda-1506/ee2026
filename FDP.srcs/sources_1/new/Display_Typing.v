@@ -46,6 +46,7 @@ module Display_Typing(
     reg [7:0] current_char;
     reg [2:0] current_row;
     wire [7:0] char_bitmap_wire;
+    reg delete_pulse;
     
     check_validity validity_checker (
         .selected_key(selected_key),
@@ -71,6 +72,7 @@ module Display_Typing(
         keyboard_lock = 0;
         led = 1'b0;
         signal =1'b0;
+        delete_pulse = 1'b0;
     end
     
     //function integer check_paranthesis;
@@ -312,9 +314,16 @@ module Display_Typing(
                 
 //                  end
 //              end
-              
+
+wire trigger;
+single_pulse_debouncer(clk, key_pressed, trigger);
+
     always @(posedge clk) begin
-            if (key_pressed && selected_key != last_selected_key && !keyboard_lock) begin
+            if (trigger && selected_key == KEY_DELETE) begin
+                delete_pulse <= 1;
+            end
+                
+            if ((trigger && selected_key != last_selected_key && !keyboard_lock)|| delete_pulse) begin
 //              if (!keyboard_lock) begin
                   if (selected_key == KEY_ENTER && is_valid && (open_brac_count == close_brac_count)) begin
                       keyboard_lock <= 1;  // Lock keyboard
@@ -324,6 +333,7 @@ module Display_Typing(
                             char_buffer[cursor_pos - 1] <= " ";
                             cursor_pos <= cursor_pos - 1; 
                         end
+                        delete_pulse <= 0;
                     end
                   else if (is_valid) begin
                     led <= 1'b0;
