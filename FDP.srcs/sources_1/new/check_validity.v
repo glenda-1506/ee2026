@@ -63,6 +63,9 @@ module check_validity(
             if (!(selected_key == KEY_AND || selected_key == KEY_OR || selected_key == KEY_RBRAC)) begin
                 check_validity = 0;
             end
+            if (selected_key == KEY_RBRAC && prev_brac_count < open_brac_count) begin
+                check_validity = 1;
+            end
             if (selected_key == KEY_RBRAC && prev_brac_count == open_brac_count) begin
                 check_validity = 0;
             end
@@ -73,12 +76,18 @@ module check_validity(
             end
         end
         else if (last_selected_key == KEY_LBRAC) begin
-            if (!(selected_key == KEY_A || selected_key == KEY_B || selected_key == KEY_C || selected_key == KEY_NOT)) begin
+            if (!(selected_key == KEY_A || selected_key == KEY_B || selected_key == KEY_C || selected_key == KEY_NOT || selected_key == KEY_LBRAC)) begin
                 check_validity = 0;
             end
         end
         else if (last_selected_key == KEY_RBRAC) begin
-            if (!(selected_key == KEY_AND || selected_key == KEY_OR)) begin
+            if (!(selected_key == KEY_AND || selected_key == KEY_OR || selected_key == KEY_RBRAC)) begin
+                check_validity = 0;
+            end
+            if (selected_key == KEY_RBRAC && prev_brac_count < open_brac_count) begin
+                check_validity = 1;
+            end
+            if (selected_key == KEY_RBRAC && prev_brac_count == open_brac_count) begin
                 check_validity = 0;
             end
         end

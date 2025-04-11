@@ -12,28 +12,28 @@ module TASK_B(
     output led,
     output signal,
     output reg [15:0] oled_data_reg = 0,
-    output keyboard_lock
+    output keyboard_lock,
+    input [63:0] buffer,
+    output [3:0] last_selected_reg
 ); 
     wire clk6p25m;
     wire [15:0] out;
-    
-    clock my_clk_6p25 (MAIN_CLOCK, 7, clk6p25m);
+   
 
     Display_Typing display_unit (
-        .clk(clk6p25m), 
+        .clk(MAIN_CLOCK), 
        // .reset(sw[0]),
         .fb(fb),
         .x_addr(x_addr),
         .y_addr(y_addr),
-        .selected_key(selected_key),
-        .key_pressed(key_pressed),
-        .led(led),
-        .signal(signal),
+        //.led(led),
+        //.signal(signal),
         .pixel_data(out),
-        .keyboard_lock(keyboard_lock)
+        .keyboard_lock(keyboard_lock),
+        .buffer(buffer)
     );
 
-always @(posedge clk6p25m) begin
+always @(posedge MAIN_CLOCK) begin
     oled_data_reg <= out;
 end
 
