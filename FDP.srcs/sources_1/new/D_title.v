@@ -1,0 +1,55 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 04/11/2025 08:07:53 PM
+// Design Name: 
+// Module Name: D_title
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module D_title(
+    input  [6:0] x,
+    input  [5:0] y,
+    input  [6:0] sx,
+    input  [5:0] sy,
+    output reg pixel_on
+    );
+    
+    reg [9:0] row_pattern;
+    
+    always @(*) begin
+        row_pattern = 10'b0;
+        pixel_on = 1'b0;
+        if ((x >= sx) && (x < sx + 10) &&
+            (y >= sy) && (y < sy + 10)) begin
+            case (y - sy)
+                0: row_pattern = 10'b0001111110;
+                1: row_pattern = 10'b0011111110;
+                2: row_pattern = 10'b0111000110;
+                3: row_pattern = 10'b0110000110;
+                4: row_pattern = 10'b0110000110;
+                5: row_pattern = 10'b0110000110;
+                6: row_pattern = 10'b0110000110;
+                7: row_pattern = 10'b0111000110;
+                8: row_pattern = 10'b0011111110;
+                9: row_pattern = 10'b0001111110;
+                default: row_pattern = 10'b0;
+            endcase
+            
+            pixel_on = row_pattern[10 - 1 - (x - sx)];
+        end
+    end
+endmodule

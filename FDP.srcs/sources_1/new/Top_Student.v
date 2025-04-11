@@ -61,6 +61,8 @@ module Top_Student (
     wire [15:0] oled_data_B;
     wire [15:0] oled_data_C;
     wire [15:0] oled_data_D;
+    wire [15:0] oled_data_menu_left;
+    wire [15:0] oled_data_menu_right;
     wire clk_6p25M;
     wire [1:0] CURRENT_SCREEN = sw[1:0];
     wire [3:0] selected_key;
@@ -109,20 +111,21 @@ module Top_Student (
     end
     
     // Generate Individual Tasks
-
+    title_screen title (clk, x_addr_left, y_addr_left, oled_data_menu_left);
+    switches_screen switched (clk, x_addr_right, y_addr_right, oled_data_menu_right);
    TASK_A task_a (clk_6p25M, sw, x_addr_right, y_addr_right, func_id, !CURRENT_SCREEN[0],
                   btnU, btnD, btnL, btnR, btnC, oled_data_A, sA[3], sA[2], sA[1], sA[0]);
     TASK_B task_b (clk_6p25M, x_addr_left, y_addr_left, !CURRENT_SCREEN[1], oled_data_B, locked, buffer_out);   
     TASK_C task_c (clk_6p25M, x_addr_right, y_addr_right, !CURRENT_SCREEN[1], manual_reset, btnU, btnD, btnL, 
                    btnR, btnC, oled_data_C, selected_key, key_pressed, buffer_out, locked);
-    TASK_D task_d (
-        .clk         (clk_6p25M),
-        .rst         (!locked),
-        .start       (locked),
-        .equation_in (buffer_out), 
-        .done        (tt_done),
-        .truth_table (truth_table)
-    );
+//    TASK_D task_d (
+//        .clk         (clk_6p25M),
+//        .rst         (!locked),
+//        .start       (locked),
+//        .equation_in (buffer_out), 
+//        .done        (tt_done),
+//        .truth_table (truth_table)
+//    );
 
     
     assign led [3:0] = selected_key;
@@ -170,7 +173,8 @@ module Top_Student (
     ////////////////////////////////////////////////////////////////////////////////// 
     task default_outputs;
     begin
-        default_segment_outputs;
+        oled_data_right_reg <= oled_data_menu_right;
+        oled_data_left_reg <= oled_data_menu_left;
     end
     endtask
     
