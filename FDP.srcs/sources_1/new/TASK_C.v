@@ -75,7 +75,22 @@ module TASK_C(
         .debounced_pb(btnR_debounced)
     );
     
-    keyboard_display display (
+//    keyboard_display display (
+//        .clk(clk),
+//        .reset(reset),
+//        .x(x_addr),
+//        .y(y_addr),
+//        .btnU(btnU_debounced), 
+//        .btnD(btnD_debounced),
+//        .btnL(btnL_debounced), 
+//        .btnR(btnR_debounced), 
+//        .btnC(btnC_debounced),
+//        .pixel_data(oled_data),
+//        .key_value(selected_key),
+//        .key_pressed(key_pressed)
+//    );
+    
+    keyboard_display_no_brac nobrac_display (
         .clk(clk),
         .reset(reset),
         .x(x_addr),
