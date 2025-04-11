@@ -133,7 +133,7 @@ module wire_gate_3_control_MPOS #(
                 end
                 
                 S0_GATE_OUT: begin // definitely OR gate
-                    output_gate(2'b1, 3'd0, sum_count[0]);
+                    output_gate(2'b10, 3'd0, sum_count[0]);
                     state <= S1_WIRE_OUT;
                 end
                 
@@ -150,7 +150,7 @@ module wire_gate_3_control_MPOS #(
                 end
                 
                 S1_GATE_OUT: begin // definitely OR gate
-                    output_gate(2'b1, 3'd1, sum_count[1]);
+                    output_gate(2'b10, 3'd1, sum_count[1]);
                     state <= (total_sums > 2) ? S2_WIRE_OUT : AND_SET_UP;
                 end
                 
@@ -167,7 +167,7 @@ module wire_gate_3_control_MPOS #(
                 end
                 
                 S2_GATE_OUT: begin // definitely OR gate
-                    output_gate(2'b1, 3'd2, sum_count[2]);
+                    output_gate(2'b10, 3'd2, sum_count[2]);
                     state <= (total_sums > 3) ? S3_WIRE_OUT : AND_SET_UP ;
                 end
                 
@@ -186,7 +186,7 @@ module wire_gate_3_control_MPOS #(
                 end
                 
                 S3_GATE_OUT: begin // definitely OR gate
-                    output_gate(2'b1, 3'd3, sum_count[3]);
+                    output_gate(2'b10, 3'd3, sum_count[3]);
                     state <= AND_SET_UP;
                 end
                 
@@ -213,8 +213,8 @@ module wire_gate_3_control_MPOS #(
                 
                 AND4_GATE_OUT: begin
                     // Can either have an OR with 2 or 3 inputs
-                    if(total_sums == 2) output_gate(2'b10, 3'd4, 3'd2);
-                    else if(total_sums == 3 || total_sums == 4) output_gate(2'b10, 3'd4, 3'd3);
+                    if(total_sums == 2) output_gate(2'b1, 3'd4, 3'd2);
+                    else if(total_sums == 3 || total_sums == 4) output_gate(2'b1, 3'd4, 3'd3);
                     state <= (total_sums == 4) ? AND5_WIRE_OUT : DONE; // need another AND gate if there are more than 3 sums
                 end
                 
@@ -230,7 +230,7 @@ module wire_gate_3_control_MPOS #(
                 end
                 
                 AND5_GATE_OUT: begin
-                    output_gate(2'b10, 3'd5, 3'd2);
+                    output_gate(2'b1, 3'd5, 3'd2);
                     state <= DONE;
                 end
                 
