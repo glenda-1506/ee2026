@@ -13,6 +13,7 @@ module printing_display(
 );
 
     reg [7:0] ascii_array [0:31];
+    wire [15:0] left_disp;
     integer i;
     integer pos;
     integer row, col;
@@ -22,6 +23,12 @@ module printing_display(
         ascii_char     <= " ";
         pixel_data     <= 16'h0000;
     end
+    
+    initial_left_display init_left_disp (
+        .x_addr(x_addr),
+        .y_addr(y_addr),
+        .pixel_data(left_disp)
+    );
 
     always @(*) begin
         for (i = 0; i < 32; i = i + 1) begin
@@ -30,17 +37,18 @@ module printing_display(
     end
 
     always @(posedge clk) begin
-        pixel_data <= 16'h0000;  
+        pixel_data <= left_disp;
         
         for (pos = 0; pos < 32; pos = pos + 1) begin
-            row = pos / 8;     
-            col = pos % 8;      
+            row = pos / 8;
+            col = pos % 8;
             j = 38 - (row * 8);
-            if ((x_addr >= (70 - col*8)) && (x_addr < (78 - col*8)) && (y_addr >= j) && (y_addr < (j + 8))) begin
+            if ((x_addr >= (70 - col*8)) && (x_addr < (78 - col*8)) &&
+                (y_addr >= j) && (y_addr < (j + 8))) begin
                 current_row <= y_addr - j;
                 ascii_char <= ascii_array[pos];
                 if (char_bitmap_wire[7 - (x_addr - (78 - col*8))])
-                    pixel_data <= (program_locked) ? 16'h07e0 : 16'hFFFF;  
+                    pixel_data <= (program_locked) ? 16'h07e0 : 16'hFFFF;
             end
         end
     end
