@@ -79,5 +79,4 @@ module Display_Typing(
                 should_store <= 1;
         end 
     end
-
 endmodule

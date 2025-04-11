@@ -51,6 +51,7 @@ module circuit_control_3_gate(
     // Generate the ready flags for items to draw
     wire [3:0] var_ready; // 3 vars and 1 Final signal
     wire [5:0] gate_ready;
+    wire legend_ready;
     wire invalid_ready;
     wire [MODULE_COUNT-1:0] wire_ready;
     
@@ -79,7 +80,6 @@ module circuit_control_3_gate(
     //////////////////////////////////////////////////////////////////////////////////
     // MAIN CODE LOGIC
     //////////////////////////////////////////////////////////////////////////////////    
-    
     
     // SET THE PIXELS TO BE LIGHTED UP
     always @(posedge clk) begin
@@ -164,6 +164,19 @@ module circuit_control_3_gate(
         .draw(invalid_ready));
         
     //////////////////////////////////////////////////////////////////////////////////
+    // LEGEND MODULE
+    ////////////////////////////////////////////////////////////////////////////////// 
+    legend_gen #(
+        .DISPLAY_WIDTH(DISPLAY_WIDTH),
+        .DISPLAY_HEIGHT(DISPLAY_HEIGHT)
+        )(
+        .x_addr(x_index),
+        .y_addr(y_index),
+        .x(98),
+        .y(2),
+        .draw(legend_ready));
+    
+    //////////////////////////////////////////////////////////////////////////////////
     // HELPERS
     ////////////////////////////////////////////////////////////////////////////////// 
     parameter RED = 16'hf800;   // A
@@ -182,31 +195,12 @@ module circuit_control_3_gate(
             oled_data_reg <= invalid_ready ? ORANGE : BLACK;
         end else begin
             oled_data_reg <= |wire_ready ? map_wire_color(wire_ready) :
-                             ((|var_ready || |gate_ready) ? WHITE : BLACK);
+                             legend_ready ? map_legend_color(x_index, y_index) : 
+                             (|var_ready || |gate_ready) ? WHITE : BLACK;
         end
     end
     endtask
 
-    function [15:0] map_wire_color;
-        input [MODULE_COUNT:0] wires;
-        reg [5:0] wire_id;
-            begin
-                wire_id = current_wire(wire_ready);
-                case (wire_id)
-                    6'd0, 6'd6, 6'd12, 6'd18, 6'd24: map_wire_color = RED;
-                    6'd1, 6'd7, 6'd13, 6'd19, 6'd25: map_wire_color = ORANGE;
-                    6'd2, 6'd8, 6'd14, 6'd20, 6'd26: map_wire_color = YELLOW;
-                    6'd3, 6'd9, 6'd15, 6'd21, 6'd27: map_wire_color = GREEN;
-                    6'd4, 6'd10, 6'd16, 6'd22, 6'd28: map_wire_color = BLUE;
-                    6'd5, 6'd11, 6'd17, 6'd23, 6'd29: map_wire_color = PURPLE;
-                    6'd30, 6'd31, 6'd32, 6'd39, 6'd40, 6'd41: map_wire_color = CYAN;
-                    6'd33, 6'd34, 6'd35, 6'd42, 6'd43, 6'd44: map_wire_color = PINK;
-                    6'd36, 6'd37, 6'd38, 6'd45, 6'd46, 6'd47: map_wire_color = DARK_GREEN;
-                    default: map_wire_color = WHITE;
-                endcase
-            end
-    endfunction
-    
     function [5:0] current_wire;
         input [MODULE_COUNT:0] wires;
         reg [5:0] i;
@@ -218,4 +212,52 @@ module circuit_control_3_gate(
             end
         end
     endfunction
+    
+    function [15:0] map_wire_color;
+        input [MODULE_COUNT:0] wires;
+        reg [5:0] wire_id;
+        begin
+            wire_id = current_wire(wire_ready);
+            case (wire_id)
+                6'd0, 6'd6, 6'd12, 6'd18, 6'd24: map_wire_color = RED;
+                6'd1, 6'd7, 6'd13, 6'd19, 6'd25: map_wire_color = ORANGE;
+                6'd2, 6'd8, 6'd14, 6'd20, 6'd26: map_wire_color = YELLOW;
+                6'd3, 6'd9, 6'd15, 6'd21, 6'd27: map_wire_color = GREEN;
+                6'd4, 6'd10, 6'd16, 6'd22, 6'd28: map_wire_color = BLUE;
+                6'd5, 6'd11, 6'd17, 6'd23, 6'd29: map_wire_color = PURPLE;
+                6'd30, 6'd31, 6'd32, 6'd39, 6'd40, 6'd41: map_wire_color = CYAN;
+                6'd33, 6'd34, 6'd35, 6'd42, 6'd43, 6'd44: map_wire_color = PINK;
+                6'd36, 6'd37, 6'd38, 6'd45, 6'd46, 6'd47: map_wire_color = DARK_GREEN;
+                default: map_wire_color = WHITE;
+            endcase
+        end
+    endfunction
+    
+    function in_legend_box;
+        input [13:0] current_x , current_y, x, y;
+        begin
+            in_legend_box = 
+                ((current_x == x && current_y == y) ||
+                (current_x == x && current_y == y + 1) ||
+                (current_x == x && current_y == y + 2) ||
+                (current_x == x + 1 && current_y == y) ||
+                (current_x == x + 1 && current_y == y + 1) ||
+                (current_x == x + 1 && current_y == y + 2));
+        end
+    endfunction
+    
+    function [15:0] map_legend_color;
+        input [13:0] x;
+        input [13:0] y;
+        begin
+            if (in_legend_box(x, y, 101, 15)) map_legend_color = RED;
+            else if (in_legend_box(x, y, 113, 15)) map_legend_color = ORANGE;
+            else if (in_legend_box(x, y, 125, 15)) map_legend_color = YELLOW;
+            else if (in_legend_box(x, y, 101, 24)) map_legend_color = GREEN;
+            else if (in_legend_box(x, y, 113, 24)) map_legend_color = BLUE;
+            else if (in_legend_box(x, y, 125, 24)) map_legend_color = PURPLE;
+            else map_legend_color = WHITE;
+        end
+    endfunction
+        
 endmodule
