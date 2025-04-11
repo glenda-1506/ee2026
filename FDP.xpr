@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="38" Path="C:/Users/glend/Downloads/ee2026/FDP.xpr">
+<Project Version="7" Minor="38" Path="C:/Users/sithu/OneDrive/Desktop/ee2026/MAIN/ee2026/FDP.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="24e5d7a1779144f797f24297896a26e0"/>
@@ -31,7 +31,7 @@
     <Option Name="EnableBDX" Val="FALSE"/>
     <Option Name="DSAVendor" Val="xilinx"/>
     <Option Name="DSANumComputeUnits" Val="60"/>
-    <Option Name="WTXSimLaunchSim" Val="103"/>
+    <Option Name="WTXSimLaunchSim" Val="106"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>
@@ -60,28 +60,28 @@
     <FileSet Name="sources_1" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
       <Filter Type="Srcs"/>
       <File Path="$PSRCDIR/sources_1/new/AND_gate.v">
-        <FileInfo>
+        <FileInfo RelPath="AND_gate.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/AND_nobrac.v">
-        <FileInfo>
+        <FileInfo RelPath="AND_nobrac.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/A_nobrac.v">
-        <FileInfo>
+        <FileInfo RelPath="A_nobrac.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/B_nobrac.v">
-        <FileInfo>
+        <FileInfo RelPath="B_nobrac.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -95,7 +95,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/C_nobrac.v">
-        <FileInfo>
+        <FileInfo RelPath="C_nobrac.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -109,7 +109,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/DEL_nobrac.v">
-        <FileInfo>
+        <FileInfo RelPath="DEL_nobrac.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -130,7 +130,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/Display_Typing.v">
-        <FileInfo>
+        <FileInfo RelPath="Display_Typing.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -144,7 +144,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/ENT_nobrac.v">
-        <FileInfo>
+        <FileInfo RelPath="ENT_nobrac.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -186,14 +186,14 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/NOT_gate.v">
-        <FileInfo>
+        <FileInfo RelPath="NOT_gate.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/NOT_nobrac.v">
-        <FileInfo>
+        <FileInfo RelPath="NOT_nobrac.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -214,14 +214,14 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/OR_gate.v">
-        <FileInfo>
+        <FileInfo RelPath="OR_gate.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/OR_nobrac.v">
-        <FileInfo>
+        <FileInfo RelPath="OR_nobrac.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -272,21 +272,28 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/TASK_A.v">
-        <FileInfo>
+        <FileInfo RelPath="TASK_A.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/TASK_B.v">
-        <FileInfo>
+        <FileInfo RelPath="TASK_B.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/TASK_C.v">
-        <FileInfo>
+        <FileInfo RelPath="TASK_C.v">
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/new/TASK_D.v">
+        <FileInfo RelPath="TASK_D.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -342,42 +349,42 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/base_debouncer.v">
-        <FileInfo>
+        <FileInfo RelPath="base_debouncer.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/buffer_gate.v">
-        <FileInfo>
+        <FileInfo RelPath="buffer_gate.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/char_mapper.v">
-        <FileInfo>
+        <FileInfo RelPath="char_mapper.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/character_bitmap.v">
-        <FileInfo>
+        <FileInfo RelPath="character_bitmap.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/check_validity.v">
-        <FileInfo>
+        <FileInfo RelPath="check_validity.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/circle_generator.v">
-        <FileInfo>
+        <FileInfo RelPath="circle_generator.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -391,98 +398,98 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/circuit_letter_A.v">
-        <FileInfo>
+        <FileInfo RelPath="circuit_letter_A.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/circuit_letter_B.v">
-        <FileInfo>
+        <FileInfo RelPath="circuit_letter_B.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/circuit_letter_C.v">
-        <FileInfo>
+        <FileInfo RelPath="circuit_letter_C.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/clock.v">
-        <FileInfo>
+        <FileInfo RelPath="clock.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/combined_gate_3.v">
-        <FileInfo>
+        <FileInfo RelPath="combined_gate_3.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/counter.v">
-        <FileInfo>
+        <FileInfo RelPath="counter.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/debouncer.v">
-        <FileInfo>
+        <FileInfo RelPath="debouncer.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/delay.v">
-        <FileInfo>
+        <FileInfo RelPath="delay.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/edge_detector.v">
-        <FileInfo>
+        <FileInfo RelPath="edge_detector.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/gate_buffer.v">
-        <FileInfo>
+        <FileInfo RelPath="gate_buffer.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/gate_container.v">
-        <FileInfo>
+        <FileInfo RelPath="gate_container.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/grid_nobrac.v">
-        <FileInfo>
+        <FileInfo RelPath="grid_nobrac.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/h_line_generator.v">
-        <FileInfo>
+        <FileInfo RelPath="h_line_generator.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/h_wire.v">
-        <FileInfo>
+        <FileInfo RelPath="h_wire.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -496,70 +503,77 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/input_manager.v">
-        <FileInfo>
+        <FileInfo RelPath="input_manager.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/invalid_screen_generator.v">
-        <FileInfo>
+        <FileInfo RelPath="invalid_screen_generator.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/keyboard_display_no_brac.v">
-        <FileInfo>
+        <FileInfo RelPath="keyboard_display_no_brac.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/legend_gen.v">
-        <FileInfo>
+        <FileInfo RelPath="legend_gen.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/letter_f.v">
-        <FileInfo>
+        <FileInfo RelPath="letter_f.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/line_generator.v">
-        <FileInfo>
+        <FileInfo RelPath="line_generator.v">
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/new/parser_module.v">
+        <FileInfo RelPath="parser_module.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/printing_display.v">
-        <FileInfo>
+        <FileInfo RelPath="printing_display.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/s_wire.v">
-        <FileInfo>
+        <FileInfo RelPath="s_wire.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/segment_display.v">
-        <FileInfo>
+        <FileInfo RelPath="segment_display.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/single_pulse_debouncer.v">
-        <FileInfo>
+        <FileInfo RelPath="single_pulse_debouncer.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -594,63 +608,63 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/update_state_output.v">
-        <FileInfo>
+        <FileInfo RelPath="update_state_output.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/v_line_generator.v">
-        <FileInfo>
+        <FileInfo RelPath="v_line_generator.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/var_3_gen.v">
-        <FileInfo>
+        <FileInfo RelPath="var_3_gen.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/variable_circuit_segment.v">
-        <FileInfo>
+        <FileInfo RelPath="variable_circuit_segment.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/virtual_oled_generator.v">
-        <FileInfo>
+        <FileInfo RelPath="virtual_oled_generator.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/wire_combined_3.v">
-        <FileInfo>
+        <FileInfo RelPath="wire_combined_3.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/wire_gate_3_control_MPOS.v">
-        <FileInfo>
+        <FileInfo RelPath="wire_gate_3_control_MPOS.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/wire_gate_3_control_MSOP.v">
-        <FileInfo>
+        <FileInfo RelPath="wire_gate_3_control_MSOP.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/z_wire.v">
-        <FileInfo>
+        <FileInfo RelPath="z_wire.v">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -664,7 +678,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/Top_Student.v">
-        <FileInfo>
+        <FileInfo RelPath="Top_Student.v">
           <Attr Name="ImportPath" Val="$PPRDIR/../../../../../../../../../../../../SoundDisplay.srcs/sources_1/new/Top_Student.v"/>
           <Attr Name="ImportTime" Val="1570395690"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -672,16 +686,16 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/new/TASK_D.v">
-        <FileInfo>
+      <File Path="$PSRCDIR/sources_1/new/digit_generator.v">
+        <FileInfo RelPath="digit_generator.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/new/parser_module.v">
-        <FileInfo>
+      <File Path="$PSRCDIR/sources_1/new/double_digit_generator.v">
+        <FileInfo RelPath="double_digit_generator.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -689,7 +703,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/grid_display.v">
-        <FileInfo>
+        <FileInfo RelPath="grid_display.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -697,7 +711,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/new_keyboard.v">
-        <FileInfo>
+        <FileInfo RelPath="new_keyboard.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -705,7 +719,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/symbolA.v">
-        <FileInfo>
+        <FileInfo RelPath="symbolA.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -713,7 +727,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/symbolAnd.v">
-        <FileInfo>
+        <FileInfo RelPath="symbolAnd.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -721,7 +735,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/symbolB.v">
-        <FileInfo>
+        <FileInfo RelPath="symbolB.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -729,7 +743,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/symbolC.v">
-        <FileInfo>
+        <FileInfo RelPath="symbolC.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -737,7 +751,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/symbolDel.v">
-        <FileInfo>
+        <FileInfo RelPath="symbolDel.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -745,7 +759,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/symbolEnt.v">
-        <FileInfo>
+        <FileInfo RelPath="symbolEnt.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -753,7 +767,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/symbolLBrac.v">
-        <FileInfo>
+        <FileInfo RelPath="symbolLBrac.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -761,7 +775,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/symbolOr.v">
-        <FileInfo>
+        <FileInfo RelPath="symbolOr.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -769,7 +783,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/symbolTilda.v">
-        <FileInfo>
+        <FileInfo RelPath="symbolTilda.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -777,7 +791,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/symbol_RBrac.v">
-        <FileInfo>
+        <FileInfo RelPath="symbol_RBrac.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -785,7 +799,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/netlist_decoder_3.v">
-        <FileInfo>
+        <FileInfo RelPath="netlist_decoder_3.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -793,7 +807,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/netlist_generator.v">
-        <FileInfo>
+        <FileInfo RelPath="netlist_generator.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -801,7 +815,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/flip_A.v">
-        <FileInfo>
+        <FileInfo RelPath="flip_A.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -809,7 +823,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/flip_C.v">
-        <FileInfo>
+        <FileInfo RelPath="flip_C.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -817,7 +831,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/flip_b.v">
-        <FileInfo>
+        <FileInfo RelPath="flip_b.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -825,7 +839,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/flip_dot.v">
-        <FileInfo>
+        <FileInfo RelPath="flip_dot.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -833,7 +847,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/flip_plus.v">
-        <FileInfo>
+        <FileInfo RelPath="flip_plus.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -841,7 +855,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/flip_tilde.v">
-        <FileInfo>
+        <FileInfo RelPath="flip_tilde.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -849,7 +863,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/main_starting_screen.v">
-        <FileInfo>
+        <FileInfo RelPath="main_starting_screen.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -857,7 +871,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/var_wires_3.v">
-        <FileInfo>
+        <FileInfo RelPath="var_wires_3.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -945,7 +959,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/neural_net.v">
-        <FileInfo>
+        <FileInfo RelPath="neural_net.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../../../../../../../../MODS.srcs/sources_1/new/neural_net.v"/>
           <Attr Name="ImportTime" Val="1677159677"/>
@@ -955,7 +969,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/paint.v">
-        <FileInfo>
+        <FileInfo RelPath="paint.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../../../../../../../../MODS.srcs/sources_1/new/paint.v"/>
           <Attr Name="ImportTime" Val="1709183192"/>
@@ -965,7 +979,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/CanvasTransfer.v">
-        <FileInfo>
+        <FileInfo RelPath="CanvasTransfer.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../../../../../../../../MODS.srcs/sources_1/new/CanvasTransfer.v"/>
           <Attr Name="ImportTime" Val="1680151347"/>
@@ -975,7 +989,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/module_pack.v">
-        <FileInfo>
+        <FileInfo RelPath="module_pack.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../../../../../../../../MODS.srcs/sources_1/new/module_pack.v"/>
           <Attr Name="ImportTime" Val="1686554360"/>
@@ -985,7 +999,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/ss_display.v">
-        <FileInfo>
+        <FileInfo RelPath="ss_display.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../../../../../../../../MODS.srcs/sources_1/new/ss_display.v"/>
           <Attr Name="ImportTime" Val="1696226948"/>
@@ -1001,31 +1015,31 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/mpos_3gate.mem">
-        <FileInfo>
+        <FileInfo RelPath="mpos_3gate.mem">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/msop_3gate.mem">
-        <FileInfo>
+        <FileInfo RelPath="msop_3gate.mem">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/mpos_3_var.mem">
-        <FileInfo>
+        <FileInfo RelPath="mpos_3_var.mem">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/msop_3_var.mem">
-        <FileInfo>
+        <FileInfo RelPath="msop_3_var.mem">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/test_wire_gate_3_control.v">
-        <FileInfo>
+        <FileInfo RelPath="test_wire_gate_3_control.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -1033,7 +1047,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/input_manager_sim.v">
-        <FileInfo>
+        <FileInfo RelPath="input_manager_sim.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -1041,7 +1055,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/curved_line_generator.v">
-        <FileInfo>
+        <FileInfo RelPath="curved_line_generator.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -1049,7 +1063,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/flio_dot.v">
-        <FileInfo>
+        <FileInfo RelPath="flio_dot.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -1057,7 +1071,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/var_wires_3_extended.v">
-        <FileInfo>
+        <FileInfo RelPath="var_wires_3_extended.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -1065,7 +1079,31 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/test_var_3_gen.v">
-        <FileInfo>
+        <FileInfo RelPath="test_var_3_gen.v">
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/new/word_msop.v">
+        <FileInfo RelPath="word_msop.v">
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/new/update_module.v">
+        <FileInfo RelPath="update_module.v">
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/new/update_state.v">
+        <FileInfo RelPath="update_state.v">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -1091,6 +1129,13 @@
     </FileSet>
     <FileSet Name="sim_1" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/sim_1">
       <Filter Type="Srcs"/>
+      <File Path="$PSRCDIR/sim_1/new/test_var_3_gen.v">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <File Path="$PSRCDIR/sim_1/new/test_wire_gate_3_control_MPOS.v">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
@@ -1115,17 +1160,9 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sim_1/new/test_var_3_gen.v">
-        <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
-        <Option Name="TopModule" Val="input_manager_sim"/>
+        <Option Name="TopModule" Val="test_var_3_gen"/>
         <Option Name="TopLib" Val="xil_defaultlib"/>
         <Option Name="TransportPathDelay" Val="0"/>
         <Option Name="TransportIntDelay" Val="0"/>
