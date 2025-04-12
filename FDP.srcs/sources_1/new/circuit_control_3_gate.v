@@ -24,7 +24,7 @@ module circuit_control_3_gate(
     input clk,
     input [6:0] x_addr,
     input [5:0] y_addr,
-    input [7:0] function_id,
+    input [8:0] function_id,
     input reset,
     input btnU, btnD, btnL, btnR, btnC,
     output reg [15:0] oled_data_reg = 0,
@@ -73,6 +73,7 @@ module circuit_control_3_gate(
     wire [$clog2(MODULE_COUNT):0] wire_input_id_MSOP, wire_input_id_MPOS, wire_input_id;
     reg control_reset;
     reg prev_btnC;
+    wire true_ready, false_ready;
     assign gate_input_count = current_req ? gate_input_count_MPOS : gate_input_count_MSOP;
     assign gate_type = current_req ? gate_type_MPOS : gate_type_MSOP;
     assign gate_id = current_req ? gate_id_MPOS : gate_id_MSOP;
@@ -165,7 +166,22 @@ module circuit_control_3_gate(
         .x_addr((x_index < 96) ? x_index : 95),
         .y_addr((y_index < 64) ? y_index : 64),
         .draw(invalid_ready));
-        
+    
+    TRUE_circuit #(
+        .DISPLAY_WIDTH(96),
+        .DISPLAY_HEIGHT(64)
+        )(
+        .x((x_index < 96) ? x_index : 95),
+        .y((y_index < 64) ? y_index : 64),
+        .T(true_ready));
+    
+    FALSE_circuit #(
+        .DISPLAY_WIDTH(96),
+        .DISPLAY_HEIGHT(64)
+        )(
+        .x((x_index < 96) ? x_index : 95),
+        .y((y_index < 64) ? y_index : 64),
+        .F(false_ready));
     //////////////////////////////////////////////////////////////////////////////////
     // LEGEND MODULE
     ////////////////////////////////////////////////////////////////////////////////// 
@@ -195,9 +211,16 @@ module circuit_control_3_gate(
     
     task set_oled_display;
     begin 
-        if (function_id == 8'd0 || function_id == 8'd255) begin
+        if (function_id == 9'd500) begin
             oled_data_reg <= invalid_ready ? ORANGE : BLACK;
-        end else begin
+        end 
+        else if (function_id == 8'd255) begin
+            oled_data_reg <= true_ready ? GREEN : BLACK;
+        end 
+        else if (function_id == 8'd0) begin
+            oled_data_reg <= false_ready ? RED : BLACK;
+        end 
+        else begin
             oled_data_reg <= legend_ready ? map_legend_color(x_index, (y_index - y_offset)) :
                              legend_black_ready ? BLACK :  
                              |wire_ready ? map_wire_color(wire_ready) :
