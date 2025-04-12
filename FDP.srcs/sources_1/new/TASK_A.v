@@ -25,7 +25,7 @@ module TASK_A(
     input [15:0] sw,
     input [6:0] x_addr,
     input [5:0] y_addr,
-    input [7:0] id,
+    input [8:0] id,
     input reset,
     input btnU, btnD, btnL, btnR, btnC,
     output reg [15:0] oled_data_reg = 0,

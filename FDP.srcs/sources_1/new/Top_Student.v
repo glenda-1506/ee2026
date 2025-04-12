@@ -73,7 +73,7 @@ module Top_Student (
     wire [7:0] truth_table;
     wire tt_done;
     wire [3:0] last_selected_reg;
-    reg [7:0] func_id;
+    reg [8:0] func_id;
     
     wire manual_reset;
     single_pulse_debouncer reset_debouncer (clk, sw[2], manual_reset);
@@ -107,7 +107,7 @@ module Top_Student (
     end
     
     initial begin
-        func_id <= 8'd255;
+        func_id <= 9'd500;
     end
     
     // Generate Individual Tasks
