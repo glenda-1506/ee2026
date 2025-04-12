@@ -29,7 +29,8 @@ module TASK_A(
     input reset,
     input btnU, btnD, btnL, btnR, btnC,
     output reg [15:0] oled_data_reg = 0,
-    output reg [7:0] s3, s2, s1, s0
+    output reg [7:0] s3, s2, s1, s0,
+    output is_mpos
     );
     
     //////////////////////////////////////////////////////////////////////////////////
@@ -43,7 +44,6 @@ module TASK_A(
     // Generate required wires and regs
     wire bU, bD, bL, bR, bC;
     wire [15:0] oled_data_3_gate;
-    wire is_mpos;
     
     // Generate delayed pulse buttons
     delay b1(clk, btnU, 200_000, bU);
