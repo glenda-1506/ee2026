@@ -174,6 +174,7 @@ module parser_module(
                     else if (current_token == 4'h5) begin
                         // OR
                         total_sum <= total_sum | current_product;
+                        current_product <= 1'b0;
                         last_operator <= 4'h5;
                     end
                     else if (current_token == 4'h6) begin
