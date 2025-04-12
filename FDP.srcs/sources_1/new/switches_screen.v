@@ -35,8 +35,8 @@ module switches_screen(
     parameter S1_Y = 15;    
     parameter W1_X = 12;
     parameter W1_Y = 15;    
-    parameter ZERO_X = 24;
-    parameter ZERO_Y = 15;     
+    parameter ONE_X = 24;
+    parameter ONE_Y = 15;     
     parameter DOT1_X = 33;
     parameter DOT1_Y = 16; 
     parameter I_X = 45;
@@ -73,8 +73,8 @@ module switches_screen(
     parameter S4_Y = 27;    
     parameter W3_X = 12;
     parameter W3_Y = 27;    
-    parameter ONE_X = 24;
-    parameter ONE_Y = 27;    
+    parameter ZERO_X = 24;
+    parameter ZERO_Y = 27;    
     parameter DOT3_X = 33;
     parameter DOT3_Y = 28;    
     parameter O_X = 40;

@@ -95,7 +95,7 @@ module Top_Student (
             2'b01: begin
                 set_segment_task_A;  
                 oled_data_right_reg <= oled_data_A; // c2
-                oled_data_left_reg <= oled_data_D; // Aik Haw
+                oled_data_left_reg <= oled_data_B; // Aik Haw
             end
             2'b10: begin
                 default_segment_outputs;
