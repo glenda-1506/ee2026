@@ -22,6 +22,7 @@
 
 module TASK_D(
     input         clk,
+    input [8:0] latched_id,
     input         rst,
     input         start,
     input [6:0] x_addr,
@@ -30,7 +31,7 @@ module TASK_D(
     input         is_msop, 
     output        done,
     output [7:0]  truth_table,
-    output reg [15:0] oled_data_reg_D
+    output [15:0] oled_data_reg_D
 );
 
     wire parser_done;
@@ -51,5 +52,13 @@ module TASK_D(
         .truth_table (truth_table),
         .done        (parser_done)
     );
+    
+    equation_gen (
+        .clk(clk),
+        .x_addr(x_addr),
+        .y_addr(y_addr),
+        .is_msop(is_msop),
+        .truth_table(truth_table),
+        .out(oled_data_reg_D));
 
 endmodule

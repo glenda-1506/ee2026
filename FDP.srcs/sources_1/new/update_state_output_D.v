@@ -1,17 +1,37 @@
 `timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 04/12/2025 04:24:29 PM
+// Design Name: 
+// Module Name: update_state_output_D
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
 
-module update_state_output #(
-    parameter CHAR_ARRAY_BIT = 255
+
+module update_state_output_D#(
+    parameter CHAR_ARRAY_BIT = 319
     )(
     input clk,
-    input [127:0] buffer,
+    input [147:0] buffer,
     input [7:0] mapped_char,
     output reg [CHAR_ARRAY_BIT:0] char_buffer_array
 );
-    reg [4:0] bit_index;
+    reg [5:0] bit_index;
     reg end_flag;
     reg [3:0] bit_chunk;
-    reg [7:0] char_buffer [0:31];
+    reg [7:0] char_buffer [0:39];
     reg [CHAR_ARRAY_BIT:0] prev_buffer;
     reg should_store;
     integer i;
@@ -28,7 +48,7 @@ module update_state_output #(
             bit_index <= 0;
             end_flag <= 0;
             should_store <= 0;
-            for (i = 0; i < 32; i = i + 1)
+            for (i = 0; i <40; i = i + 1)
                 char_buffer[i] <= " ";
         end 
         else if (should_store) begin
@@ -36,9 +56,9 @@ module update_state_output #(
             bit_index <= bit_index + 1;
             should_store <= 0;
         end 
-        else if (!end_flag && bit_index < 32) begin
-            bit_chunk <= buffer[(127 - bit_index * 4) -: 4];
-            if (buffer[(127 - bit_index * 4) -: 4] == 4'hF)
+        else if (!end_flag && bit_index < 40) begin
+            bit_chunk <= buffer[(147 - bit_index * 4) -: 4];
+            if (buffer[(147 - bit_index * 4) -: 4] == 4'hF)
                 end_flag <= 1;
             else
                 should_store <= 1;
@@ -47,6 +67,8 @@ module update_state_output #(
 
     always @(*) begin
         char_buffer_array = {
+            char_buffer[39], char_buffer[38], char_buffer[37], char_buffer[36],
+            char_buffer[35], char_buffer[34], char_buffer[33], char_buffer[32],
             char_buffer[31], char_buffer[30], char_buffer[29], char_buffer[28],
             char_buffer[27], char_buffer[26], char_buffer[25], char_buffer[24],
             char_buffer[23], char_buffer[22], char_buffer[21], char_buffer[20],

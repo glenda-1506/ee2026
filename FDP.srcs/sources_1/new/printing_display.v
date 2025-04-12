@@ -1,10 +1,13 @@
 `timescale 1ns / 1ps
 
-module printing_display(
+module printing_display #(
+    parameter MAX_CHAR = 32,
+    parameter CHAR_ARRAY_BIT = 255
+    )(
     input clk,
     input [6:0] x_addr,
     input [5:0] y_addr,
-    input [255:0] char_buffer_array,  
+    input [CHAR_ARRAY_BIT:0] char_buffer_array,  
     input [7:0] char_bitmap_wire,
     input program_locked,
     output reg [15:0] pixel_data,
@@ -12,7 +15,7 @@ module printing_display(
     output reg [7:0] ascii_char
 );
 
-    reg [7:0] ascii_array [0:31];
+    reg [7:0] ascii_array [0:MAX_CHAR - 1];
     wire [15:0] left_disp;
     integer i;
     integer pos;
@@ -31,7 +34,7 @@ module printing_display(
     );
 
     always @(*) begin
-        for (i = 0; i < 32; i = i + 1) begin
+        for (i = 0; i < MAX_CHAR; i = i + 1) begin
             ascii_array[i] = char_buffer_array[i*8 +: 8];  
         end
     end
@@ -39,7 +42,7 @@ module printing_display(
     always @(posedge clk) begin
         pixel_data <= left_disp;
         
-        for (pos = 0; pos < 32; pos = pos + 1) begin
+        for (pos = 0; pos < MAX_CHAR; pos = pos + 1) begin
             row = pos / 8;
             col = pos % 8;
             j = 38 - (row * 8);
